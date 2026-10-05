@@ -10,6 +10,7 @@
   html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
   body { font-family: 'Plus Jakarta Sans', sans-serif; background: #fcf9f4; }
 </style>
+<script src="/portal-common.js"></script>
 </head>
 <body class="flex items-center justify-center min-h-screen bg-surface">
 
@@ -155,6 +156,7 @@
     </div>
   </div>
 
+  <script src="/portal-common.js"></script>
   <script>
     (function() {
       function makeToggle(btnId, inputId, iconId) {
@@ -176,6 +178,41 @@
       if (form) {
         form.addEventListener('submit', function(e) {
           e.preventDefault();
+          const nameInput = document.getElementById('name');
+          const phoneInput = document.getElementById('phone');
+          const emailInput = document.getElementById('email');
+
+          const name = nameInput ? nameInput.value.trim() : 'Pet Parent';
+          const phone = phoneInput ? phoneInput.value.trim() : '';
+          const email = emailInput ? emailInput.value.trim() : '';
+          const firstName = name.split(' ')[0] || name;
+
+          if (window.PetPalsStore) {
+            window.PetPalsStore.saveUser({
+              name,
+              firstName,
+              email,
+              phone
+            });
+            window.PetPalsStore.setAuthenticated(true);
+          }
+          window.location.href = '/dashboard';
+        });
+      }
+
+      const googleBtn = document.getElementById('google-signup-btn');
+      if (googleBtn) {
+        googleBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          if (window.PetPalsStore) {
+            const u = window.PetPalsStore.getUser();
+            window.PetPalsStore.saveUser({
+              email: u.email || 'prathikshashetty6355@gmail.com',
+              name: u.name || 'Prathiksha Shetty',
+              firstName: u.firstName || 'Prathiksha'
+            });
+            window.PetPalsStore.setAuthenticated(true);
+          }
           window.location.href = '/dashboard';
         });
       }

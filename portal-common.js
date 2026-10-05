@@ -5,7 +5,8 @@
   const STORAGE_KEYS = {
     USER: 'petpals_user',
     PETS: 'petpals_pets',
-    BOOKINGS: 'petpals_bookings'
+    BOOKINGS: 'petpals_bookings',
+    AUTH: 'petpals_auth'
   };
 
   const DEFAULT_USER = {
@@ -52,6 +53,100 @@
     'Other': 'https://images.unsplash.com/photo-1425082661705-1834bfd09dca?auto=format&fit=crop&w=400&q=80'
   };
 
+  const DEFAULT_BOOKINGS = [
+    {
+      id: 'PP-84920',
+      service: 'Grooming & Spa Experience',
+      serviceCategory: 'grooming',
+      servicePrice: '$65.00',
+      duration: '75 min',
+      petId: 'pet-bruno',
+      petName: 'Bruno',
+      petBreed: 'Golden Retriever (2 years)',
+      petAvatar: 'https://lh3.googleusercontent.com/aida/AEtjO1Uuc_lq8IwyBwbjSlNL1obmQxxUrnJznxdjFzSncsyQDO1-YLIUzfA26YIg8yEhskgu9bqGS8QeWYZPTGpIQD6FXUjqJOTEPL92yxV6_uo66Re6T62xuKeC1UJF5zhXDGpeUIx3UpOQOFfTvElfqK-3SvN_G681f6Is0T7pjxiMowIXYwAQiutnTNbf70J32lVHH31Pn4LZk54wkstesIfLUzUa5mtuN06jDWNkEWTtCVkamIVdAptB-t6J',
+      date: '10 Oct 2026',
+      time: '10:00 AM',
+      specialist: 'Sarah Jenkins',
+      specialistRole: 'Coat Specialist ★ 4.9',
+      location: 'PetPals Flagship Spa & Wellness Lounge • Suite 4',
+      status: 'Upcoming',
+      paid: true
+    },
+    {
+      id: 'PP-82410',
+      service: 'Veterinary Care & Health Check',
+      serviceCategory: 'medical',
+      servicePrice: '$85.00',
+      duration: '45 min',
+      petId: 'pet-bruno',
+      petName: 'Bruno',
+      petBreed: 'Golden Retriever (2 years)',
+      petAvatar: 'https://lh3.googleusercontent.com/aida/AEtjO1Uuc_lq8IwyBwbjSlNL1obmQxxUrnJznxdjFzSncsyQDO1-YLIUzfA26YIg8yEhskgu9bqGS8QeWYZPTGpIQD6FXUjqJOTEPL92yxV6_uo66Re6T62xuKeC1UJF5zhXDGpeUIx3UpOQOFfTvElfqK-3SvN_G681f6Is0T7pjxiMowIXYwAQiutnTNbf70J32lVHH31Pn4LZk54wkstesIfLUzUa5mtuN06jDWNkEWTtCVkamIVdAptB-t6J',
+      date: '05 Oct 2026',
+      time: '11:00 AM',
+      specialist: 'Dr. Emily Chen',
+      specialistRole: 'Licensed DVM',
+      location: 'PetPals Clinic Suite A',
+      status: 'Completed',
+      paid: true
+    },
+    {
+      id: 'PP-79104',
+      service: 'Dog Walking (60 mins)',
+      serviceCategory: 'training',
+      servicePrice: '$30.00',
+      duration: '60 min',
+      petId: 'pet-milo',
+      petName: 'Milo',
+      petBreed: 'Tabby Cat (1 year)',
+      petAvatar: 'https://lh3.googleusercontent.com/aida/AEtjO1WT6ANlajBfAFZfy7s2ZiqXTDUYaiJGV-Hu02OGU9PgovrJw8KPqccWgiG93n2PwTxchuFVJ3ASByB6dPS4dMyMzed6GF9xPYMGkUfOw9pVQY0mIH7U4hxSFJ3vXHqSyMhnnjpwmDSD8uEEh7mB5FeOP2gk61l4gyqODvdUhL5TDs1EOSm8R69PQ2QmROFVLmTomMBxfeSAD-EuGOnPSGeQE2uRBmqA8ealfCucmUXvwTJ2HOqlPVelelg',
+      date: '28 Sep 2026',
+      time: '04:00 PM',
+      specialist: 'Alex Rivera',
+      specialistRole: 'Certified Companion Walker',
+      location: 'Neighborhood Park Run',
+      status: 'Completed',
+      paid: true
+    },
+    {
+      id: 'PP-75320',
+      service: 'Grooming & Spa Refresh',
+      serviceCategory: 'grooming',
+      servicePrice: '$65.00',
+      duration: '60 min',
+      petId: 'pet-bruno',
+      petName: 'Bruno',
+      petBreed: 'Golden Retriever (2 years)',
+      petAvatar: 'https://lh3.googleusercontent.com/aida/AEtjO1Uuc_lq8IwyBwbjSlNL1obmQxxUrnJznxdjFzSncsyQDO1-YLIUzfA26YIg8yEhskgu9bqGS8QeWYZPTGpIQD6FXUjqJOTEPL92yxV6_uo66Re6T62xuKeC1UJF5zhXDGpeUIx3UpOQOFfTvElfqK-3SvN_G681f6Is0T7pjxiMowIXYwAQiutnTNbf70J32lVHH31Pn4LZk54wkstesIfLUzUa5mtuN06jDWNkEWTtCVkamIVdAptB-t6J',
+      date: '20 Sep 2026',
+      time: '10:00 AM',
+      specialist: 'Sarah Jenkins',
+      specialistRole: 'Coat Specialist',
+      location: 'PetPals Flagship Lounge',
+      status: 'Completed',
+      paid: true
+    }
+  ];
+
+  const DEFAULT_ACTIVE_BOOKING = {
+    service: 'Grooming & Spa Experience',
+    serviceCategory: 'grooming',
+    servicePrice: '$65.00',
+    duration: '75 min',
+    petId: 'pet-bruno',
+    petName: 'Bruno',
+    petBreed: 'Golden Retriever',
+    petAge: '2 years',
+    petWeight: '31.0 kg',
+    petAvatar: 'https://lh3.googleusercontent.com/aida/AEtjO1Uuc_lq8IwyBwbjSlNL1obmQxxUrnJznxdjFzSncsyQDO1-YLIUzfA26YIg8yEhskgu9bqGS8QeWYZPTGpIQD6FXUjqJOTEPL92yxV6_uo66Re6T62xuKeC1UJF5zhXDGpeUIx3UpOQOFfTvElfqK-3SvN_G681f6Is0T7pjxiMowIXYwAQiutnTNbf70J32lVHH31Pn4LZk54wkstesIfLUzUa5mtuN06jDWNkEWTtCVkamIVdAptB-t6J',
+    date: '10 Oct 2026',
+    time: '10:00 AM',
+    specialist: 'Sarah Jenkins',
+    specialistRole: 'Coat Specialist ★ 4.9',
+    location: 'PetPals Flagship Spa & Wellness Lounge • Suite 4',
+    notes: 'Warm botanical bubble bath and breed scissor trim'
+  };
+
   const PetPalsStore = {
     getUser() {
       try {
@@ -71,6 +166,7 @@
           updated.firstName = updated.name.trim().split(' ')[0] || updated.name;
         }
         localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(updated));
+        localStorage.setItem(STORAGE_KEYS.AUTH, 'true');
         this.broadcast('user-updated', updated);
         return updated;
       } catch (e) {
@@ -139,22 +235,185 @@
       return pets;
     },
 
+    getBookings() {
+      try {
+        const data = localStorage.getItem(STORAGE_KEYS.BOOKINGS);
+        if (data) {
+          const parsed = JSON.parse(data);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+      } catch (e) {
+        console.warn('Error reading bookings from localStorage', e);
+      }
+      return [...DEFAULT_BOOKINGS];
+    },
+
+    saveBookings(bookings) {
+      try {
+        localStorage.setItem(STORAGE_KEYS.BOOKINGS, JSON.stringify(bookings));
+        this.broadcast('bookings-updated', bookings);
+      } catch (e) {
+        console.error('Error saving bookings to localStorage', e);
+      }
+    },
+
+    addBooking(bookingData) {
+      const bookings = this.getBookings();
+      const id = bookingData.id || ('PP-' + Math.floor(10000 + Math.random() * 90000));
+      const newBooking = {
+        id,
+        service: bookingData.service || 'Grooming & Spa Experience',
+        serviceCategory: bookingData.serviceCategory || 'grooming',
+        servicePrice: bookingData.servicePrice || '$65.00',
+        duration: bookingData.duration || '75 min',
+        petId: bookingData.petId || 'pet-bruno',
+        petName: bookingData.petName || 'Bruno',
+        petBreed: bookingData.petBreed || 'Golden Retriever (2 years)',
+        petAvatar: bookingData.petAvatar || SPECIES_AVATARS['Dog'],
+        date: bookingData.date || '10 Oct 2026',
+        time: bookingData.time || '10:00 AM',
+        specialist: bookingData.specialist || 'Sarah Jenkins',
+        specialistRole: bookingData.specialistRole || 'Coat Specialist ★ 4.9',
+        location: bookingData.location || 'PetPals Flagship Spa & Wellness Lounge • Suite 4',
+        status: bookingData.status || 'Upcoming',
+        paid: true,
+        notes: bookingData.notes || ''
+      };
+      bookings.unshift(newBooking);
+      this.saveBookings(bookings);
+      localStorage.setItem('petpals_last_confirmed', JSON.stringify(newBooking));
+      return newBooking;
+    },
+
+    cancelBooking(id) {
+      const bookings = this.getBookings();
+      const idx = bookings.findIndex(b => b.id === id);
+      if (idx !== -1) {
+        bookings[idx].status = 'Cancelled';
+        this.saveBookings(bookings);
+        return bookings[idx];
+      }
+      return null;
+    },
+
+    rescheduleBooking(id, newDate, newTime) {
+      const bookings = this.getBookings();
+      const idx = bookings.findIndex(b => b.id === id);
+      if (idx !== -1) {
+        bookings[idx].date = newDate;
+        bookings[idx].time = newTime;
+        bookings[idx].status = 'Upcoming';
+        this.saveBookings(bookings);
+        return bookings[idx];
+      }
+      return null;
+    },
+
+    updateBooking(id, updatedData) {
+      const bookings = this.getBookings();
+      const idx = bookings.findIndex(b => b.id === id);
+      if (idx !== -1) {
+        bookings[idx] = { ...bookings[idx], ...updatedData };
+        this.saveBookings(bookings);
+        return bookings[idx];
+      }
+      return null;
+    },
+
+    getActiveBooking() {
+      try {
+        const data = localStorage.getItem('petpals_active_booking');
+        if (data) return JSON.parse(data);
+      } catch (e) {}
+      return { ...DEFAULT_ACTIVE_BOOKING };
+    },
+
+    saveActiveBooking(bookingData) {
+      try {
+        const current = this.getActiveBooking();
+        const updated = { ...current, ...bookingData };
+        localStorage.setItem('petpals_active_booking', JSON.stringify(updated));
+        return updated;
+      } catch (e) {
+        console.error('Error saving active booking', e);
+      }
+    },
+
+    isAuthenticated() {
+      try {
+        const auth = localStorage.getItem(STORAGE_KEYS.AUTH);
+        if (auth === 'true') return true;
+        if (auth === 'false') return false;
+        // If not set, check if user session exists in localStorage
+        return localStorage.getItem(STORAGE_KEYS.USER) !== null;
+      } catch (e) {
+        return false;
+      }
+    },
+
+    setAuthenticated(status) {
+      try {
+        localStorage.setItem(STORAGE_KEYS.AUTH, status ? 'true' : 'false');
+        this.broadcast('auth-changed', { authenticated: Boolean(status) });
+      } catch (e) {
+        console.error('Error setting auth state', e);
+      }
+    },
+
+    login(userData) {
+      try {
+        localStorage.setItem(STORAGE_KEYS.AUTH, 'true');
+        if (userData) {
+          this.saveUser(userData);
+        }
+        this.broadcast('auth-changed', { authenticated: true, user: this.getUser() });
+      } catch (e) {
+        console.error('Error during login', e);
+      }
+      return true;
+    },
+
+    logout() {
+      try {
+        localStorage.setItem(STORAGE_KEYS.AUTH, 'false');
+      } catch (e) {}
+      showToast('Signed out successfully.', 'logout');
+      setTimeout(() => {
+        window.location.href = '/login';
+      }, 400);
+    },
+
     broadcast(event, detail) {
       window.dispatchEvent(new CustomEvent('petpals:' + event, { detail }));
     }
   };
 
   // UI Toast notification
-  function showToast(message, icon = 'check_circle') {
+  function showToast(message, typeOrIcon = 'check_circle') {
+    let icon = 'check_circle';
+    let textColor = 'text-primary';
+    if (typeOrIcon === 'success') {
+      icon = 'check_circle';
+      textColor = 'text-[#2D5A3A]';
+    } else if (typeOrIcon === 'error') {
+      icon = 'error';
+      textColor = 'text-[#ba1a1a]';
+    } else if (typeOrIcon === 'info') {
+      icon = 'info';
+      textColor = 'text-primary';
+    } else if (typeof typeOrIcon === 'string' && typeOrIcon.length > 0) {
+      icon = typeOrIcon;
+    }
+
     let toast = document.getElementById('petpals-global-toast');
     if (!toast) {
       toast = document.createElement('div');
       toast.id = 'petpals-global-toast';
-      toast.className = 'fixed bottom-6 right-6 bg-surface-container-lowest border border-outline-variant/60 shadow-xl rounded-2xl px-5 py-3.5 flex items-center gap-3 transition-all duration-300 translate-y-20 opacity-0 pointer-events-none z-[100]';
+      toast.className = 'fixed bottom-6 right-6 bg-surface-container-lowest border border-outline-variant/60 shadow-xl rounded-2xl px-5 py-3.5 flex items-center gap-3 transition-all duration-300 translate-y-20 opacity-0 pointer-events-none z-[9999]';
       document.body.appendChild(toast);
     }
     toast.innerHTML = `
-      <span class="material-symbols-outlined text-primary text-2xl">${icon}</span>
+      <span class="material-symbols-outlined ${textColor} text-2xl">${icon}</span>
       <span class="font-label-md text-label-md text-on-surface font-medium">${message}</span>
     `;
     toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
@@ -165,6 +424,34 @@
       toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
       toast.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
     }, 3200);
+  }
+
+  // Dynamic modal helper
+  function showModal(html, onClose) {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `position:fixed;inset:0;z-index:8000;
+      background:rgba(28,28,25,.45);backdrop-filter:blur(4px);
+      display:flex;align-items:center;justify-content:center;padding:16px;`;
+    overlay.innerHTML = `<div style="background:#fcf9f4;border-radius:24px;
+      max-width:520px;width:100%;padding:32px;position:relative;
+      box-shadow:0 24px 64px rgba(0,0,0,.18);font-family:'Plus Jakarta Sans',sans-serif;
+      animation:popIn .25s cubic-bezier(.34,1.56,.64,1) both;">
+      <button id="modal-close" style="position:absolute;top:16px;right:16px;background:none;
+        border:none;cursor:pointer;font-size:22px;color:#83746c;line-height:1;">✕</button>
+      ${html}</div>`;
+    let popInStyle = document.getElementById('petpals-popin-style');
+    if (!popInStyle) {
+      popInStyle = document.createElement('style');
+      popInStyle.id = 'petpals-popin-style';
+      popInStyle.textContent = `@keyframes popIn{from{transform:scale(.88);opacity:0}to{transform:scale(1);opacity:1}}`;
+      document.head.appendChild(popInStyle);
+    }
+    document.body.appendChild(overlay);
+    const close = () => { overlay.remove(); if (typeof onClose === 'function') onClose(); };
+    const closeBtn = overlay.querySelector('#modal-close');
+    if (closeBtn) closeBtn.onclick = close;
+    overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
+    return { overlay, close };
   }
 
   // Create & mount User Dropdown Menu in header
@@ -217,13 +504,18 @@
             </a>
           </div>
           <div class="border-t border-outline-variant/30 pt-1">
-            <a href="/" id="dropdown-logout-btn" class="flex items-center gap-3 px-4 py-2.5 text-error hover:bg-error-container/30 text-body-sm font-medium transition-colors">
+            <a href="/login" id="dropdown-logout-btn" class="flex items-center gap-3 px-4 py-2.5 text-error hover:bg-error-container/30 text-body-sm font-medium transition-colors cursor-pointer">
               <span class="material-symbols-outlined text-[19px]">logout</span>
               <span>Sign Out</span>
             </a>
           </div>
         `;
         document.body.appendChild(menu);
+
+        menu.querySelector('#dropdown-logout-btn')?.addEventListener('click', (e) => {
+          e.preventDefault();
+          PetPalsStore.logout();
+        });
 
         function positionDropdown() {
           const rect = pill.getBoundingClientRect();
@@ -450,6 +742,10 @@
 
     document.querySelectorAll('aside a[data-path="logout"]').forEach(link => {
       link.href = '/login';
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        PetPalsStore.logout();
+      });
     });
 
     // Logo click goes to dashboard
@@ -483,8 +779,11 @@
 
   // Export to window
   window.PetPalsStore = PetPalsStore;
+  window.toast = showToast;
+  window.modal = showModal;
   window.PetPalsUI = {
     toast: showToast,
+    modal: showModal,
     openModal(id) { document.getElementById(id)?.classList.remove('hidden'); },
     closeModal(id) { document.getElementById(id)?.classList.add('hidden'); }
   };

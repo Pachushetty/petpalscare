@@ -50,13 +50,21 @@ const ROUTES = {
 };
 
 const server = http.createServer((req, res) => {
-  const urlPath = req.url.split('?')[0];
+  let urlPath = req.url.split('?')[0];
+  try {
+    urlPath = decodeURIComponent(urlPath);
+  } catch (e) {
+    // ignore decode error
+  }
 
-  let filePath;
-  if (ROUTES[urlPath]) {
-    filePath = path.join(PUBLIC_DIR, ROUTES[urlPath]);
-  } else {
-    filePath = path.join(PUBLIC_DIR, urlPath);
+  let relPath = ROUTES[urlPath] || (urlPath === '/' ? 'home.html' : urlPath.replace(/^\/+/, ''));
+  let filePath = path.resolve(PUBLIC_DIR, relPath);
+
+  // Prevent path traversal
+  if (!filePath.startsWith(PUBLIC_DIR)) {
+    res.writeHead(403, { 'Content-Type': 'text/plain' });
+    res.end('403 Forbidden');
+    return;
   }
 
   // Check if file exists
@@ -68,9 +76,10 @@ const server = http.createServer((req, res) => {
       fs.createReadStream(filePath).pipe(res);
     } else {
       // Fallback for clean URLs or 404
-      if (fs.existsSync(filePath + '.html')) {
+      const htmlPath = filePath + '.html';
+      if (htmlPath.startsWith(PUBLIC_DIR) && fs.existsSync(htmlPath)) {
         res.writeHead(200, { 'Content-Type': 'text/html; charset=UTF-8' });
-        fs.createReadStream(filePath + '.html').pipe(res);
+        fs.createReadStream(htmlPath).pipe(res);
       } else {
         res.writeHead(404, { 'Content-Type': 'text/plain' });
         res.end('404 Not Found');
@@ -79,6 +88,6 @@ const server = http.createServer((req, res) => {
   });
 });
 
-server.listen(PORT, () => {
-  console.log(`PetPals Care Portal running at http://localhost:${PORT}`);
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`PetPals Care Portal running at http://0.0.0.0:${PORT}`);
 });

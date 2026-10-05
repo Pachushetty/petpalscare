@@ -1,0 +1,8 @@
+{
+  "name": "PetPals - Premium Pet Care Portal",
+  "description": "Comprehensive pet care portal for veterinary appointments, pet health profiles, grooming, and boarding services.",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
