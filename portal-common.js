@@ -27,9 +27,12 @@
       age: '2 years',
       status: 'Active',
       note: 'Last wellness check: 2 weeks ago',
+      notes: 'Salmon & sweet potato kibble twice daily. Sensitive to loud air blowers.',
       weight: '31.0 kg',
       gender: 'Male (Neutered)',
-      avatar: 'https://lh3.googleusercontent.com/aida/AEtjO1Uuc_lq8IwyBwbjSlNL1obmQxxUrnJznxdjFzSncsyQDO1-YLIUzfA26YIg8yEhskgu9bqGS8QeWYZPTGpIQD6FXUjqJOTEPL92yxV6_uo66Re6T62xuKeC1UJF5zhXDGpeUIx3UpOQOFfTvElfqK-3SvN_G681f6Is0T7pjxiMowIXYwAQiutnTNbf70J32lVHH31Pn4LZk54wkstesIfLUzUa5mtuN06jDWNkEWTtCVkamIVdAptB-t6J'
+      microchip: '985 141 002 381',
+      avatar: 'https://lh3.googleusercontent.com/aida/AEtjO1Uuc_lq8IwyBwbjSlNL1obmQxxUrnJznxdjFzSncsyQDO1-YLIUzfA26YIg8yEhskgu9bqGS8QeWYZPTGpIQD6FXUjqJOTEPL92yxV6_uo66Re6T62xuKeC1UJF5zhXDGpeUIx3UpOQOFfTvElfqK-3SvN_G681f6Is0T7pjxiMowIXYwAQiutnTNbf70J32lVHH31Pn4LZk54wkstesIfLUzUa5mtuN06jDWNkEWTtCVkamIVdAptB-t6J',
+      photo: 'https://lh3.googleusercontent.com/aida/AEtjO1Uuc_lq8IwyBwbjSlNL1obmQxxUrnJznxdjFzSncsyQDO1-YLIUzfA26YIg8yEhskgu9bqGS8QeWYZPTGpIQD6FXUjqJOTEPL92yxV6_uo66Re6T62xuKeC1UJF5zhXDGpeUIx3UpOQOFfTvElfqK-3SvN_G681f6Is0T7pjxiMowIXYwAQiutnTNbf70J32lVHH31Pn4LZk54wkstesIfLUzUa5mtuN06jDWNkEWTtCVkamIVdAptB-t6J'
     },
     {
       id: 'pet-milo',
@@ -39,9 +42,12 @@
       age: '1 year',
       status: 'Active',
       note: 'Vaccinations fully updated',
+      notes: 'Nutritious balanced formula twice daily.',
       weight: '4.8 kg',
       gender: 'Male (Neutered)',
-      avatar: 'https://lh3.googleusercontent.com/aida/AEtjO1WT6ANlajBfAFZfy7s2ZiqXTDUYaiJGV-Hu02OGU9PgovrJw8KPqccWgiG93n2PwTxchuFVJ3ASByB6dPS4dMyMzed6GF9xPYMGkUfOw9pVQY0mIH7U4hxSFJ3vXHqSyMhnnjpwmDSD8uEEh7mB5FeOP2gk61l4gyqODvdUhL5TDs1EOSm8R69PQ2QmROFVLmTomMBxfeSAD-EuGOnPSGeQE2uRBmqA8ealfCucmUXvwTJ2HOqlPVelelg'
+      microchip: '985 141 009 842',
+      avatar: 'https://lh3.googleusercontent.com/aida/AEtjO1WT6ANlajBfAFZfy7s2ZiqXTDUYaiJGV-Hu02OGU9PgovrJw8KPqccWgiG93n2PwTxchuFVJ3ASByB6dPS4dMyMzed6GF9xPYMGkUfOw9pVQY0mIH7U4hxSFJ3vXHqSyMhnnjpwmDSD8uEEh7mB5FeOP2gk61l4gyqODvdUhL5TDs1EOSm8R69PQ2QmROFVLmTomMBxfeSAD-EuGOnPSGeQE2uRBmqA8ealfCucmUXvwTJ2HOqlPVelelg',
+      photo: 'https://lh3.googleusercontent.com/aida/AEtjO1WT6ANlajBfAFZfy7s2ZiqXTDUYaiJGV-Hu02OGU9PgovrJw8KPqccWgiG93n2PwTxchuFVJ3ASByB6dPS4dMyMzed6GF9xPYMGkUfOw9pVQY0mIH7U4hxSFJ3vXHqSyMhnnjpwmDSD8uEEh7mB5FeOP2gk61l4gyqODvdUhL5TDs1EOSm8R69PQ2QmROFVLmTomMBxfeSAD-EuGOnPSGeQE2uRBmqA8ealfCucmUXvwTJ2HOqlPVelelg'
     }
   ];
 
@@ -147,6 +153,73 @@
     notes: 'Warm botanical bubble bath and breed scissor trim'
   };
 
+  // Backend API Client
+  const API = {
+    async get(endpoint) {
+      try {
+        const user = PetPalsStore.getUser();
+        const res = await fetch(endpoint, {
+          headers: { 'x-user-id': user.id || 'usr-prathiksha' }
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return await res.json();
+      } catch (err) {
+        console.warn(`[API] GET ${endpoint} error:`, err.message);
+        return null;
+      }
+    },
+    async post(endpoint, data) {
+      try {
+        const user = PetPalsStore.getUser();
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-user-id': user.id || 'usr-prathiksha'
+          },
+          body: JSON.stringify(data)
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return await res.json();
+      } catch (err) {
+        console.warn(`[API] POST ${endpoint} error:`, err.message);
+        return null;
+      }
+    },
+    async put(endpoint, data) {
+      try {
+        const user = PetPalsStore.getUser();
+        const res = await fetch(endpoint, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-user-id': user.id || 'usr-prathiksha'
+          },
+          body: JSON.stringify(data)
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return await res.json();
+      } catch (err) {
+        console.warn(`[API] PUT ${endpoint} error:`, err.message);
+        return null;
+      }
+    },
+    async delete(endpoint) {
+      try {
+        const user = PetPalsStore.getUser();
+        const res = await fetch(endpoint, {
+          method: 'DELETE',
+          headers: { 'x-user-id': user.id || 'usr-prathiksha' }
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return await res.json();
+      } catch (err) {
+        console.warn(`[API] DELETE ${endpoint} error:`, err.message);
+        return null;
+      }
+    }
+  };
+
   const PetPalsStore = {
     getUser() {
       try {
@@ -168,6 +241,10 @@
         localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(updated));
         localStorage.setItem(STORAGE_KEYS.AUTH, 'true');
         this.broadcast('user-updated', updated);
+
+        // Sync with PostgreSQL backend API
+        API.put('/api/auth/profile', updated).catch(err => console.warn('Failed to sync profile with backend:', err));
+
         return updated;
       } catch (e) {
         console.error('Error saving user to localStorage', e);
@@ -199,22 +276,37 @@
 
     addPet(petData) {
       const pets = this.getPets();
-      const id = 'pet-' + Date.now();
-      const avatar = petData.avatar || SPECIES_AVATARS[petData.species] || SPECIES_AVATARS['Dog'];
+      const id = petData.id || ('pet-' + Date.now());
+      const normalizedSpecies = petData.species ? (petData.species.charAt(0).toUpperCase() + petData.species.slice(1).toLowerCase()) : 'Dog';
+      const avatar = petData.avatar || petData.photo || SPECIES_AVATARS[normalizedSpecies] || SPECIES_AVATARS['Dog'];
+      const note = petData.note || petData.notes || 'Wellness check recommended';
+      const microchip = petData.microchip || `${Math.floor(100 + Math.random()*899)} ${Math.floor(100 + Math.random()*899)} 002 ${Math.floor(100 + Math.random()*899)}`;
       const newPet = {
         id,
         name: petData.name || 'Pet',
-        species: petData.species || 'Dog',
-        breed: petData.breed || (petData.species || 'Dog'),
+        species: normalizedSpecies,
+        breed: petData.breed || (normalizedSpecies === 'Cat' ? 'Domestic Shorthair' : 'Golden Retriever'),
         age: petData.age || '1 year',
         status: petData.status || 'Active',
-        note: petData.note || 'Wellness check recommended',
+        note: note,
+        notes: note,
         weight: petData.weight || '5.0 kg',
         gender: petData.gender || 'Unknown',
-        avatar
+        avatar: avatar,
+        photo: avatar,
+        microchip: microchip
       };
       pets.push(newPet);
       this.savePets(pets);
+
+      // Persist to PostgreSQL backend API
+      API.post('/api/pets', newPet).then(saved => {
+        if (saved && saved.id && saved.id !== id) {
+          newPet.id = saved.id;
+          this.savePets(pets);
+        }
+      }).catch(err => console.warn('Failed to save pet to backend:', err));
+
       return newPet;
     },
 
@@ -224,6 +316,10 @@
       if (idx !== -1) {
         pets[idx] = { ...pets[idx], ...updatedData };
         this.savePets(pets);
+
+        // Persist to PostgreSQL backend API
+        API.put('/api/pets/' + encodeURIComponent(id), updatedData).catch(err => console.warn('Failed to update pet in backend:', err));
+
         return pets[idx];
       }
       return null;
@@ -232,6 +328,10 @@
     deletePet(id) {
       const pets = this.getPets().filter(p => p.id !== id);
       this.savePets(pets);
+
+      // Persist to PostgreSQL backend API
+      API.delete('/api/pets/' + encodeURIComponent(id)).catch(err => console.warn('Failed to delete pet from backend:', err));
+
       return pets;
     },
 
@@ -282,6 +382,10 @@
       bookings.unshift(newBooking);
       this.saveBookings(bookings);
       localStorage.setItem('petpals_last_confirmed', JSON.stringify(newBooking));
+
+      // Persist to PostgreSQL backend API
+      API.post('/api/bookings', newBooking).catch(err => console.warn('Failed to save booking to backend:', err));
+
       return newBooking;
     },
 
@@ -291,6 +395,10 @@
       if (idx !== -1) {
         bookings[idx].status = 'Cancelled';
         this.saveBookings(bookings);
+
+        // Persist to PostgreSQL backend API
+        API.put('/api/bookings/' + encodeURIComponent(id) + '/status', { status: 'Cancelled' }).catch(err => console.warn('Failed to cancel booking in backend:', err));
+
         return bookings[idx];
       }
       return null;
@@ -304,6 +412,10 @@
         bookings[idx].time = newTime;
         bookings[idx].status = 'Upcoming';
         this.saveBookings(bookings);
+
+        // Persist to PostgreSQL backend API
+        API.put('/api/bookings/' + encodeURIComponent(id) + '/status', { status: 'Confirmed', notes: `Rescheduled to ${newDate} at ${newTime}` }).catch(err => console.warn('Failed to reschedule in backend:', err));
+
         return bookings[idx];
       }
       return null;
@@ -315,9 +427,44 @@
       if (idx !== -1) {
         bookings[idx] = { ...bookings[idx], ...updatedData };
         this.saveBookings(bookings);
+
+        if (updatedData.status) {
+          API.put('/api/bookings/' + encodeURIComponent(id) + '/status', { status: updatedData.status }).catch(err => console.warn('Failed to update booking status in backend:', err));
+        }
+
         return bookings[idx];
       }
       return null;
+    },
+
+    // Asynchronously fetch latest data from PostgreSQL backend
+    async syncFromBackend() {
+      try {
+        const [user, pets, bookings] = await Promise.all([
+          API.get('/api/auth/me'),
+          API.get('/api/pets'),
+          API.get('/api/bookings')
+        ]);
+
+        if (user && user.id) {
+          const current = this.getUser();
+          const merged = { ...current, ...user };
+          localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(merged));
+          this.broadcast('user-updated', merged);
+        }
+
+        if (Array.isArray(pets) && pets.length > 0) {
+          localStorage.setItem(STORAGE_KEYS.PETS, JSON.stringify(pets));
+          this.broadcast('pets-updated', pets);
+        }
+
+        if (Array.isArray(bookings) && bookings.length > 0) {
+          localStorage.setItem(STORAGE_KEYS.BOOKINGS, JSON.stringify(bookings));
+          this.broadcast('bookings-updated', bookings);
+        }
+      } catch (err) {
+        console.warn('Backend sync failed, using cached store:', err);
+      }
     },
 
     getActiveBooking() {
@@ -412,9 +559,31 @@
       toast.className = 'fixed bottom-6 right-6 bg-surface-container-lowest border border-outline-variant/60 shadow-xl rounded-2xl px-5 py-3.5 flex items-center gap-3 transition-all duration-300 translate-y-20 opacity-0 pointer-events-none z-[9999]';
       document.body.appendChild(toast);
     }
+    let iconHtml = '';
+    if (icon === 'check_circle') {
+      iconHtml = `
+        <span class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0 shadow-xs">
+          <svg class="w-4 h-4 stroke-current fill-none stroke-[2.5]" viewBox="0 0 24 24">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </span>
+      `;
+    } else if (icon === 'error') {
+      iconHtml = `
+        <span class="w-7 h-7 rounded-full bg-red-100 text-red-700 flex items-center justify-center shrink-0 shadow-xs">
+          <svg class="w-4 h-4 stroke-current fill-none stroke-[2.5]" viewBox="0 0 24 24">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </span>
+      `;
+    } else {
+      iconHtml = `<span class="material-symbols-outlined ${textColor} text-2xl" style="font-family:'Material Symbols Outlined'">${icon}</span>`;
+    }
+
     toast.innerHTML = `
-      <span class="material-symbols-outlined ${textColor} text-2xl">${icon}</span>
-      <span class="font-label-md text-label-md text-on-surface font-medium">${message}</span>
+      ${iconHtml}
+      <span class="font-label-md text-label-md text-on-surface font-medium leading-snug">${message}</span>
     `;
     toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
     toast.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
@@ -608,6 +777,24 @@
       });
       document.getElementById('assistance-chat-btn')?.addEventListener('click', () => {
         modal.classList.add('hidden');
+        try {
+          const user = PetPalsStore.getUser();
+          const msgsKey = 'petpals_admin_messages';
+          const existing = JSON.parse(localStorage.getItem(msgsKey) || '[]');
+          existing.unshift({
+            id: 'msg-' + Date.now(),
+            name: user.name || 'Prathiksha Shetty',
+            email: user.email || 'prathiksha@gmail.com',
+            phone: user.phone || '+91 98765 43210',
+            date: 'Today, ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            subject: 'Concierge Hotline Chat Request',
+            message: 'Client connected via 24/7 Veterinary & Concierge Hotline. Needs immediate assistance or advice for their pets.',
+            status: 'Unread',
+            reply: ''
+          });
+          localStorage.setItem(msgsKey, JSON.stringify(existing));
+          window.dispatchEvent(new CustomEvent('petpals:admin-messages-updated'));
+        } catch (e) {}
         showToast('Concierge connected! An agent will message you momentarily.', 'forum');
       });
     }
@@ -794,6 +981,7 @@
     initNeedAssistanceModal();
     initHeaderSearch();
     initSidebarNav();
+    PetPalsStore.syncFromBackend();
   });
 
 })(window);

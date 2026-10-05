@@ -502,16 +502,21 @@
           <div>
             <div class="flex items-start justify-between gap-space-md relative z-10 mb-space-md">
               <div class="flex items-center gap-space-md">
-                <div class="relative">
-                  <img alt="${p.name}" class="w-20 h-20 rounded-full object-cover shadow-sm bg-surface-container-high" src="${p.photo || 'https://lh3.googleusercontent.com/aida/AEtjO1Uuc_lq8IwyBwbjSlNL1obmQxxUrnJznxdjFzSncsyQDO1-YLIUzfA26YIg8yEhskgu9bqGS8QeWYZPTGpIQD6FXUjqJOTEPL92yxV6_uo66Re6T62xuKeC1UJF5zhXDGpeUIx3UpOQOFfTvElfqK-3SvN_G681f6Is0T7pjxiMowIXYwAQiutnTNbf70J32lVHH31Pn4LZk54wkstesIfLUzUa5mtuN06jDWNkEWTtCVkamIVdAptB-t6J'}"/>
-                  <span class="absolute bottom-0 right-0 w-4 h-4 rounded-full bg-emerald-500 ring-2 ring-surface-container-lowest"></span>
+                <div class="relative group/avatar pet-avatar-wrapper shrink-0" title="Companion Profile & Photo">
+                  <img alt="${p.name}" class="pet-card-avatar-img w-20 h-20 rounded-full object-cover shadow-sm bg-surface-container-high transition-transform" src="${p.photo || p.avatar || 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=400&q=80'}" onerror="this.src='https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=400&q=80'"/>
+                  <span class="absolute bottom-0 right-0 w-4 h-4 rounded-full bg-emerald-500 ring-2 ring-surface-container-lowest z-20"></span>
+                  <label class="absolute inset-0 rounded-full bg-black/45 text-white opacity-0 group-hover/avatar:opacity-100 flex flex-col items-center justify-center transition-opacity cursor-pointer z-10" title="Upload profile photo for ${p.name}">
+                    <span class="material-symbols-outlined text-[20px]">photo_camera</span>
+                    <span class="text-[9px] font-semibold tracking-wide">Upload</span>
+                    <input type="file" accept="image/*" class="pet-card-photo-input hidden"/>
+                  </label>
                 </div>
                 <div class="space-y-1">
                   <div class="flex items-center gap-2">
-                    <h2 class="font-headline-md text-headline-md text-on-surface font-semibold">${p.name}</h2>
+                    <h2 class="font-headline-md text-headline-md text-on-surface font-semibold pet-name-heading cursor-pointer hover:text-primary transition-colors" title="View Companion Profile">${p.name}</h2>
                     <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-label-sm text-label-sm font-semibold">${p.status || 'Active'}</span>
                   </div>
-                  <p class="font-body-md text-body-md text-on-surface-variant">${p.species === 'cat' ? 'Cat' : 'Dog'} • ${p.breed || 'Companion'}</p>
+                  <p class="font-body-md text-body-md text-on-surface-variant">${p.species === 'cat' || p.species === 'Cat' ? 'Cat' : 'Dog'} • ${p.breed || 'Companion'}</p>
                   <p class="font-body-sm text-body-sm text-outline">${p.age || 'Adult'} • ${p.weight || 'Medium'}</p>
                 </div>
               </div>
@@ -548,7 +553,7 @@
                   <div class="flex items-center justify-between gap-2">
                     <span class="font-label-md text-label-md text-on-surface font-medium">Dietary &amp; Care Notes</span>
                   </div>
-                  <p class="font-body-sm text-body-sm text-on-surface-variant">${p.notes || 'Nutritious balanced formula twice daily.'}</p>
+                  <p class="font-body-sm text-body-sm text-on-surface-variant">${p.notes || p.note || 'Nutritious balanced formula twice daily.'}</p>
                 </div>
               </div>
             </div>
@@ -578,7 +583,7 @@
         const pet = pets.find(p => p.id === id);
         if (!pet) return;
 
-        // Book service button -> set active booking and navigate to /services
+        // Book service button -> set active booking and navigate to /book-service
         const bookBtn = card.querySelector('.pet-book-btn');
         if (bookBtn) {
           bookBtn.onclick = () => {
@@ -586,12 +591,43 @@
               petId: pet.id,
               petName: pet.name,
               petBreed: pet.breed,
-              petPhoto: pet.photo,
+              petPhoto: pet.photo || pet.avatar,
               petAge: pet.age,
               petWeight: pet.weight
             });
-            window.location.href = '/services';
+            window.location.href = '/book-service';
           };
+        }
+
+        // Avatar Photo Upload on Card
+        const photoInput = card.querySelector('.pet-card-photo-input');
+        if (photoInput) {
+          photoInput.onchange = (e) => {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+              const dataUrl = ev.target.result;
+              PetPalsStore.updatePet(pet.id, { photo: dataUrl, avatar: dataUrl });
+              const img = card.querySelector('.pet-card-avatar-img');
+              if (img) img.src = dataUrl;
+              toast(`📸 ${pet.name}'s profile photo updated!`, 'success');
+            };
+            reader.readAsDataURL(file);
+          };
+        }
+
+        // Avatar and Name click also opens companion profile
+        const avatarEl = card.querySelector('.pet-avatar-wrapper');
+        if (avatarEl) {
+          avatarEl.onclick = (e) => {
+            if (e.target.closest('label') || e.target.closest('input')) return;
+            openPetProfileModal(pet);
+          };
+        }
+        const nameEl = card.querySelector('.pet-name-heading');
+        if (nameEl) {
+          nameEl.onclick = () => openPetProfileModal(pet);
         }
 
         // Edit button
@@ -616,12 +652,30 @@
   }
 
   function openAddPetModal() {
+    let customPhoto = '';
+
     const { close } = modal(`
       <h2 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#1c1c19;margin:0 0 6px;">
         Add New Companion
       </h2>
-      <p style="color:#83746c;font-size:13px;margin:0 0 18px;">Create a personalized profile for wellness and appointments.</p>
+      <p style="color:#83746c;font-size:13px;margin:0 0 16px;">Create a personalized profile for wellness and appointments.</p>
+      
       <form id="add-pet-form" style="display:grid;gap:12px;">
+        <!-- Photo Upload Preview Area -->
+        <div style="display:flex;align-items:center;gap:14px;background:#f6f3ee;padding:12px 14px;border-radius:14px;border:1.5px dashed #d5c3ba;">
+          <div style="position:relative;width:60px;height:60px;border-radius:50%;overflow:hidden;background:#ebe8e3;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,0.06);">
+            <img id="new-pet-preview-img" src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=200&q=80" style="width:100%;height:100%;object-fit:cover;" alt="Preview">
+          </div>
+          <div style="flex:1;">
+            <label style="font-size:12px;font-weight:700;color:#50443d;display:block;margin-bottom:2px;">Upload Profile Photo</label>
+            <p style="font-size:11px;color:#83746c;margin:0 0 6px;">Select a cute photo from your device</p>
+            <label style="display:inline-flex;align-items:center;gap:4px;padding:5px 14px;border-radius:999px;background:#714a30;color:#fff;font-size:12px;font-weight:600;cursor:pointer;">
+              <span>📷 Choose Photo</span>
+              <input type="file" id="new-pet-photo-input" accept="image/*" style="display:none;">
+            </label>
+          </div>
+        </div>
+
         <div>
           <label style="font-size:12px;font-weight:700;color:#50443d;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:4px;">Companion Name *</label>
           <input type="text" id="new-pet-name" required placeholder="e.g. Luna" style="width:100%;padding:10px 14px;border:1.5px solid #d5c3ba;border-radius:12px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;box-sizing:border-box;background:#fff;outline:none;">
@@ -659,6 +713,20 @@
       </form>
     `);
 
+    // Handle photo file selection
+    const photoInput = document.getElementById('new-pet-photo-input');
+    const previewImg = document.getElementById('new-pet-preview-img');
+    photoInput.onchange = (ev) => {
+      const file = ev.target.files && ev.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e2) => {
+        customPhoto = e2.target.result;
+        if (previewImg) previewImg.src = customPhoto;
+      };
+      reader.readAsDataURL(file);
+    };
+
     document.getElementById('add-pet-form').onsubmit = (e) => {
       e.preventDefault();
       const name = document.getElementById('new-pet-name').value.trim();
@@ -668,9 +736,11 @@
       const weight = document.getElementById('new-pet-weight').value.trim() || '15 kg';
       const notes = document.getElementById('new-pet-notes').value.trim() || 'Healthy and active companion.';
 
-      const photo = species === 'cat'
-        ? 'https://lh3.googleusercontent.com/aida/AEtjO1XeE0L98m7n928uPojb5z-o-6F6zB821cEa372tQ1V1_G_g3PqO9eG5A5rC-1q2n4'
-        : 'https://lh3.googleusercontent.com/aida/AEtjO1Uuc_lq8IwyBwbjSlNL1obmQxxUrnJznxdjFzSncsyQDO1-YLIUzfA26YIg8yEhskgu9bqGS8QeWYZPTGpIQD6FXUjqJOTEPL92yxV6_uo66Re6T62xuKeC1UJF5zhXDGpeUIx3UpOQOFfTvElfqK-3SvN_G681f6Is0T7pjxiMowIXYwAQiutnTNbf70J32lVHH31Pn4LZk54wkstesIfLUzUa5mtuN06jDWNkEWTtCVkamIVdAptB-t6J';
+      const defaultPhoto = species === 'cat'
+        ? 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=400&q=80'
+        : 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=400&q=80';
+
+      const photo = customPhoto || defaultPhoto;
 
       PetPalsStore.addPet({
         name,
@@ -680,6 +750,7 @@
         weight,
         notes,
         photo,
+        avatar: photo,
         microchip: `${Math.floor(100 + Math.random()*899)} ${Math.floor(100 + Math.random()*899)} 002 ${Math.floor(100 + Math.random()*899)}`
       });
 
@@ -690,11 +761,28 @@
   }
 
   function openEditPetModal(pet) {
+    let updatedPhoto = pet.photo || pet.avatar || '';
+
     const { close } = modal(`
       <h2 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#1c1c19;margin:0 0 6px;">
         Edit ${pet.name}'s Profile
       </h2>
       <form id="edit-pet-form" style="display:grid;gap:12px;margin-top:14px;">
+        <!-- Photo Upload Preview Area -->
+        <div style="display:flex;align-items:center;gap:14px;background:#f6f3ee;padding:12px 14px;border-radius:14px;border:1.5px dashed #d5c3ba;">
+          <div style="position:relative;width:60px;height:60px;border-radius:50%;overflow:hidden;background:#ebe8e3;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,0.06);">
+            <img id="edit-pet-preview-img" src="${updatedPhoto || 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=200&q=80'}" style="width:100%;height:100%;object-fit:cover;" alt="Preview">
+          </div>
+          <div style="flex:1;">
+            <label style="font-size:12px;font-weight:700;color:#50443d;display:block;margin-bottom:2px;">Upload New Photo</label>
+            <p style="font-size:11px;color:#83746c;margin:0 0 6px;">Change profile picture for ${pet.name}</p>
+            <label style="display:inline-flex;align-items:center;gap:4px;padding:5px 14px;border-radius:999px;background:#714a30;color:#fff;font-size:12px;font-weight:600;cursor:pointer;">
+              <span>📷 Change Photo</span>
+              <input type="file" id="edit-pet-photo-input" accept="image/*" style="display:none;">
+            </label>
+          </div>
+        </div>
+
         <div>
           <label style="font-size:12px;font-weight:700;color:#50443d;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:4px;">Name</label>
           <input type="text" id="edit-pet-name" value="${pet.name}" required style="width:100%;padding:10px 14px;border:1.5px solid #d5c3ba;border-radius:12px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;box-sizing:border-box;background:#fff;outline:none;">
@@ -713,11 +801,40 @@
           <label style="font-size:12px;font-weight:700;color:#50443d;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:4px;">Dietary & Care Notes</label>
           <textarea id="edit-pet-notes" rows="2" style="width:100%;padding:10px 14px;border:1.5px solid #d5c3ba;border-radius:12px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;box-sizing:border-box;background:#fff;resize:none;outline:none;">${pet.notes || ''}</textarea>
         </div>
-        <button type="submit" style="margin-top:8px;width:100%;padding:13px;background:#714a30;color:#fff;border:none;border-radius:999px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">
-          Update Profile
-        </button>
+        <div style="display:flex;gap:10px;margin-top:10px;">
+          <button type="button" id="btn-delete-pet-edit" style="padding:13px 18px;background:#ffdad6;color:#ba1a1a;border:none;border-radius:999px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">
+            Delete Pet
+          </button>
+          <button type="submit" style="flex:1;padding:13px;background:#714a30;color:#fff;border:none;border-radius:999px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">
+            Update Profile
+          </button>
+        </div>
       </form>
     `);
+
+    // Handle photo file selection
+    const photoInput = document.getElementById('edit-pet-photo-input');
+    const previewImg = document.getElementById('edit-pet-preview-img');
+    photoInput.onchange = (ev) => {
+      const file = ev.target.files && ev.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e2) => {
+        updatedPhoto = e2.target.result;
+        if (previewImg) previewImg.src = updatedPhoto;
+      };
+      reader.readAsDataURL(file);
+    };
+
+    document.getElementById('btn-delete-pet-edit').onclick = () => {
+      if (confirm(`Are you sure you want to remove ${pet.name} from your companions?`)) {
+        close();
+        const all = PetPalsStore.getPets().filter(p => p.id !== pet.id);
+        PetPalsStore.savePets(all);
+        toast(`Companion ${pet.name} removed.`, 'info');
+        renderPets();
+      }
+    };
 
     document.getElementById('edit-pet-form').onsubmit = (e) => {
       e.preventDefault();
@@ -726,14 +843,17 @@
       const age = document.getElementById('edit-pet-age').value.trim();
       const notes = document.getElementById('edit-pet-notes').value.trim();
 
-      const all = PetPalsStore.getPets();
-      const idx = all.findIndex(p => p.id === pet.id);
-      if (idx !== -1) {
-        all[idx] = { ...all[idx], name, breed, age, notes };
-        PetPalsStore.savePets(all);
-      }
+      PetPalsStore.updatePet(pet.id, {
+        name,
+        breed,
+        age,
+        notes,
+        photo: updatedPhoto,
+        avatar: updatedPhoto
+      });
+
       close();
-      toast(`✅ ${name}'s profile updated!`, 'success');
+      toast(`✅ ${name}'s profile and photo updated!`, 'success');
       renderPets();
     };
   }
@@ -773,12 +893,127 @@
     `);
   }
 
+  function openPetProfileModal(pet) {
+    let currentPhoto = pet.photo || pet.avatar || 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=400&q=80';
+    const user = PetPalsStore.getUser();
+
+    const { close } = modal(`
+      <div style="font-family:'Plus Jakarta Sans',sans-serif;">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:18px;">
+          <!-- Interactive Avatar with Upload Overlay -->
+          <div style="position:relative;width:76px;height:76px;border-radius:24px;overflow:hidden;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,0.08);background:#f0ede9;" class="group/pmodal">
+            <img id="modal-pet-photo-img" src="${currentPhoto}" style="width:100%;height:100%;object-fit:cover;" alt="${pet.name}">
+            <label style="position:absolute;inset:0;background:rgba(0,0,0,0.45);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;cursor:pointer;opacity:0;transition:opacity 0.2s;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0'" title="Upload new photo">
+              <span class="material-symbols-outlined" style="font-size:22px;">photo_camera</span>
+              <span style="font-size:9px;font-weight:700;margin-top:2px;">Upload</span>
+              <input type="file" id="modal-pet-photo-input" accept="image/*" style="display:none;">
+            </label>
+          </div>
+          <div style="flex:1;">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px;">
+              <h2 style="font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:#1c1c19;margin:0;">
+                ${pet.name}
+              </h2>
+              <span style="font-size:11px;font-weight:700;color:#2D5A3A;background:#EBF3ED;padding:3px 10px;border-radius:999px;">
+                ${pet.status || 'Active'}
+              </span>
+            </div>
+            <p style="color:#50443d;font-size:13px;margin:0 0 2px;">
+              ${pet.species === 'cat' || pet.species === 'Cat' ? 'Cat' : 'Dog'} • ${pet.breed || 'Companion'}
+            </p>
+            <p style="color:#83746c;font-size:12px;margin:0 0 4px;">
+              ${pet.age || '2 years'} • ${pet.weight || 'Medium'} • ${pet.gender || 'Neutered'}
+            </p>
+            <label style="display:inline-flex;align-items:center;gap:4px;color:#714a30;font-size:12px;font-weight:700;cursor:pointer;background:#f0ede9;padding:4px 10px;border-radius:999px;">
+              <span class="material-symbols-outlined" style="font-size:15px;">photo_camera</span>
+              <span>Upload Profile Photo</span>
+              <input type="file" id="modal-pet-photo-btn-input" accept="image/*" style="display:none;">
+            </label>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+          <div style="background:#f0ede9;padding:12px 14px;border-radius:14px;">
+            <span style="font-size:10px;font-weight:700;text-transform:uppercase;color:#83746c;letter-spacing:0.05em;display:block;margin-bottom:2px;">Microchip ID</span>
+            <span style="font-family:monospace;font-size:13px;font-weight:600;color:#1c1c19;">${pet.microchip || '985 141 002 381'}</span>
+          </div>
+          <div style="background:#f0ede9;padding:12px 14px;border-radius:14px;">
+            <span style="font-size:10px;font-weight:700;text-transform:uppercase;color:#83746c;letter-spacing:0.05em;display:block;margin-bottom:2px;">Vaccinations</span>
+            <span style="font-size:12px;font-weight:700;color:#2D5A3A;">Core Protected (2027)</span>
+          </div>
+        </div>
+
+        <div style="background:#f6f3ee;padding:14px;border-radius:16px;margin-bottom:14px;border:1px solid #e5e2dd;">
+          <span style="font-size:11px;font-weight:700;text-transform:uppercase;color:#714a30;letter-spacing:0.05em;display:block;margin-bottom:4px;">Dietary &amp; Sensitive Care Notes</span>
+          <p style="font-size:13px;color:#1c1c19;margin:0;line-height:1.5;">
+            ${pet.notes || pet.note || 'Nutritious balanced formula twice daily. Sensitive to loud air blowers.'}
+          </p>
+        </div>
+
+        <div style="background:#f6f3ee;padding:12px 14px;border-radius:14px;margin-bottom:18px;border:1px solid #e5e2dd;display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <span style="font-size:10px;font-weight:700;text-transform:uppercase;color:#83746c;letter-spacing:0.05em;display:block;">Registered Pet Parent</span>
+            <span style="font-size:13px;font-weight:600;color:#1c1c19;">${user.name || 'Prathiksha Shetty'}</span>
+          </div>
+          <span style="font-size:12px;color:#83746c;">${user.phone || '+91 98765 43210'}</span>
+        </div>
+
+        <div style="display:flex;gap:10px;align-items:center;">
+          <button id="profile-modal-edit-btn" style="flex:1;padding:11px 16px;background:#f0ede9;color:#1c1c19;border:none;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.2s;">
+            ✏️ Edit Profile
+          </button>
+          <button id="profile-modal-records-btn" style="flex:1;padding:11px 16px;background:#f0ede9;color:#1c1c19;border:none;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.2s;">
+            📋 Records
+          </button>
+          <button id="profile-modal-book-btn" style="flex:1.2;padding:11px 18px;background:#714a30;color:#fff;border:none;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.2s;">
+            📅 Book Service
+          </button>
+        </div>
+      </div>
+    `);
+
+    // Photo upload handlers inside profile modal
+    const handlePhotoUpload = (file) => {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const dataUrl = e.target.result;
+        PetPalsStore.updatePet(pet.id, { photo: dataUrl, avatar: dataUrl });
+        pet.photo = dataUrl;
+        pet.avatar = dataUrl;
+        const modalImg = document.getElementById('modal-pet-photo-img');
+        if (modalImg) modalImg.src = dataUrl;
+        toast(`📸 ${pet.name}'s profile photo updated!`, 'success');
+        renderPets();
+      };
+      reader.readAsDataURL(file);
+    };
+
+    document.getElementById('modal-pet-photo-input')?.addEventListener('change', (e) => handlePhotoUpload(e.target.files[0]));
+    document.getElementById('modal-pet-photo-btn-input')?.addEventListener('change', (e) => handlePhotoUpload(e.target.files[0]));
+
+    document.getElementById('profile-modal-edit-btn').onclick = () => { close(); openEditPetModal(pet); };
+    document.getElementById('profile-modal-records-btn').onclick = () => { close(); openRecordsModal(pet); };
+    document.getElementById('profile-modal-book-btn').onclick = () => {
+      close();
+      PetPalsStore.saveActiveBooking({ petId: pet.id, petName: pet.name, petBreed: pet.breed, petPhoto: pet.photo || pet.avatar });
+      window.location.href = '/book-service';
+    };
+  }
+
   function openPetOptionsModal(pet) {
     const { close } = modal(`
       <h2 style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#1c1c19;margin:0 0 14px;">
         ${pet.name} — Options
       </h2>
       <div style="display:grid;gap:8px;">
+        <button id="opt-profile" style="width:100%;padding:12px 16px;background:#f0ede9;border:none;border-radius:12px;font-size:14px;font-weight:600;text-align:left;cursor:pointer;color:#1c1c19;font-family:'Plus Jakarta Sans',sans-serif;">
+          🐾 View Companion Profile
+        </button>
+        <label id="opt-photo-label" style="width:100%;padding:12px 16px;background:#f0ede9;border:none;border-radius:12px;font-size:14px;font-weight:600;text-align:left;cursor:pointer;color:#1c1c19;font-family:'Plus Jakarta Sans',sans-serif;display:block;box-sizing:border-box;">
+          📷 Upload Profile Photo
+          <input type="file" id="opt-photo-file-input" accept="image/*" style="display:none;">
+        </label>
         <button id="opt-edit" style="width:100%;padding:12px 16px;background:#f0ede9;border:none;border-radius:12px;font-size:14px;font-weight:600;text-align:left;cursor:pointer;color:#1c1c19;font-family:'Plus Jakarta Sans',sans-serif;">
           ✏️ Edit Details
         </button>
@@ -791,18 +1026,36 @@
       </div>
     `);
 
+    document.getElementById('opt-profile').onclick = () => { close(); openPetProfileModal(pet); };
+    
+    document.getElementById('opt-photo-file-input').onchange = (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const dataUrl = ev.target.result;
+        PetPalsStore.updatePet(pet.id, { photo: dataUrl, avatar: dataUrl });
+        toast(`📸 ${pet.name}'s profile photo updated!`, 'success');
+        renderPets();
+        close();
+      };
+      reader.readAsDataURL(file);
+    };
+
     document.getElementById('opt-edit').onclick = () => { close(); openEditPetModal(pet); };
     document.getElementById('opt-book').onclick = () => {
       close();
-      PetPalsStore.saveActiveBooking({ petId: pet.id, petName: pet.name, petBreed: pet.breed, petPhoto: pet.photo });
-      window.location.href = '/services';
+      PetPalsStore.saveActiveBooking({ petId: pet.id, petName: pet.name, petBreed: pet.breed, petPhoto: pet.photo || pet.avatar });
+      window.location.href = '/book-service';
     };
     document.getElementById('opt-delete').onclick = () => {
-      close();
-      const all = PetPalsStore.getPets().filter(p => p.id !== pet.id);
-      PetPalsStore.savePets(all);
-      toast(`Companion ${pet.name} removed.`, 'info');
-      renderPets();
+      if (confirm(`Are you sure you want to remove ${pet.name} from your companions?`)) {
+        close();
+        const all = PetPalsStore.getPets().filter(p => p.id !== pet.id);
+        PetPalsStore.savePets(all);
+        toast(`Companion ${pet.name} removed.`, 'info');
+        renderPets();
+      }
     };
   }
 

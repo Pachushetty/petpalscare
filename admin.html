@@ -1,17 +1,18 @@
 <!DOCTYPE html>
-
-<html lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>PetPals - Admin Dashboard &amp; Platform Overview</title>
-<!-- Google Fonts for warm editorial aesthetic and clean UI -->
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Caveat:wght@600&amp;family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&amp;display=swap" rel="stylesheet"/>
-<!-- Tailwind CSS v3 with forms and container queries -->
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<!-- Tailwind Custom Configuration -->
-<script data-purpose="tailwind-config">
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>PetPals - Admin Dashboard &amp; Platform Overview</title>
+  <!-- Google Fonts for warm editorial aesthetic and clean UI -->
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Caveat:wght@600&amp;family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  <!-- Tailwind CSS v3 with forms and container queries -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <!-- Tailwind Custom Configuration -->
+  <script data-purpose="tailwind-config">
     tailwind.config = {
       theme: {
         extend: {
@@ -52,7 +53,7 @@
       }
     };
   </script>
-<style data-purpose="custom-elements">
+  <style data-purpose="custom-elements">
     /* Subtle scrollbar */
     ::-webkit-scrollbar {
       width: 6px;
@@ -80,823 +81,1084 @@
       opacity: 0.9;
     }
   </style>
+  <script src="/portal-common.js"></script>
+  <script src="/admin-portal.js"></script>
 </head>
 <body class="bg-brand-cream text-brand-dark font-sans antialiased min-h-screen flex flex-col selection:bg-brand-brown selection:text-white">
+
 <!-- BEGIN: TopHeader -->
 <header class="h-20 bg-brand-cream border-b border-brand-border px-6 md:px-8 flex items-center justify-between sticky top-0 z-40">
-<!-- Brand Logo Area -->
-<div class="flex items-center gap-3.5">
-<!-- PetPals Logo Paw Mark -->
-<svg class="w-7 h-7 fill-current text-brand-brown" viewBox="0 0 24 24"><circle cx="8" cy="6" r="2.2"></circle><circle cx="16" cy="6" r="2.2"></circle><circle cx="4" cy="11.5" r="2"></circle><circle cx="20" cy="11.5" r="2"></circle><ellipse cx="12" cy="17" rx="5" ry="4"></ellipse></svg>
-<div>
-<h1 class="text-2xl font-serif font-bold text-brand-dark tracking-tight leading-none">PetPals</h1>
-<p class="text-[11px] font-medium text-brand-muted tracking-wide mt-1">Caring for Every Paw, Every Day</p>
-</div>
-</div>
-<!-- Right Header Controls -->
-<div class="flex items-center gap-5">
-<!-- Notification Icon Button -->
-<button aria-label="Notifications" class="relative p-2.5 rounded-full hover:bg-brand-sidebar text-brand-muted hover:text-brand-dark transition-colors" type="button">
-<svg class="w-5 h-5 stroke-current fill-none stroke-[2]" viewbox="0 0 24 24">
-<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-<path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-</svg>
-<span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-status-red ring-2 ring-brand-cream"></span>
-</button>
-<!-- Admin Profile Dropdown Button -->
-<div class="flex items-center gap-3 pl-2 border-l border-brand-border">
-<div class="w-9 h-9 rounded-full bg-brand-brown/20 text-brand-brown flex items-center justify-center font-bold text-sm">
-<svg class="w-5 h-5 fill-brand-brown" viewbox="0 0 24 24">
-<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path>
-</svg>
-</div>
-<div class="flex items-center gap-1.5 cursor-pointer group">
-<span class="text-sm font-semibold text-brand-dark group-hover:text-brand-brown transition-colors">Admin</span>
-<svg class="w-4 h-4 text-brand-muted group-hover:text-brand-dark transition-transform group-hover:translate-y-0.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
-<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
-</svg>
-</div>
-</div>
-</div>
+  <!-- Brand Logo Area -->
+  <div class="flex items-center gap-3.5">
+    <button id="mobile-menu-toggle" aria-label="Toggle Mobile Menu" class="md:hidden p-2 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-sidebar transition-colors" type="button">
+      <svg class="w-6 h-6 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+    </button>
+    <a href="/admin/dashboard" data-admin-route="dashboard" class="flex items-center gap-3.5 group">
+      <!-- PetPals Logo Paw Mark -->
+      <svg class="w-7 h-7 fill-current text-brand-brown group-hover:scale-105 transition-transform" viewBox="0 0 24 24"><circle cx="8" cy="6" r="2.2"></circle><circle cx="16" cy="6" r="2.2"></circle><circle cx="4" cy="11.5" r="2"></circle><circle cx="20" cy="11.5" r="2"></circle><ellipse cx="12" cy="17" rx="5" ry="4"></ellipse></svg>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="text-2xl font-serif font-bold text-brand-dark tracking-tight leading-none">PetPals</h1>
+          <span class="px-2 py-0.5 rounded-full bg-brand-brown/10 text-brand-brown text-[10px] font-bold uppercase tracking-wider">Admin</span>
+        </div>
+        <p class="text-[11px] font-medium text-brand-muted tracking-wide mt-0.5">Management &amp; Care Operations</p>
+      </div>
+    </a>
+  </div>
+
+  <!-- Right Header Controls -->
+  <div class="flex items-center gap-4">
+    <!-- Messages Notification Button -->
+    <a href="/admin/messages" data-admin-route="messages" aria-label="Messages" class="relative p-2.5 rounded-full hover:bg-brand-sidebar text-brand-muted hover:text-brand-dark transition-colors inline-block" title="Client Messages">
+      <svg class="w-5 h-5 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+      </svg>
+      <span id="badge-messages-count" class="absolute top-2 right-2 w-2 h-2 rounded-full bg-status-red ring-2 ring-brand-cream"></span>
+    </a>
+
+    <!-- Admin Profile Dropdown Button -->
+    <div class="flex items-center gap-3 pl-2 border-l border-brand-border">
+      <div class="w-9 h-9 rounded-full bg-brand-brown/20 text-brand-brown flex items-center justify-center font-bold text-sm">
+        <svg class="w-5 h-5 fill-brand-brown" viewBox="0 0 24 24">
+          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path>
+        </svg>
+      </div>
+      <a href="/admin/settings" data-admin-route="settings" class="hidden sm:flex items-center gap-1.5 cursor-pointer group">
+        <span class="text-sm font-semibold text-brand-dark group-hover:text-brand-brown transition-colors">Admin Portal</span>
+        <svg class="w-4 h-4 text-brand-muted group-hover:text-brand-dark transition-transform group-hover:translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+        </svg>
+      </a>
+    </div>
+  </div>
 </header>
 <!-- END: TopHeader -->
+
+<!-- Mobile Drawer Backdrop -->
+<div id="mobile-sidebar-backdrop" class="fixed inset-0 bg-black/40 z-40 hidden md:hidden transition-opacity"></div>
+
 <!-- BEGIN: MainDashboardLayout -->
-<div class="flex-1 flex max-w-[1720px] w-full mx-auto">
-<!-- BEGIN: LeftSidebar -->
-<aside class="w-64 bg-brand-sidebar/70 shrink-0 border-r border-brand-border p-5 flex flex-col justify-between hidden md:flex min-h-[calc(100vh-5rem)]">
-<!-- Navigation Links -->
-<nav class="space-y-1.5" data-purpose="sidebar-nav">
-<!-- Dashboard (Active) -->
-<a class="flex items-center gap-3.5 px-4 py-3 rounded-xl bg-brand-tan/80 text-brand-dark font-medium shadow-sm border border-brand-border" href="#dashboard">
-<svg class="w-5 h-5 text-brand-brown fill-none stroke-current stroke-[2]" viewbox="0 0 24 24">
-<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-<polyline points="9 22 9 12 15 12 15 22"></polyline>
-</svg>
-<span class="text-sm font-semibold">Dashboard</span>
-</a>
-<!-- Bookings -->
-<a class="flex items-center justify-between px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="#bookings">
-<div class="flex items-center gap-3.5">
-<svg class="w-5 h-5 fill-none stroke-current stroke-[2]" viewbox="0 0 24 24">
-<rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect>
-<line x1="16" x2="16" y1="2" y2="6"></line>
-<line x1="8" x2="8" y1="2" y2="6"></line>
-<line x1="3" x2="21" y1="10" y2="10"></line>
-</svg>
-<span class="text-sm">Bookings</span>
-</div>
-<span class="text-xs px-2 py-0.5 rounded-full bg-brand-tan/70 font-semibold text-brand-brown">48</span>
-</a>
-<!-- Users -->
-<a class="flex items-center justify-between px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="#users">
-<div class="flex items-center gap-3.5">
-<svg class="w-5 h-5 fill-none stroke-current stroke-[2]" viewbox="0 0 24 24">
-<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-<circle cx="9" cy="7" r="4"></circle>
-<path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-<path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-</svg>
-<span class="text-sm">Users</span>
-</div>
-<span class="text-xs px-2 py-0.5 rounded-full bg-brand-tan/70 font-semibold text-brand-brown">32</span>
-</a>
-<!-- Pets -->
-<a class="flex items-center justify-between px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="#pets">
-<div class="flex items-center gap-3.5">
-<svg class="w-5 h-5 fill-none stroke-current stroke-[2]" viewbox="0 0 24 24">
-<circle cx="12" cy="5" r="1.5"></circle>
-<circle cx="6" cy="8" r="1.5"></circle>
-<circle cx="18" cy="8" r="1.5"></circle>
-<circle cx="8" cy="13" r="1.5"></circle>
-<circle cx="16" cy="13" r="1.5"></circle>
-<path d="M12 18c-3 0-4-2-4-2s1-2 4-2 4 2 4 2-1 2-4 2z"></path>
-</svg>
-<span class="text-sm">Pets</span>
-</div>
-<span class="text-xs px-2 py-0.5 rounded-full bg-brand-tan/70 font-semibold text-brand-brown">41</span>
-</a>
-<!-- Services -->
-<a class="flex items-center gap-3.5 px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="#services">
-<svg class="w-5 h-5 fill-none stroke-current stroke-[2]" viewbox="0 0 24 24">
-<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-</svg>
-<span class="text-sm">Services</span>
-</a>
-<!-- Reviews -->
-<a class="flex items-center gap-3.5 px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="#reviews">
-<svg class="w-5 h-5 fill-none stroke-current stroke-[2]" viewbox="0 0 24 24">
-<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-</svg>
-<span class="text-sm">Reviews</span>
-</a>
-<!-- Messages -->
-<a class="flex items-center justify-between px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="#messages">
-<div class="flex items-center gap-3.5">
-<svg class="w-5 h-5 fill-none stroke-current stroke-[2]" viewbox="0 0 24 24">
-<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-</svg>
-<span class="text-sm">Messages</span>
-</div>
-<span class="w-2 h-2 rounded-full bg-brand-brown"></span>
-</a>
-<!-- Reports -->
-<a class="flex items-center gap-3.5 px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="#reports">
-<svg class="w-5 h-5 fill-none stroke-current stroke-[2]" viewbox="0 0 24 24">
-<line x1="18" x2="18" y1="20" y2="10"></line>
-<line x1="12" x2="12" y1="20" y2="4"></line>
-<line x1="6" x2="6" y1="20" y2="14"></line>
-</svg>
-<span class="text-sm">Reports</span>
-</a>
-<!-- Settings -->
-<a class="flex items-center gap-3.5 px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="#settings">
-<svg class="w-5 h-5 fill-none stroke-current stroke-[2]" viewbox="0 0 24 24">
-<circle cx="12" cy="12" r="3"></circle>
-<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-</svg>
-<span class="text-sm">Settings</span>
-</a>
-</nav>
-<!-- Sidebar Cute Doodle / Footer Accent -->
-<div class="pt-6 relative select-none">
-<div class="text-brand-brown/30 mb-2">
-<!-- Paw stamp icon -->
-<svg class="w-8 h-8 fill-current opacity-40 rotate-12" viewbox="0 0 24 24">
-<circle cx="8" cy="6" r="2.2"></circle>
-<circle cx="16" cy="6" r="2.2"></circle>
-<circle cx="4" cy="11.5" r="2"></circle>
-<circle cx="20" cy="11.5" r="2"></circle>
-<path d="M12 11c-3.5 0-6 2.5-6 6 0 1.9 1.8 3.5 4 3.5.9 0 1.5-.4 2-.8.5.4 1.1.8 2 .8 2.2 0 4-1.6 4-3.5 0-3.5-2.5-6-6-6z"></path>
-</svg>
-</div>
-<p class="font-handwritten text-xl text-brand-brown/70 -rotate-3 leading-snug">
-          Happy Pets<br/>Happy Lives ♡
-        </p>
-</div>
-</aside>
-<!-- END: LeftSidebar -->
-<!-- BEGIN: CentralContentArea -->
-<main class="flex-1 p-6 md:p-8 overflow-y-auto space-y-7">
-<!-- Section: Greeting Header -->
-<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-<div>
-<div class="flex items-center gap-2.5 mb-1">
-<svg class="w-6 h-6 text-brand-brown fill-brand-brown" viewbox="0 0 24 24">
-<circle cx="8" cy="6" r="2.2"></circle>
-<circle cx="16" cy="6" r="2.2"></circle>
-<circle cx="4" cy="11.5" r="2"></circle>
-<circle cx="20" cy="11.5" r="2"></circle>
-<path d="M12 11c-3.5 0-6 2.5-6 6 0 1.9 1.8 3.5 4 3.5.9 0 1.5-.4 2-.8.5.4 1.1.8 2 .8 2.2 0 4-1.6 4-3.5 0-3.5-2.5-6-6-6z"></path>
-</svg>
-<h2 class="text-2xl md:text-3xl font-serif font-bold text-brand-dark tracking-tight">Good Morning, Admin!</h2>
-</div>
-<p class="text-sm text-brand-muted">Here's what's happening with your PetPals platform today.</p>
-</div>
-<!-- Date Pill Badge -->
-<div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-brand-surface border border-brand-border text-sm font-medium text-brand-dark shadow-soft self-start sm:self-auto">
-<span>Oct 6, 2026</span>
-<svg class="w-4 h-4 text-brand-muted stroke-[2] fill-none stroke-current" viewbox="0 0 24 24">
-<rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect>
-<line x1="16" x2="16" y1="2" y2="6"></line>
-<line x1="8" x2="8" y1="2" y2="6"></line>
-<line x1="3" x2="21" y1="10" y2="10"></line>
-</svg>
-</div>
-</div>
-<!-- BEGIN: MetricCardsGrid -->
-<section aria-label="Key Performance Indicators" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
-<!-- KPI 1: Total Bookings -->
-<div class="bg-brand-surface p-5 rounded-2xl border border-brand-border shadow-soft flex items-center gap-4">
-<div class="w-13 h-13 p-3.5 rounded-2xl bg-brand-cream border border-brand-borderLight text-brand-brown shrink-0 flex items-center justify-center">
-<svg class="w-6 h-6 stroke-current fill-none stroke-[2]" viewbox="0 0 24 24">
-<rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect>
-<line x1="16" x2="16" y1="2" y2="6"></line>
-<line x1="8" x2="8" y1="2" y2="6"></line>
-<line x1="3" x2="21" y1="10" y2="10"></line>
-</svg>
-</div>
-<div>
-<p class="text-xs font-semibold text-brand-muted uppercase tracking-wider">Total Bookings</p>
-<h3 class="text-2xl font-bold text-brand-dark mt-0.5">48</h3>
-<p class="text-xs font-medium text-status-green flex items-center gap-1 mt-1">
-<span>↑ 12%</span>
-<span class="text-brand-muted text-[11px] font-normal">from last week</span>
-</p>
-</div>
-</div>
-<!-- KPI 2: Total Users -->
-<div class="bg-brand-surface p-5 rounded-2xl border border-brand-border shadow-soft flex items-center gap-4">
-<div class="w-13 h-13 p-3.5 rounded-2xl bg-brand-cream border border-brand-borderLight text-brand-brown shrink-0 flex items-center justify-center">
-<svg class="w-6 h-6 stroke-current fill-none stroke-[2]" viewbox="0 0 24 24">
-<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-<circle cx="12" cy="7" r="4"></circle>
-</svg>
-</div>
-<div>
-<p class="text-xs font-semibold text-brand-muted uppercase tracking-wider">Total Users</p>
-<h3 class="text-2xl font-bold text-brand-dark mt-0.5">32</h3>
-<p class="text-xs font-medium text-status-green flex items-center gap-1 mt-1">
-<span>↑ 8%</span>
-<span class="text-brand-muted text-[11px] font-normal">from last week</span>
-</p>
-</div>
-</div>
-<!-- KPI 3: Total Pets -->
-<div class="bg-brand-surface p-5 rounded-2xl border border-brand-border shadow-soft flex items-center gap-4">
-<div class="w-13 h-13 p-3.5 rounded-2xl bg-brand-cream border border-brand-borderLight text-brand-brown shrink-0 flex items-center justify-center">
-<svg class="w-6 h-6 fill-current text-brand-brown" viewbox="0 0 24 24">
-<circle cx="8" cy="6" r="2.2"></circle>
-<circle cx="16" cy="6" r="2.2"></circle>
-<circle cx="4" cy="11.5" r="2"></circle>
-<circle cx="20" cy="11.5" r="2"></circle>
-<path d="M12 11c-3.5 0-6 2.5-6 6 0 1.9 1.8 3.5 4 3.5.9 0 1.5-.4 2-.8.5.4 1.1.8 2 .8 2.2 0 4-1.6 4-3.5 0-3.5-2.5-6-6-6z"></path>
-</svg>
-</div>
-<div>
-<p class="text-xs font-semibold text-brand-muted uppercase tracking-wider">Total Pets</p>
-<h3 class="text-2xl font-bold text-brand-dark mt-0.5">41</h3>
-<p class="text-xs font-medium text-status-green flex items-center gap-1 mt-1">
-<span>↑ 10%</span>
-<span class="text-brand-muted text-[11px] font-normal">from last week</span>
-</p>
-</div>
-</div>
-<!-- KPI 4: Pending Submissions -->
-<div class="bg-brand-surface p-5 rounded-2xl border border-brand-border shadow-soft flex items-center gap-4">
-<div class="w-13 h-13 p-3.5 rounded-2xl bg-brand-cream border border-brand-borderLight text-brand-brown shrink-0 flex items-center justify-center">
-<svg class="w-6 h-6 fill-brand-brown stroke-brand-brown stroke-1" viewbox="0 0 24 24">
-<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-</svg>
-</div>
-<div>
-<p class="text-xs font-semibold text-brand-muted uppercase tracking-wider">Pending Submissions</p>
-<h3 class="text-2xl font-bold text-brand-dark mt-0.5">7</h3>
-<p class="text-xs font-medium text-brand-brown flex items-center gap-1 mt-1">
-<span>↑ 3%</span>
-<span class="text-brand-muted text-[11px] font-normal">from last week</span>
-</p>
-</div>
-</div>
-</section>
-<!-- END: MetricCardsGrid -->
-<!-- BEGIN: ChartsSection -->
-<section aria-label="Analytical Visualizations" class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-<!-- Area Chart: Bookings Overview (60% equivalent: lg:col-span-7) -->
-<div class="lg:col-span-7 bg-brand-surface p-6 rounded-2xl border border-brand-border shadow-soft flex flex-col justify-between">
-<div class="flex items-center justify-between mb-4">
-<div class="flex items-center gap-2">
-<svg class="w-5 h-5 text-brand-brown stroke-[2] fill-none stroke-current" viewbox="0 0 24 24">
-<rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect>
-<line x1="16" x2="16" y1="2" y2="6"></line>
-<line x1="8" x2="8" y1="2" y2="6"></line>
-<line x1="3" x2="21" y1="10" y2="10"></line>
-</svg>
-<h3 class="font-serif font-bold text-lg text-brand-dark">Bookings Overview</h3>
-</div>
-<!-- Filter Dropdown Pill -->
-<button class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-brand-border text-xs font-semibold text-brand-muted hover:text-brand-dark bg-brand-cream/40 transition-colors">
-<span>This Week</span>
-<svg class="w-3.5 h-3.5 text-brand-muted" fill="none" stroke="currentColor" viewbox="0 0 24 24">
-<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
-</svg>
-</button>
-</div>
-<!-- SVG Smooth Area Chart Display -->
-<div class="relative w-full h-64 pt-2">
-<svg aria-label="Bookings chart from Monday to Sunday" class="w-full h-full overflow-visible font-sans text-[11px] text-brand-muted" viewbox="0 0 540 220">
-<defs>
-<lineargradient id="areaGradient" x1="0" x2="0" y1="0" y2="1">
-<stop offset="0%" stop-color="#8c6246" stop-opacity="0.30"></stop>
-<stop offset="100%" stop-color="#8c6246" stop-opacity="0.01"></stop>
-</lineargradient>
-</defs>
-<!-- Grid Horizontal Lines -->
-<g stroke="#f0eae1" stroke-dasharray="3,3" stroke-width="1">
-<line x1="35" x2="520" y1="20" y2="20"></line>
-<line x1="35" x2="520" y1="65" y2="65"></line>
-<line x1="35" x2="520" y1="110" y2="110"></line>
-<line x1="35" x2="520" y1="155" y2="155"></line>
-<line x1="35" x2="520" y1="195" y2="195"></line>
-</g>
-<!-- Y Axis labels -->
-<g fill="#9c8e82" text-anchor="end">
-<text x="25" y="24">20</text>
-<text x="25" y="69">15</text>
-<text x="25" y="114">10</text>
-<text x="25" y="159">5</text>
-<text x="25" y="198">0</text>
-</g>
-<!-- Smooth Area Gradient Fill -->
-<!-- Mon (3)-> y:173, Tue (8)-> y:128, Wed (5)-> y:155, Thu (8)-> y:128, Fri (14)-> y:74, Sat (16)-> y:56, Sun (13)-> y:83 -->
-<path d="M 50 173 
-                       C 85 150, 100 128, 125 128 
-                       C 150 128, 170 155, 195 155 
-                       C 220 155, 245 128, 270 128 
-                       C 300 128, 320 74, 345 74 
-                       C 375 74, 395 56, 420 56 
-                       C 450 56, 470 83, 495 83 
-                       L 495 195 L 50 195 Z" fill="url(#areaGradient)"></path>
-<!-- Smooth Curve Line -->
-<path d="M 50 173 
-                       C 85 150, 100 128, 125 128 
-                       C 150 128, 170 155, 195 155 
-                       C 220 155, 245 128, 270 128 
-                       C 300 128, 320 74, 345 74 
-                       C 375 74, 395 56, 420 56 
-                       C 450 56, 470 83, 495 83" fill="none" stroke="#7a5238" stroke-linecap="round" stroke-width="2.5"></path>
-<!-- Data Point Dots -->
-<circle class="hover:r-6 cursor-pointer transition-all" cx="50" cy="173" fill="#7a5238" r="4" stroke="#fff" stroke-width="2"></circle>
-<circle class="hover:r-6 cursor-pointer transition-all" cx="125" cy="128" fill="#7a5238" r="4" stroke="#fff" stroke-width="2"></circle>
-<circle class="hover:r-6 cursor-pointer transition-all" cx="195" cy="155" fill="#7a5238" r="4" stroke="#fff" stroke-width="2"></circle>
-<circle class="hover:r-6 cursor-pointer transition-all" cx="270" cy="128" fill="#7a5238" r="4" stroke="#fff" stroke-width="2"></circle>
-<circle class="hover:r-6 cursor-pointer transition-all" cx="345" cy="74" fill="#7a5238" r="4" stroke="#fff" stroke-width="2"></circle>
-<circle class="hover:r-6 cursor-pointer transition-all" cx="420" cy="56" fill="#7a5238" r="4" stroke="#fff" stroke-width="2"></circle>
-<circle class="hover:r-6 cursor-pointer transition-all" cx="495" cy="83" fill="#7a5238" r="4" stroke="#fff" stroke-width="2"></circle>
-<!-- X Axis Labels -->
-<g fill="#9c8e82" text-anchor="middle">
-<text x="50" y="214">Mon</text>
-<text x="125" y="214">Tue</text>
-<text x="195" y="214">Wed</text>
-<text x="270" y="214">Thu</text>
-<text x="345" y="214">Fri</text>
-<text x="420" y="214">Sat</text>
-<text x="495" y="214">Sun</text>
-</g>
-</svg>
-</div>
-</div>
-<!-- Donut Chart: Service Distribution (40% equivalent: lg:col-span-5) -->
-<div class="lg:col-span-5 bg-brand-surface p-6 rounded-2xl border border-brand-border shadow-soft flex flex-col justify-between">
-<div class="flex items-center gap-2 mb-4">
-<svg class="w-5 h-5 text-brand-brown stroke-[2] fill-none stroke-current" viewbox="0 0 24 24">
-<circle cx="12" cy="12" r="10"></circle>
-<polyline points="12 6 12 12 16 14"></polyline>
-</svg>
-<h3 class="font-serif font-bold text-lg text-brand-dark">Service Distribution</h3>
-</div>
-<div class="flex flex-col sm:flex-row items-center justify-between gap-6 py-1">
-<!-- Donut Graphic -->
-<div class="relative w-44 h-44 shrink-0 flex items-center justify-center">
-<svg class="w-full h-full -rotate-90" viewbox="0 0 160 160">
-<!-- Circumference = 2 * PI * 58 = 364.42 -->
-<!-- Grooming & Spa: 37% -> 134.8 -->
-<circle class="donut-segment" cx="80" cy="80" fill="transparent" r="58" stroke="#5c3d28" stroke-dasharray="134.8 229.6" stroke-dashoffset="0" stroke-width="22"></circle>
-<!-- Vet Care: 21% -> 76.5 -->
-<circle class="donut-segment" cx="80" cy="80" fill="transparent" r="58" stroke="#8c6246" stroke-dasharray="76.5 287.9" stroke-dashoffset="-134.8" stroke-width="22"></circle>
-<!-- Pet Boarding: 17% -> 61.9 -->
-<circle class="donut-segment" cx="80" cy="80" fill="transparent" r="58" stroke="#b68d6c" stroke-dasharray="61.9 302.5" stroke-dashoffset="-211.3" stroke-width="22"></circle>
-<!-- Dog Walking: 12% -> 43.7 -->
-<circle class="donut-segment" cx="80" cy="80" fill="transparent" r="58" stroke="#d4b89b" stroke-dasharray="43.7 320.7" stroke-dashoffset="-273.2" stroke-width="22"></circle>
-<!-- Pet Training: 8% -> 29.1 -->
-<circle class="donut-segment" cx="80" cy="80" fill="transparent" r="58" stroke="#e8d8c8" stroke-dasharray="29.1 335.3" stroke-dashoffset="-316.9" stroke-width="22"></circle>
-<!-- Pet Sitting: 4% -> 14.5 -->
-<circle class="donut-segment" cx="80" cy="80" fill="transparent" r="58" stroke="#f0e6dc" stroke-dasharray="14.5 349.9" stroke-dashoffset="-346.0" stroke-width="22"></circle>
-</svg>
-<!-- Center Info -->
-<div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center">
-<span class="text-2xl font-bold font-serif text-brand-dark leading-none">48</span>
-<span class="text-[10px] uppercase font-semibold tracking-wider text-brand-muted mt-1">Total Bookings</span>
-</div>
-</div>
-<!-- Legend List -->
-<div class="w-full space-y-2 text-xs">
-<div class="flex items-center justify-between">
-<div class="flex items-center gap-2">
-<span class="w-3 h-3 rounded-full bg-[#5c3d28]"></span>
-<span class="font-medium text-brand-dark">Grooming &amp; Spa</span>
-</div>
-<span class="font-semibold text-brand-muted">18 <span class="font-normal text-[11px]">(37%)</span></span>
-</div>
-<div class="flex items-center justify-between">
-<div class="flex items-center gap-2">
-<span class="w-3 h-3 rounded-full bg-[#8c6246]"></span>
-<span class="font-medium text-brand-dark">Veterinary Care</span>
-</div>
-<span class="font-semibold text-brand-muted">10 <span class="font-normal text-[11px]">(21%)</span></span>
-</div>
-<div class="flex items-center justify-between">
-<div class="flex items-center gap-2">
-<span class="w-3 h-3 rounded-full bg-[#b68d6c]"></span>
-<span class="font-medium text-brand-dark">Pet Boarding</span>
-</div>
-<span class="font-semibold text-brand-muted">8 <span class="font-normal text-[11px]">(17%)</span></span>
-</div>
-<div class="flex items-center justify-between">
-<div class="flex items-center gap-2">
-<span class="w-3 h-3 rounded-full bg-[#d4b89b]"></span>
-<span class="font-medium text-brand-dark">Dog Walking</span>
-</div>
-<span class="font-semibold text-brand-muted">6 <span class="font-normal text-[11px]">(12%)</span></span>
-</div>
-<div class="flex items-center justify-between">
-<div class="flex items-center gap-2">
-<span class="w-3 h-3 rounded-full bg-[#e8d8c8]"></span>
-<span class="font-medium text-brand-dark">Pet Training</span>
-</div>
-<span class="font-semibold text-brand-muted">4 <span class="font-normal text-[11px]">(8%)</span></span>
-</div>
-<div class="flex items-center justify-between">
-<div class="flex items-center gap-2">
-<span class="w-3 h-3 rounded-full bg-[#f0e6dc]"></span>
-<span class="font-medium text-brand-dark">Pet Sitting</span>
-</div>
-<span class="font-semibold text-brand-muted">2 <span class="font-normal text-[11px]">(4%)</span></span>
-</div>
-</div>
-</div>
-</div>
-</section>
-<!-- END: ChartsSection -->
-<!-- BEGIN: RecentBookingsTable -->
-<section aria-label="Recent Bookings Table" class="bg-brand-surface rounded-2xl border border-brand-border shadow-soft p-6">
-<div class="flex items-center justify-between mb-5">
-<div class="flex items-center gap-2">
-<svg class="w-5 h-5 text-brand-brown stroke-[2] fill-none stroke-current" viewbox="0 0 24 24">
-<rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect>
-<line x1="16" x2="16" y1="2" y2="6"></line>
-<line x1="8" x2="8" y1="2" y2="6"></line>
-<line x1="3" x2="21" y1="10" y2="10"></line>
-</svg>
-<h3 class="font-serif font-bold text-lg text-brand-dark">Recent Bookings</h3>
-</div>
-<a class="text-xs font-semibold text-brand-brown hover:text-brand-brownHover flex items-center gap-1 transition-colors" href="#all-bookings">
+<div class="flex-1 flex max-w-[1720px] w-full mx-auto relative">
+
+  <!-- BEGIN: LeftSidebar -->
+  <aside id="admin-sidebar" class="w-64 bg-brand-sidebar/70 shrink-0 border-r border-brand-border p-5 flex flex-col justify-between hidden md:flex min-h-[calc(100vh-5rem)] z-50 md:z-10 fixed md:static inset-y-0 left-0 transition-transform duration-200 shadow-lg md:shadow-none bg-brand-sidebar md:bg-brand-sidebar/70">
+    <div class="space-y-6">
+      <div class="flex items-center justify-between md:hidden pb-3 border-b border-brand-border">
+        <span class="font-serif font-bold text-lg text-brand-dark">Admin Menu</span>
+        <button id="close-mobile-sidebar" class="p-1 rounded-lg text-brand-muted hover:text-brand-dark">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="space-y-1.5" data-purpose="sidebar-nav">
+        <!-- 1. Dashboard -->
+        <a data-admin-route="dashboard" class="flex items-center justify-between px-4 py-3 rounded-xl bg-brand-tan/80 text-brand-dark font-medium shadow-sm border border-brand-border transition-colors" href="/admin/dashboard">
+          <div class="flex items-center gap-3.5">
+            <svg class="w-5 h-5 text-brand-brown fill-none stroke-current stroke-[2]" viewBox="0 0 24 24">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            <span class="text-sm font-semibold">Dashboard</span>
+          </div>
+        </a>
+
+        <!-- 2. Bookings -->
+        <a data-admin-route="bookings" class="flex items-center justify-between px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="/admin/bookings">
+          <div class="flex items-center gap-3.5">
+            <svg class="w-5 h-5 fill-none stroke-current stroke-[2]" viewBox="0 0 24 24">
+              <rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect>
+              <line x1="16" x2="16" y1="2" y2="6"></line>
+              <line x1="8" x2="8" y1="2" y2="6"></line>
+              <line x1="3" x2="21" y1="10" y2="10"></line>
+            </svg>
+            <span class="text-sm">Bookings</span>
+          </div>
+          <span id="badge-bookings-count" class="text-xs px-2 py-0.5 rounded-full bg-brand-tan/70 font-semibold text-brand-brown">4</span>
+        </a>
+
+        <!-- 3. Users -->
+        <a data-admin-route="users" class="flex items-center justify-between px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="/admin/users">
+          <div class="flex items-center gap-3.5">
+            <svg class="w-5 h-5 fill-none stroke-current stroke-[2]" viewBox="0 0 24 24">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            <span class="text-sm">Users</span>
+          </div>
+          <span id="badge-users-count" class="text-xs px-2 py-0.5 rounded-full bg-brand-tan/70 font-semibold text-brand-brown">4</span>
+        </a>
+
+        <!-- 4. Pets -->
+        <a data-admin-route="pets" class="flex items-center justify-between px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="/admin/pets">
+          <div class="flex items-center gap-3.5">
+            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+              <circle cx="8" cy="6" r="2.2"></circle>
+              <circle cx="16" cy="6" r="2.2"></circle>
+              <circle cx="4" cy="11.5" r="2"></circle>
+              <circle cx="20" cy="11.5" r="2"></circle>
+              <ellipse cx="12" cy="17" rx="5" ry="4"></ellipse>
+            </svg>
+            <span class="text-sm">Pets</span>
+          </div>
+          <span id="badge-pets-count" class="text-xs px-2 py-0.5 rounded-full bg-brand-tan/70 font-semibold text-brand-brown">2</span>
+        </a>
+
+        <!-- 5. Services -->
+        <a data-admin-route="services" class="flex items-center justify-between px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="/admin/services">
+          <div class="flex items-center gap-3.5">
+            <svg class="w-5 h-5 fill-none stroke-current stroke-[2]" viewBox="0 0 24 24">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+            <span class="text-sm">Services</span>
+          </div>
+        </a>
+
+        <!-- 6. Reviews -->
+        <a data-admin-route="reviews" class="flex items-center justify-between px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="/admin/reviews">
+          <div class="flex items-center gap-3.5">
+            <svg class="w-5 h-5 fill-none stroke-current stroke-[2]" viewBox="0 0 24 24">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+            <span class="text-sm">Reviews</span>
+          </div>
+        </a>
+
+        <!-- 7. Messages -->
+        <a data-admin-route="messages" class="flex items-center justify-between px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="/admin/messages">
+          <div class="flex items-center gap-3.5">
+            <svg class="w-5 h-5 fill-none stroke-current stroke-[2]" viewBox="0 0 24 24">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <span class="text-sm">Messages</span>
+          </div>
+          <span class="w-2 h-2 rounded-full bg-brand-brown"></span>
+        </a>
+
+        <!-- 8. Reports -->
+        <a data-admin-route="reports" class="flex items-center justify-between px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="/admin/reports">
+          <div class="flex items-center gap-3.5">
+            <svg class="w-5 h-5 fill-none stroke-current stroke-[2]" viewBox="0 0 24 24">
+              <line x1="18" x2="18" y1="20" y2="10"></line>
+              <line x1="12" x2="12" y1="20" y2="4"></line>
+              <line x1="6" x2="6" y1="20" y2="14"></line>
+            </svg>
+            <span class="text-sm">Reports</span>
+          </div>
+        </a>
+
+        <!-- 9. Settings -->
+        <a data-admin-route="settings" class="flex items-center justify-between px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="/admin/settings">
+          <div class="flex items-center gap-3.5">
+            <svg class="w-5 h-5 fill-none stroke-current stroke-[2]" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+            <span class="text-sm">Settings</span>
+          </div>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Sidebar Footer -->
+    <div class="pt-6 relative select-none">
+      <div class="text-brand-brown/30 mb-2">
+        <svg class="w-8 h-8 fill-current opacity-40 rotate-12" viewBox="0 0 24 24"><circle cx="8" cy="6" r="2.2"></circle><circle cx="16" cy="6" r="2.2"></circle><circle cx="4" cy="11.5" r="2"></circle><circle cx="20" cy="11.5" r="2"></circle><path d="M12 11c-3.5 0-6 2.5-6 6 0 1.9 1.8 3.5 4 3.5.9 0 1.5-.4 2-.8.5.4 1.1.8 2 .8 2.2 0 4-1.6 4-3.5 0-3.5-2.5-6-6-6z"></path></svg>
+      </div>
+      <p class="font-handwritten text-xl text-brand-brown/70 -rotate-3 leading-snug">
+        Happy Pets<br/>Happy Lives ♡
+      </p>
+    </div>
+  </aside>
+  <!-- END: LeftSidebar -->
+
+  <!-- BEGIN: CentralContentArea -->
+  <main class="flex-1 p-6 md:p-8 overflow-y-auto min-w-0">
+
+    <!-- ========================================== -->
+    <!-- SECTION 1: DASHBOARD (Overview/Statistics) -->
+    <!-- ========================================== -->
+    <section id="section-dashboard" class="space-y-7">
+      <!-- Section: Greeting Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2.5 mb-1">
+            <svg class="w-6 h-6 text-brand-brown fill-brand-brown" viewBox="0 0 24 24"><circle cx="8" cy="6" r="2.2"></circle><circle cx="16" cy="6" r="2.2"></circle><circle cx="4" cy="11.5" r="2"></circle><circle cx="20" cy="11.5" r="2"></circle><path d="M12 11c-3.5 0-6 2.5-6 6 0 1.9 1.8 3.5 4 3.5.9 0 1.5-.4 2-.8.5.4 1.1.8 2 .8 2.2 0 4-1.6 4-3.5 0-3.5-2.5-6-6-6z"></path></svg>
+            <h2 class="text-2xl md:text-3xl font-serif font-bold text-brand-dark tracking-tight">Good Morning, Admin!</h2>
+          </div>
+          <p class="text-sm text-brand-muted">Here's what's happening with your PetPals platform today.</p>
+        </div>
+        <!-- Date Pill Badge -->
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-brand-surface border border-brand-border text-sm font-medium text-brand-dark shadow-soft self-start sm:self-auto">
+          <span id="dashboard-date-display">Oct 6, 2026</span>
+          <svg class="w-4 h-4 text-brand-muted stroke-[2] fill-none stroke-current" viewBox="0 0 24 24">
+            <rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect>
+            <line x1="16" x2="16" y1="2" y2="6"></line>
+            <line x1="8" x2="8" y1="2" y2="6"></line>
+            <line x1="3" x2="21" y1="10" y2="10"></line>
+          </svg>
+        </div>
+      </div>
+
+      <!-- BEGIN: MetricCardsGrid -->
+      <div aria-label="Key Performance Indicators" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
+        <!-- KPI 1: Total Bookings -->
+        <div class="bg-brand-surface p-5 rounded-2xl border border-brand-border shadow-soft flex items-center gap-4 cursor-pointer hover:border-brand-brown/40 transition-colors" onclick="AdminPortal.switchSection('bookings')">
+          <div class="w-13 h-13 p-3.5 rounded-2xl bg-brand-cream border border-brand-borderLight text-brand-brown shrink-0 flex items-center justify-center">
+            <svg class="w-6 h-6 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
+              <rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect>
+              <line x1="16" x2="16" y1="2" y2="6"></line>
+              <line x1="8" x2="8" y1="2" y2="6"></line>
+              <line x1="3" x2="21" y1="10" y2="10"></line>
+            </svg>
+          </div>
+          <div>
+            <p class="text-xs font-semibold text-brand-muted uppercase tracking-wider">Total Bookings</p>
+            <h3 id="kpi-total-bookings" class="text-2xl font-bold text-brand-dark mt-0.5">4</h3>
+            <p class="text-xs font-medium text-status-green flex items-center gap-1 mt-1">
+              <span>↑ 12%</span>
+              <span class="text-brand-muted text-[11px] font-normal">active appointments</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- KPI 2: Total Users -->
+        <div class="bg-brand-surface p-5 rounded-2xl border border-brand-border shadow-soft flex items-center gap-4 cursor-pointer hover:border-brand-brown/40 transition-colors" onclick="AdminPortal.switchSection('users')">
+          <div class="w-13 h-13 p-3.5 rounded-2xl bg-brand-cream border border-brand-borderLight text-brand-brown shrink-0 flex items-center justify-center">
+            <svg class="w-6 h-6 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
+          <div>
+            <p class="text-xs font-semibold text-brand-muted uppercase tracking-wider">Registered Users</p>
+            <h3 id="kpi-total-users" class="text-2xl font-bold text-brand-dark mt-0.5">4</h3>
+            <p class="text-xs font-medium text-status-green flex items-center gap-1 mt-1">
+              <span>↑ 8%</span>
+              <span class="text-brand-muted text-[11px] font-normal">pet parents</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- KPI 3: Total Pets -->
+        <div class="bg-brand-surface p-5 rounded-2xl border border-brand-border shadow-soft flex items-center gap-4 cursor-pointer hover:border-brand-brown/40 transition-colors" onclick="AdminPortal.switchSection('pets')">
+          <div class="w-13 h-13 p-3.5 rounded-2xl bg-brand-cream border border-brand-borderLight text-brand-brown shrink-0 flex items-center justify-center">
+            <svg class="w-6 h-6 fill-current text-brand-brown" viewBox="0 0 24 24">
+              <circle cx="8" cy="6" r="2.2"></circle>
+              <circle cx="16" cy="6" r="2.2"></circle>
+              <circle cx="4" cy="11.5" r="2"></circle>
+              <circle cx="20" cy="11.5" r="2"></circle>
+              <ellipse cx="12" cy="17" rx="5" ry="4"></ellipse>
+            </svg>
+          </div>
+          <div>
+            <p class="text-xs font-semibold text-brand-muted uppercase tracking-wider">Registered Pets</p>
+            <h3 id="kpi-total-pets" class="text-2xl font-bold text-brand-dark mt-0.5">2</h3>
+            <p class="text-xs font-medium text-status-green flex items-center gap-1 mt-1">
+              <span>↑ 100%</span>
+              <span class="text-brand-muted text-[11px] font-normal">profiles verified</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- KPI 4: Pending Inquiries/Submissions -->
+        <div class="bg-brand-surface p-5 rounded-2xl border border-brand-border shadow-soft flex items-center gap-4 cursor-pointer hover:border-brand-brown/40 transition-colors" onclick="AdminPortal.switchSection('messages')">
+          <div class="w-13 h-13 p-3.5 rounded-2xl bg-brand-cream border border-brand-borderLight text-brand-brown shrink-0 flex items-center justify-center">
+            <svg class="w-6 h-6 fill-brand-brown stroke-brand-brown stroke-1" viewBox="0 0 24 24">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+          </div>
+          <div>
+            <p class="text-xs font-semibold text-brand-muted uppercase tracking-wider">Pending Submissions</p>
+            <h3 id="kpi-pending-count" class="text-2xl font-bold text-brand-dark mt-0.5">1</h3>
+            <p class="text-xs font-medium text-brand-brown flex items-center gap-1 mt-1">
+              <span>Requires Attention</span>
+            </p>
+          </div>
+        </div>
+      </div>
+      <!-- END: MetricCardsGrid -->
+
+      <!-- BEGIN: ChartsSection -->
+      <div aria-label="Analytical Visualizations" class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <!-- Area Chart: Bookings Overview -->
+        <div class="lg:col-span-7 bg-brand-surface p-6 rounded-2xl border border-brand-border shadow-soft flex flex-col justify-between">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+              <svg class="w-5 h-5 text-brand-brown stroke-[2] fill-none stroke-current" viewBox="0 0 24 24">
+                <rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect>
+                <line x1="16" x2="16" y1="2" y2="6"></line>
+                <line x1="8" x2="8" y1="2" y2="6"></line>
+                <line x1="3" x2="21" y1="10" y2="10"></line>
+              </svg>
+              <h3 class="font-serif font-bold text-lg text-brand-dark">Bookings Overview</h3>
+            </div>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-brand-border text-xs font-semibold text-brand-muted bg-brand-cream/40">
+              This Week
+            </span>
+          </div>
+          <!-- SVG Smooth Area Chart Display -->
+          <div class="relative w-full h-64 pt-2">
+            <svg aria-label="Bookings chart from Monday to Sunday" class="w-full h-full overflow-visible font-sans text-[11px] text-brand-muted" viewBox="0 0 540 220">
+              <defs>
+                <linearGradient id="areaGradient" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stop-color="#8c6246" stop-opacity="0.30"></stop>
+                  <stop offset="100%" stop-color="#8c6246" stop-opacity="0.01"></stop>
+                </linearGradient>
+              </defs>
+              <g stroke="#f0eae1" stroke-dasharray="3,3" stroke-width="1">
+                <line x1="35" x2="520" y1="20" y2="20"></line>
+                <line x1="35" x2="520" y1="65" y2="65"></line>
+                <line x1="35" x2="520" y1="110" y2="110"></line>
+                <line x1="35" x2="520" y1="155" y2="155"></line>
+                <line x1="35" x2="520" y1="195" y2="195"></line>
+              </g>
+              <g fill="#9c8e82" text-anchor="end">
+                <text x="25" y="24">20</text>
+                <text x="25" y="69">15</text>
+                <text x="25" y="114">10</text>
+                <text x="25" y="159">5</text>
+                <text x="25" y="198">0</text>
+              </g>
+              <path d="M 50 173 C 85 150, 100 128, 125 128 C 150 128, 170 155, 195 155 C 220 155, 245 128, 270 128 C 300 128, 320 74, 345 74 C 375 74, 395 56, 420 56 C 450 56, 470 83, 495 83 L 495 195 L 50 195 Z" fill="url(#areaGradient)"></path>
+              <path d="M 50 173 C 85 150, 100 128, 125 128 C 150 128, 170 155, 195 155 C 220 155, 245 128, 270 128 C 300 128, 320 74, 345 74 C 375 74, 395 56, 420 56 C 450 56, 470 83, 495 83" fill="none" stroke="#7a5238" stroke-linecap="round" stroke-width="2.5"></path>
+              <circle class="hover:r-6 cursor-pointer transition-all" cx="50" cy="173" fill="#7a5238" r="4" stroke="#fff" stroke-width="2"></circle>
+              <circle class="hover:r-6 cursor-pointer transition-all" cx="125" cy="128" fill="#7a5238" r="4" stroke="#fff" stroke-width="2"></circle>
+              <circle class="hover:r-6 cursor-pointer transition-all" cx="195" cy="155" fill="#7a5238" r="4" stroke="#fff" stroke-width="2"></circle>
+              <circle class="hover:r-6 cursor-pointer transition-all" cx="270" cy="128" fill="#7a5238" r="4" stroke="#fff" stroke-width="2"></circle>
+              <circle class="hover:r-6 cursor-pointer transition-all" cx="345" cy="74" fill="#7a5238" r="4" stroke="#fff" stroke-width="2"></circle>
+              <circle class="hover:r-6 cursor-pointer transition-all" cx="420" cy="56" fill="#7a5238" r="4" stroke="#fff" stroke-width="2"></circle>
+              <circle class="hover:r-6 cursor-pointer transition-all" cx="495" cy="83" fill="#7a5238" r="4" stroke="#fff" stroke-width="2"></circle>
+              <g fill="#9c8e82" text-anchor="middle">
+                <text x="50" y="214">Mon</text>
+                <text x="125" y="214">Tue</text>
+                <text x="195" y="214">Wed</text>
+                <text x="270" y="214">Thu</text>
+                <text x="345" y="214">Fri</text>
+                <text x="420" y="214">Sat</text>
+                <text x="495" y="214">Sun</text>
+              </g>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Donut Chart: Service Distribution -->
+        <div class="lg:col-span-5 bg-brand-surface p-6 rounded-2xl border border-brand-border shadow-soft flex flex-col justify-between">
+          <div class="flex items-center gap-2 mb-4">
+            <svg class="w-5 h-5 text-brand-brown stroke-[2] fill-none stroke-current" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <h3 class="font-serif font-bold text-lg text-brand-dark">Service Distribution</h3>
+          </div>
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-6 py-1">
+            <!-- Donut Graphic -->
+            <div class="relative w-44 h-44 shrink-0 flex items-center justify-center">
+              <svg class="w-full h-full -rotate-90" viewBox="0 0 160 160">
+                <circle class="donut-segment" cx="80" cy="80" fill="transparent" r="58" stroke="#5c3d28" stroke-dasharray="134.8 229.6" stroke-dashoffset="0" stroke-width="22"></circle>
+                <circle class="donut-segment" cx="80" cy="80" fill="transparent" r="58" stroke="#8c6246" stroke-dasharray="76.5 287.9" stroke-dashoffset="-134.8" stroke-width="22"></circle>
+                <circle class="donut-segment" cx="80" cy="80" fill="transparent" r="58" stroke="#b68d6c" stroke-dasharray="61.9 302.5" stroke-dashoffset="-211.3" stroke-width="22"></circle>
+                <circle class="donut-segment" cx="80" cy="80" fill="transparent" r="58" stroke="#d4b89b" stroke-dasharray="43.7 320.7" stroke-dashoffset="-273.2" stroke-width="22"></circle>
+                <circle class="donut-segment" cx="80" cy="80" fill="transparent" r="58" stroke="#e8d8c8" stroke-dasharray="29.1 335.3" stroke-dashoffset="-316.9" stroke-width="22"></circle>
+              </svg>
+              <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center">
+                <span class="text-2xl font-bold font-serif text-brand-dark leading-none">100%</span>
+                <span class="text-[10px] uppercase font-semibold tracking-wider text-brand-muted mt-1">Care Mix</span>
+              </div>
+            </div>
+            <!-- Legend List -->
+            <div class="w-full space-y-2 text-xs">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-[#5c3d28]"></span>
+                  <span class="font-medium text-brand-dark">Grooming &amp; Spa</span>
+                </div>
+                <span class="font-semibold text-brand-muted">50%</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-[#8c6246]"></span>
+                  <span class="font-medium text-brand-dark">Veterinary Care</span>
+                </div>
+                <span class="font-semibold text-brand-muted">25%</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-[#b68d6c]"></span>
+                  <span class="font-medium text-brand-dark">Pet Boarding</span>
+                </div>
+                <span class="font-semibold text-brand-muted">15%</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-[#d4b89b]"></span>
+                  <span class="font-medium text-brand-dark">Dog Walking</span>
+                </div>
+                <span class="font-semibold text-brand-muted">10%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- END: ChartsSection -->
+
+      <!-- BEGIN: RecentBookingsTable -->
+      <div aria-label="Recent Bookings Table" class="bg-brand-surface rounded-2xl border border-brand-border shadow-soft p-6">
+        <div class="flex items-center justify-between mb-5">
+          <div class="flex items-center gap-2">
+            <svg class="w-5 h-5 text-brand-brown stroke-[2] fill-none stroke-current" viewBox="0 0 24 24">
+              <rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect>
+              <line x1="16" x2="16" y1="2" y2="6"></line>
+              <line x1="8" x2="8" y1="2" y2="6"></line>
+              <line x1="3" x2="21" y1="10" y2="10"></line>
+            </svg>
+            <h3 class="font-serif font-bold text-lg text-brand-dark">Recent Platform Bookings</h3>
+          </div>
+          <button onclick="AdminPortal.switchSection('bookings')" class="text-xs font-semibold text-brand-brown hover:text-brand-brownHover flex items-center gap-1 transition-colors">
             View All
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
-<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
-</svg>
-</a>
-</div>
-<!-- Table Container -->
-<div class="overflow-x-auto">
-<table class="w-full text-left text-xs">
-<thead>
-<tr class="border-b border-brand-border text-brand-muted font-semibold">
-<th class="pb-3 px-3" scope="col">ID</th>
-<th class="pb-3 px-3" scope="col">Service</th>
-<th class="pb-3 px-3" scope="col">Pet Name</th>
-<th class="pb-3 px-3" scope="col">Owner</th>
-<th class="pb-3 px-3" scope="col">Date &amp; Time</th>
-<th class="pb-3 px-3 text-center" scope="col">Status</th>
-<th class="pb-3 px-3 text-center" scope="col">Action</th>
-</tr>
-</thead>
-<tbody class="divide-y divide-brand-border/60 text-brand-dark">
-<!-- Row 1 -->
-<tr class="hover:bg-brand-cream/40 transition-colors">
-<td class="py-3.5 px-3 font-medium text-brand-muted">#BP001</td>
-<td class="py-3.5 px-3 font-semibold text-brand-dark">Grooming &amp; Spa</td>
-<td class="py-3.5 px-3 text-brand-muted">Bruno (Dog)</td>
-<td class="py-3.5 px-3">Sneha R.</td>
-<td class="py-3.5 px-3 text-brand-muted">Oct 6, 2026 - 10:00 AM</td>
-<td class="py-3.5 px-3 text-center">
-<span class="inline-block px-3 py-1 rounded-full text-[11px] font-semibold bg-status-greenBg text-status-green">
-                    Confirmed
-                  </span>
-</td>
-<td class="py-3.5 px-3">
-<div class="flex items-center justify-center gap-2">
-<button class="px-3.5 py-1 rounded-lg bg-brand-brown hover:bg-brand-brownHover text-white font-medium text-xs shadow-xs transition-colors">View</button>
-<button class="p-1 text-brand-muted hover:text-brand-dark">
-<svg class="w-4 h-4" fill="currentColor" viewbox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
-</button>
-</div>
-</td>
-</tr>
-<!-- Row 2 -->
-<tr class="hover:bg-brand-cream/40 transition-colors">
-<td class="py-3.5 px-3 font-medium text-brand-muted">#BP002</td>
-<td class="py-3.5 px-3 font-semibold text-brand-dark">Veterinary Care</td>
-<td class="py-3.5 px-3 text-brand-muted">Milo (Cat)</td>
-<td class="py-3.5 px-3">Ananya S.</td>
-<td class="py-3.5 px-3 text-brand-muted">Oct 6, 2026 - 02:00 PM</td>
-<td class="py-3.5 px-3 text-center">
-<span class="inline-block px-3 py-1 rounded-full text-[11px] font-semibold bg-status-amberBg text-status-amber">
-                    Pending
-                  </span>
-</td>
-<td class="py-3.5 px-3">
-<div class="flex items-center justify-center gap-2">
-<button class="px-3.5 py-1 rounded-lg bg-brand-brown hover:bg-brand-brownHover text-white font-medium text-xs shadow-xs transition-colors">View</button>
-<button class="p-1 text-brand-muted hover:text-brand-dark">
-<svg class="w-4 h-4" fill="currentColor" viewbox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
-</button>
-</div>
-</td>
-</tr>
-<!-- Row 3 -->
-<tr class="hover:bg-brand-cream/40 transition-colors">
-<td class="py-3.5 px-3 font-medium text-brand-muted">#BP003</td>
-<td class="py-3.5 px-3 font-semibold text-brand-dark">Dog Walking</td>
-<td class="py-3.5 px-3 text-brand-muted">Rocky (Dog)</td>
-<td class="py-3.5 px-3">Priya K.</td>
-<td class="py-3.5 px-3 text-brand-muted">Oct 7, 2026 - 09:00 AM</td>
-<td class="py-3.5 px-3 text-center">
-<span class="inline-block px-3 py-1 rounded-full text-[11px] font-semibold bg-status-greenBg text-status-green">
-                    Confirmed
-                  </span>
-</td>
-<td class="py-3.5 px-3">
-<div class="flex items-center justify-center gap-2">
-<button class="px-3.5 py-1 rounded-lg bg-brand-brown hover:bg-brand-brownHover text-white font-medium text-xs shadow-xs transition-colors">View</button>
-<button class="p-1 text-brand-muted hover:text-brand-dark">
-<svg class="w-4 h-4" fill="currentColor" viewbox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
-</button>
-</div>
-</td>
-</tr>
-<!-- Row 4 -->
-<tr class="hover:bg-brand-cream/40 transition-colors">
-<td class="py-3.5 px-3 font-medium text-brand-muted">#BP004</td>
-<td class="py-3.5 px-3 font-semibold text-brand-dark">Pet Boarding</td>
-<td class="py-3.5 px-3 text-brand-muted">Luna (Cat)</td>
-<td class="py-3.5 px-3">Rohit M.</td>
-<td class="py-3.5 px-3 text-brand-muted">Oct 8, 2026 - 12:00 PM</td>
-<td class="py-3.5 px-3 text-center">
-<span class="inline-block px-3 py-1 rounded-full text-[11px] font-semibold bg-status-amberBg text-status-amber">
-                    Pending
-                  </span>
-</td>
-<td class="py-3.5 px-3">
-<div class="flex items-center justify-center gap-2">
-<button class="px-3.5 py-1 rounded-lg bg-brand-brown hover:bg-brand-brownHover text-white font-medium text-xs shadow-xs transition-colors">View</button>
-<button class="p-1 text-brand-muted hover:text-brand-dark">
-<svg class="w-4 h-4" fill="currentColor" viewbox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
-</button>
-</div>
-</td>
-</tr>
-<!-- Row 5 -->
-<tr class="hover:bg-brand-cream/40 transition-colors">
-<td class="py-3.5 px-3 font-medium text-brand-muted">#BP005</td>
-<td class="py-3.5 px-3 font-semibold text-brand-dark">Grooming &amp; Spa</td>
-<td class="py-3.5 px-3 text-brand-muted">Simba (Dog)</td>
-<td class="py-3.5 px-3">Neha P.</td>
-<td class="py-3.5 px-3 text-brand-muted">Oct 9, 2026 - 11:00 AM</td>
-<td class="py-3.5 px-3 text-center">
-<span class="inline-block px-3 py-1 rounded-full text-[11px] font-semibold bg-status-redBg text-status-red">
-                    Cancelled
-                  </span>
-</td>
-<td class="py-3.5 px-3">
-<div class="flex items-center justify-center gap-2">
-<button class="px-3.5 py-1 rounded-lg bg-brand-brown hover:bg-brand-brownHover text-white font-medium text-xs shadow-xs transition-colors">View</button>
-<button class="p-1 text-brand-muted hover:text-brand-dark">
-<svg class="w-4 h-4" fill="currentColor" viewbox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
-</button>
-</div>
-</td>
-</tr>
-<!-- Row 6 -->
-<tr class="hover:bg-brand-cream/40 transition-colors">
-<td class="py-3.5 px-3 font-medium text-brand-muted">#BP006</td>
-<td class="py-3.5 px-3 font-semibold text-brand-dark">Pet Training</td>
-<td class="py-3.5 px-3 text-brand-muted">Charlie (Dog)</td>
-<td class="py-3.5 px-3">Arjun T.</td>
-<td class="py-3.5 px-3 text-brand-muted">Oct 10, 2026 - 04:00 PM</td>
-<td class="py-3.5 px-3 text-center">
-<span class="inline-block px-3 py-1 rounded-full text-[11px] font-semibold bg-status-greenBg text-status-green">
-                    Confirmed
-                  </span>
-</td>
-<td class="py-3.5 px-3">
-<div class="flex items-center justify-center gap-2">
-<button class="px-3.5 py-1 rounded-lg bg-brand-brown hover:bg-brand-brownHover text-white font-medium text-xs shadow-xs transition-colors">View</button>
-<button class="p-1 text-brand-muted hover:text-brand-dark">
-<svg class="w-4 h-4" fill="currentColor" viewbox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
-</button>
-</div>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</section>
-<!-- END: RecentBookingsTable -->
-</main>
-<!-- END: CentralContentArea -->
-<!-- BEGIN: RightSidebarPanel -->
-<aside aria-label="Activity and Quick Actions" class="w-80 bg-brand-cream/60 shrink-0 border-l border-brand-border p-6 space-y-6 hidden xl:block">
-<!-- Card: Recent Activity -->
-<div class="bg-brand-surface p-5 rounded-2xl border border-brand-border shadow-soft">
-<div class="flex items-center gap-2 mb-4">
-<svg class="w-5 h-5 text-brand-brown stroke-[2] fill-none stroke-current" viewbox="0 0 24 24">
-<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-</svg>
-<h3 class="font-serif font-bold text-base text-brand-dark">Recent Activity</h3>
-</div>
-<div class="space-y-4 text-xs">
-<!-- Item 1 -->
-<div class="flex items-start gap-3">
-<div class="w-8 h-8 rounded-full bg-status-greenBg text-status-green flex items-center justify-center shrink-0 mt-0.5">
-<svg class="w-4 h-4 stroke-current fill-none stroke-[2]" viewbox="0 0 24 24">
-<rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect>
-<line x1="16" x2="16" y1="2" y2="6"></line>
-<line x1="8" x2="8" y1="2" y2="6"></line>
-</svg>
-</div>
-<div class="flex-1 min-w-0">
-<p class="font-semibold text-brand-dark">New booking received</p>
-<p class="text-[11px] text-brand-muted truncate">Grooming &amp; Spa - Bruno</p>
-</div>
-<span class="text-[10px] text-brand-muted shrink-0">10:24 AM</span>
-</div>
-<!-- Item 2 -->
-<div class="flex items-start gap-3">
-<div class="w-8 h-8 rounded-full bg-brand-cream border border-brand-border text-brand-dark flex items-center justify-center shrink-0 mt-0.5">
-<svg class="w-4 h-4 stroke-current fill-none stroke-[2]" viewbox="0 0 24 24">
-<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-<circle cx="12" cy="7" r="4"></circle>
-</svg>
-</div>
-<div class="flex-1 min-w-0">
-<p class="font-semibold text-brand-dark">User registered</p>
-<p class="text-[11px] text-brand-muted truncate">Sneha R.</p>
-</div>
-<span class="text-[10px] text-brand-muted shrink-0">09:52 AM</span>
-</div>
-<!-- Item 3 -->
-<div class="flex items-start gap-3">
-<div class="w-8 h-8 rounded-full bg-status-amberBg text-status-amber flex items-center justify-center shrink-0 mt-0.5">
-<svg class="w-4 h-4 stroke-current fill-none stroke-[2]" viewbox="0 0 24 24">
-<rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect>
-<line x1="16" x2="16" y1="2" y2="6"></line>
-<line x1="8" x2="8" y1="2" y2="6"></line>
-</svg>
-</div>
-<div class="flex-1 min-w-0">
-<p class="font-semibold text-brand-dark">Service submission</p>
-<p class="text-[11px] text-brand-muted truncate">Pet Training - Submitted</p>
-</div>
-<span class="text-[10px] text-brand-muted shrink-0">09:30 AM</span>
-</div>
-<!-- Item 4 -->
-<div class="flex items-start gap-3">
-<div class="w-8 h-8 rounded-full bg-status-redBg text-status-red flex items-center justify-center shrink-0 mt-0.5">
-<svg class="w-4 h-4 stroke-current fill-none stroke-[2.5]" viewbox="0 0 24 24">
-<line x1="18" x2="6" y1="6" y2="18"></line>
-<line x1="6" x2="18" y1="6" y2="18"></line>
-</svg>
-</div>
-<div class="flex-1 min-w-0">
-<p class="font-semibold text-brand-dark">Booking cancelled</p>
-<p class="text-[11px] text-brand-muted truncate">Boarding - Milo</p>
-</div>
-<span class="text-[10px] text-brand-muted shrink-0">08:45 AM</span>
-</div>
-<!-- Item 5 -->
-<div class="flex items-start gap-3">
-<div class="w-8 h-8 rounded-full bg-brand-cream border border-brand-border text-brand-brown flex items-center justify-center shrink-0 mt-0.5">
-<svg class="w-4 h-4 stroke-current fill-none stroke-[2]" viewbox="0 0 24 24">
-<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-</svg>
-</div>
-<div class="flex-1 min-w-0">
-<p class="font-semibold text-brand-dark">New review</p>
-<p class="text-[11px] text-brand-muted truncate">Veterinary Care - 5 stars</p>
-</div>
-<span class="text-[10px] text-brand-muted shrink-0">08:20 AM</span>
-</div>
-</div>
-</div>
-<!-- Card: Quick Actions -->
-<div class="bg-brand-surface p-5 rounded-2xl border border-brand-border shadow-soft">
-<div class="flex items-center gap-2 mb-4">
-<svg class="w-5 h-5 text-brand-brown stroke-[2] fill-none stroke-current" viewbox="0 0 24 24">
-<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-</svg>
-<h3 class="font-serif font-bold text-base text-brand-dark">Quick Actions</h3>
-</div>
-<div class="space-y-2.5">
-<!-- Action 1 -->
-<button class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl border border-brand-border hover:border-brand-brown/40 bg-brand-cream/50 hover:bg-brand-cream text-xs font-semibold text-brand-dark transition-all group">
-<span class="w-6 h-6 rounded-lg bg-brand-brown/10 text-brand-brown flex items-center justify-center font-bold text-sm group-hover:bg-brand-brown group-hover:text-white transition-colors">+</span>
-<span>Add New Service</span>
-</button>
-<!-- Action 2 -->
-<button class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl border border-brand-border hover:border-brand-brown/40 bg-brand-cream/50 hover:bg-brand-cream text-xs font-semibold text-brand-dark transition-all group">
-<span class="w-6 h-6 rounded-lg bg-brand-brown/10 text-brand-brown flex items-center justify-center group-hover:bg-brand-brown group-hover:text-white transition-colors">
-<svg class="w-3.5 h-3.5 stroke-current fill-none stroke-[2]" viewbox="0 0 24 24">
-<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-<circle cx="9" cy="7" r="4"></circle>
-</svg>
-</span>
-<span>Manage Users</span>
-</button>
-<!-- Action 3 -->
-<button class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl border border-brand-border hover:border-brand-brown/40 bg-brand-cream/50 hover:bg-brand-cream text-xs font-semibold text-brand-dark transition-all group">
-<span class="w-6 h-6 rounded-lg bg-brand-brown/10 text-brand-brown flex items-center justify-center group-hover:bg-brand-brown group-hover:text-white transition-colors">
-<svg class="w-3.5 h-3.5 stroke-current fill-none stroke-[2]" viewbox="0 0 24 24">
-<rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect>
-<line x1="16" x2="16" y1="2" y2="6"></line>
-<line x1="8" x2="8" y1="2" y2="6"></line>
-</svg>
-</span>
-<span>View All Bookings</span>
-</button>
-<!-- Action 4 -->
-<button class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl border border-brand-border hover:border-brand-brown/40 bg-brand-cream/50 hover:bg-brand-cream text-xs font-semibold text-brand-dark transition-all group">
-<span class="w-6 h-6 rounded-lg bg-brand-brown/10 text-brand-brown flex items-center justify-center group-hover:bg-brand-brown group-hover:text-white transition-colors">
-<svg class="w-3.5 h-3.5 stroke-current fill-none stroke-[2]" viewbox="0 0 24 24">
-<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-<polyline points="14 2 14 8 20 8"></polyline>
-<line x1="16" x2="8" y1="13" y2="13"></line>
-<line x1="16" x2="8" y1="17" y2="17"></line>
-</svg>
-</span>
-<span>View Submissions</span>
-</button>
-<!-- Action 5 -->
-<button class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl border border-brand-border hover:border-brand-brown/40 bg-brand-cream/50 hover:bg-brand-cream text-xs font-semibold text-brand-dark transition-all group">
-<span class="w-6 h-6 rounded-lg bg-brand-brown/10 text-brand-brown flex items-center justify-center group-hover:bg-brand-brown group-hover:text-white transition-colors">
-<svg class="w-3.5 h-3.5 stroke-current fill-none stroke-[2]" viewbox="0 0 24 24">
-<line x1="18" x2="18" y1="20" y2="10"></line>
-<line x1="12" x2="12" y1="20" y2="4"></line>
-<line x1="6" x2="6" y1="20" y2="14"></line>
-</svg>
-</span>
-<span>Generate Report</span>
-</button>
-</div>
-</div>
-</aside>
-<!-- END: RightSidebarPanel -->
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+            </svg>
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead>
+              <tr class="border-b border-brand-border text-brand-muted font-semibold">
+                <th class="pb-3 px-3">ID</th>
+                <th class="pb-3 px-3">Service</th>
+                <th class="pb-3 px-3">Pet Name</th>
+                <th class="pb-3 px-3">Owner</th>
+                <th class="pb-3 px-3">Date &amp; Time</th>
+                <th class="pb-3 px-3 text-center">Status</th>
+                <th class="pb-3 px-3 text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody id="dashboard-recent-bookings-tbody" class="divide-y divide-brand-border/60 text-brand-dark">
+              <!-- Dynamically populated from PetPalsStore.getBookings() -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- END: RecentBookingsTable -->
+    </section>
+
+    <!-- ========================================== -->
+    <!-- SECTION 2: BOOKINGS (Manage all bookings)  -->
+    <!-- ========================================== -->
+    <section id="section-bookings" class="hidden space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl md:text-3xl font-serif font-bold text-brand-dark tracking-tight">Bookings Management</h2>
+          <p class="text-sm text-brand-muted mt-0.5">Manage, confirm, reschedule, or cancel bookings made by registered clients.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="AdminPortal.exportReportCSV()" class="px-4 py-2 rounded-xl bg-brand-surface border border-brand-border text-xs font-semibold text-brand-dark hover:bg-brand-cream transition-colors flex items-center gap-2 shadow-xs">
+            <svg class="w-4 h-4 text-brand-brown" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Export CSV
+          </button>
+        </div>
+      </div>
+
+      <!-- Bookings Filter Toolbar -->
+      <div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 bg-brand-surface p-4 rounded-2xl border border-brand-border shadow-soft">
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0" id="bookings-filter-chips">
+          <button onclick="window._currentBookingsFilter='all'; AdminPortal.renderBookings();" class="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-brand-tan/80 text-brand-dark shadow-xs whitespace-nowrap">
+            All (<span id="bookings-count-all">0</span>)
+          </button>
+          <button onclick="window._currentBookingsFilter='confirmed'; AdminPortal.renderBookings();" class="px-3.5 py-1.5 rounded-full text-xs font-medium text-brand-muted hover:text-brand-dark hover:bg-brand-cream whitespace-nowrap">
+            Confirmed (<span id="bookings-count-confirmed">0</span>)
+          </button>
+          <button onclick="window._currentBookingsFilter='pending'; AdminPortal.renderBookings();" class="px-3.5 py-1.5 rounded-full text-xs font-medium text-brand-muted hover:text-brand-dark hover:bg-brand-cream whitespace-nowrap">
+            Pending (<span id="bookings-count-pending">0</span>)
+          </button>
+          <button onclick="window._currentBookingsFilter='completed'; AdminPortal.renderBookings();" class="px-3.5 py-1.5 rounded-full text-xs font-medium text-brand-muted hover:text-brand-dark hover:bg-brand-cream whitespace-nowrap">
+            Completed (<span id="bookings-count-completed">0</span>)
+          </button>
+          <button onclick="window._currentBookingsFilter='cancelled'; AdminPortal.renderBookings();" class="px-3.5 py-1.5 rounded-full text-xs font-medium text-brand-muted hover:text-brand-dark hover:bg-brand-cream whitespace-nowrap">
+            Cancelled (<span id="bookings-count-cancelled">0</span>)
+          </button>
+        </div>
+
+        <div class="relative w-full lg:w-72">
+          <svg class="w-4 h-4 text-brand-muted absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input id="bookings-search-input" oninput="AdminPortal.renderBookings()" type="text" placeholder="Search ID, pet, owner, service..." class="w-full pl-9 pr-3 py-1.5 rounded-xl bg-brand-cream border border-brand-border text-xs text-brand-dark placeholder:text-brand-muted focus:ring-1 focus:ring-brand-brown outline-none">
+        </div>
+      </div>
+
+      <!-- Bookings Table Container -->
+      <div id="bookings-table-container">
+        <!-- Rendered by AdminPortal.renderBookings() -->
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- SECTION 3: USERS (View/manage registered)  -->
+    <!-- ========================================== -->
+    <section id="section-users" class="hidden space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl md:text-3xl font-serif font-bold text-brand-dark tracking-tight">Registered Users</h2>
+          <p class="text-sm text-brand-muted mt-0.5">Directory of registered pet parents, account profiles, contact information, and pets.</p>
+        </div>
+      </div>
+
+      <!-- Users Search Bar -->
+      <div class="flex items-center justify-between gap-4 bg-brand-surface p-4 rounded-2xl border border-brand-border shadow-soft">
+        <div class="relative w-full max-w-md">
+          <svg class="w-4 h-4 text-brand-muted absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input id="users-search-input" oninput="AdminPortal.renderUsers()" type="text" placeholder="Search by name, email, phone, location..." class="w-full pl-10 pr-4 py-2 rounded-xl bg-brand-cream border border-brand-border text-xs text-brand-dark placeholder:text-brand-muted focus:ring-1 focus:ring-brand-brown outline-none">
+        </div>
+        <span class="text-xs font-semibold text-brand-muted">Showing all active accounts</span>
+      </div>
+
+      <!-- Users Grid Container -->
+      <div id="users-table-container">
+        <!-- Rendered by AdminPortal.renderUsers() -->
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- SECTION 4: PETS (Registered by users)      -->
+    <!-- ========================================== -->
+    <section id="section-pets" class="hidden space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl md:text-3xl font-serif font-bold text-brand-dark tracking-tight">Registered Pets Directory</h2>
+          <p class="text-sm text-brand-muted mt-0.5">Health profiles, medical notes, microchips, and dietary instructions for companions registered on PetPals.</p>
+        </div>
+      </div>
+
+      <!-- Pets Filter Toolbar -->
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 bg-brand-surface p-4 rounded-2xl border border-brand-border shadow-soft">
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+          <button onclick="window._currentPetsFilter='all'; AdminPortal.renderPets();" class="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-brand-tan/80 text-brand-dark shadow-xs whitespace-nowrap">
+            All Companions
+          </button>
+          <button onclick="window._currentPetsFilter='dogs'; AdminPortal.renderPets();" class="px-3.5 py-1.5 rounded-full text-xs font-medium text-brand-muted hover:text-brand-dark hover:bg-brand-cream whitespace-nowrap">
+            Dogs Only
+          </button>
+          <button onclick="window._currentPetsFilter='cats'; AdminPortal.renderPets();" class="px-3.5 py-1.5 rounded-full text-xs font-medium text-brand-muted hover:text-brand-dark hover:bg-brand-cream whitespace-nowrap">
+            Cats Only
+          </button>
+          <button onclick="window._currentPetsFilter='other'; AdminPortal.renderPets();" class="px-3.5 py-1.5 rounded-full text-xs font-medium text-brand-muted hover:text-brand-dark hover:bg-brand-cream whitespace-nowrap">
+            Other Species
+          </button>
+        </div>
+
+        <div class="relative w-full sm:w-64">
+          <svg class="w-4 h-4 text-brand-muted absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input id="pets-search-input" oninput="AdminPortal.renderPets()" type="text" placeholder="Search pet name, breed, microchip..." class="w-full pl-9 pr-3 py-1.5 rounded-xl bg-brand-cream border border-brand-border text-xs text-brand-dark placeholder:text-brand-muted focus:ring-1 focus:ring-brand-brown outline-none">
+        </div>
+      </div>
+
+      <!-- Pets Grid -->
+      <div id="pets-grid-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Rendered by AdminPortal.renderPets() -->
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- SECTION 5: SERVICES (Manage available)     -->
+    <!-- ========================================== -->
+    <section id="section-services" class="hidden space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl md:text-3xl font-serif font-bold text-brand-dark tracking-tight">Services Management</h2>
+          <p class="text-sm text-brand-muted mt-0.5">Manage pricing, duration, assigned specialists, and active availability for all pet care offerings.</p>
+        </div>
+        <button onclick="AdminPortal.openAddServiceModal()" class="px-4 py-2.5 rounded-xl bg-brand-brown hover:bg-brand-brownHover text-white font-semibold text-xs shadow-sm transition-colors flex items-center gap-2 self-start sm:self-auto">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Add New Service
+        </button>
+      </div>
+
+      <!-- Services Category Filters -->
+      <div class="flex items-center gap-2 bg-brand-surface p-3.5 rounded-2xl border border-brand-border shadow-soft overflow-x-auto">
+        <button onclick="window._currentServicesFilter='all'; AdminPortal.renderServices();" class="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-brand-tan/80 text-brand-dark shadow-xs whitespace-nowrap">
+          All Services
+        </button>
+        <button onclick="window._currentServicesFilter='grooming'; AdminPortal.renderServices();" class="px-3.5 py-1.5 rounded-full text-xs font-medium text-brand-muted hover:text-brand-dark hover:bg-brand-cream whitespace-nowrap">
+          Grooming &amp; Spa
+        </button>
+        <button onclick="window._currentServicesFilter='medical'; AdminPortal.renderServices();" class="px-3.5 py-1.5 rounded-full text-xs font-medium text-brand-muted hover:text-brand-dark hover:bg-brand-cream whitespace-nowrap">
+          Veterinary &amp; Medical
+        </button>
+        <button onclick="window._currentServicesFilter='boarding'; AdminPortal.renderServices();" class="px-3.5 py-1.5 rounded-full text-xs font-medium text-brand-muted hover:text-brand-dark hover:bg-brand-cream whitespace-nowrap">
+          Boarding &amp; Daycare
+        </button>
+        <button onclick="window._currentServicesFilter='training'; AdminPortal.renderServices();" class="px-3.5 py-1.5 rounded-full text-xs font-medium text-brand-muted hover:text-brand-dark hover:bg-brand-cream whitespace-nowrap">
+          Training &amp; Walking
+        </button>
+      </div>
+
+      <!-- Services Grid -->
+      <div id="services-grid-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Rendered by AdminPortal.renderServices() -->
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- SECTION 6: REVIEWS (Manage customer reviews)-->
+    <!-- ========================================== -->
+    <section id="section-reviews" class="hidden space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl md:text-3xl font-serif font-bold text-brand-dark tracking-tight">Customer Reviews</h2>
+          <p class="text-sm text-brand-muted mt-0.5">Moderate client testimonials, approve feedback, and feature quotes on the platform.</p>
+        </div>
+      </div>
+
+      <!-- Reviews Filters -->
+      <div class="flex items-center gap-2 bg-brand-surface p-3.5 rounded-2xl border border-brand-border shadow-soft overflow-x-auto">
+        <button onclick="window._currentReviewsFilter='all'; AdminPortal.renderReviews();" class="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-brand-tan/80 text-brand-dark shadow-xs whitespace-nowrap">
+          All Reviews
+        </button>
+        <button onclick="window._currentReviewsFilter='approved'; AdminPortal.renderReviews();" class="px-3.5 py-1.5 rounded-full text-xs font-medium text-brand-muted hover:text-brand-dark hover:bg-brand-cream whitespace-nowrap">
+          Approved
+        </button>
+        <button onclick="window._currentReviewsFilter='pending'; AdminPortal.renderReviews();" class="px-3.5 py-1.5 rounded-full text-xs font-medium text-brand-muted hover:text-brand-dark hover:bg-brand-cream whitespace-nowrap">
+          Pending Moderation
+        </button>
+        <button onclick="window._currentReviewsFilter='featured'; AdminPortal.renderReviews();" class="px-3.5 py-1.5 rounded-full text-xs font-medium text-brand-muted hover:text-brand-dark hover:bg-brand-cream whitespace-nowrap">
+          Featured
+        </button>
+      </div>
+
+      <!-- Reviews Grid -->
+      <div id="reviews-grid-container" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <!-- Rendered by AdminPortal.renderReviews() -->
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- SECTION 7: MESSAGES (Client inquiries)     -->
+    <!-- ========================================== -->
+    <section id="section-messages" class="hidden space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl md:text-3xl font-serif font-bold text-brand-dark tracking-tight">Client Messages &amp; Inquiries</h2>
+          <p class="text-sm text-brand-muted mt-0.5">Support requests, concierge chat inquiries, and direct inquiries from pet parents.</p>
+        </div>
+      </div>
+
+      <!-- Messages Filter Tabs -->
+      <div class="flex items-center gap-2 bg-brand-surface p-3.5 rounded-2xl border border-brand-border shadow-soft overflow-x-auto">
+        <button onclick="window._currentMessagesFilter='all'; AdminPortal.renderMessages();" class="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-brand-tan/80 text-brand-dark shadow-xs whitespace-nowrap">
+          All Inquiries
+        </button>
+        <button onclick="window._currentMessagesFilter='unread'; AdminPortal.renderMessages();" class="px-3.5 py-1.5 rounded-full text-xs font-medium text-brand-muted hover:text-brand-dark hover:bg-brand-cream whitespace-nowrap">
+          Unread
+        </button>
+        <button onclick="window._currentMessagesFilter='replied'; AdminPortal.renderMessages();" class="px-3.5 py-1.5 rounded-full text-xs font-medium text-brand-muted hover:text-brand-dark hover:bg-brand-cream whitespace-nowrap">
+          Replied
+        </button>
+        <button onclick="window._currentMessagesFilter='resolved'; AdminPortal.renderMessages();" class="px-3.5 py-1.5 rounded-full text-xs font-medium text-brand-muted hover:text-brand-dark hover:bg-brand-cream whitespace-nowrap">
+          Resolved
+        </button>
+      </div>
+
+      <!-- Messages List -->
+      <div id="messages-list-container" class="space-y-3">
+        <!-- Rendered by AdminPortal.renderMessages() -->
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- SECTION 8: REPORTS (Important analytics)   -->
+    <!-- ========================================== -->
+    <section id="section-reports" class="hidden space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl md:text-3xl font-serif font-bold text-brand-dark tracking-tight">Platform Reports &amp; Analytics</h2>
+          <p class="text-sm text-brand-muted mt-0.5">Comprehensive overview of booking volume, operational revenue, and service performance.</p>
+        </div>
+        <button onclick="AdminPortal.exportReportCSV()" class="px-4 py-2.5 rounded-xl bg-brand-brown hover:bg-brand-brownHover text-white font-semibold text-xs shadow-sm transition-colors flex items-center gap-2 self-start sm:self-auto">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Export CSV Report
+        </button>
+      </div>
+
+      <!-- Key Performance Numbers -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-brand-surface p-5 rounded-2xl border border-brand-border shadow-soft">
+          <p class="text-xs font-semibold text-brand-muted uppercase tracking-wider">Gross Booking Value</p>
+          <h3 id="report-stat-revenue" class="text-2xl font-serif font-bold text-brand-dark mt-1">$2,860</h3>
+          <p class="text-xs font-medium text-status-green mt-1">↑ 18% vs last month</p>
+        </div>
+        <div class="bg-brand-surface p-5 rounded-2xl border border-brand-border shadow-soft">
+          <p class="text-xs font-semibold text-brand-muted uppercase tracking-wider">Completed Bookings</p>
+          <h3 id="report-stat-bookings" class="text-2xl font-serif font-bold text-brand-dark mt-1">4</h3>
+          <p class="text-xs font-medium text-status-green mt-1">100% attendance rate</p>
+        </div>
+        <div class="bg-brand-surface p-5 rounded-2xl border border-brand-border shadow-soft">
+          <p class="text-xs font-semibold text-brand-muted uppercase tracking-wider">Active Client Base</p>
+          <h3 id="report-stat-clients" class="text-2xl font-serif font-bold text-brand-dark mt-1">4</h3>
+          <p class="text-xs font-medium text-brand-brown mt-1">92% repeat bookings</p>
+        </div>
+        <div class="bg-brand-surface p-5 rounded-2xl border border-brand-border shadow-soft">
+          <p class="text-xs font-semibold text-brand-muted uppercase tracking-wider">Service Completion Rate</p>
+          <h3 id="report-stat-completion" class="text-2xl font-serif font-bold text-brand-dark mt-1">100%</h3>
+          <p class="text-xs font-medium text-status-green mt-1">Zero safety incidents</p>
+        </div>
+      </div>
+
+      <!-- Reports Detailed Breakdown Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Service Breakdown Card -->
+        <div class="bg-brand-surface p-6 rounded-2xl border border-brand-border shadow-soft space-y-4">
+          <h3 class="font-serif font-bold text-base text-brand-dark">Category Revenue Share</h3>
+          <div class="space-y-3 text-xs">
+            <div>
+              <div class="flex justify-between font-semibold mb-1">
+                <span>Grooming &amp; Spa Lounge</span>
+                <span>48%</span>
+              </div>
+              <div class="w-full h-2 rounded-full bg-brand-cream overflow-hidden">
+                <div class="h-full bg-brand-brown rounded-full" style="width: 48%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between font-semibold mb-1">
+                <span>Veterinary &amp; Wellness Exams</span>
+                <span>28%</span>
+              </div>
+              <div class="w-full h-2 rounded-full bg-brand-cream overflow-hidden">
+                <div class="h-full bg-[#8c6246] rounded-full" style="width: 28%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between font-semibold mb-1">
+                <span>Sanctuary Daycare &amp; Boarding</span>
+                <span>16%</span>
+              </div>
+              <div class="w-full h-2 rounded-full bg-brand-cream overflow-hidden">
+                <div class="h-full bg-[#b68d6c] rounded-full" style="width: 16%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between font-semibold mb-1">
+                <span>Canine Enrichment &amp; Walking</span>
+                <span>8%</span>
+              </div>
+              <div class="w-full h-2 rounded-full bg-brand-cream overflow-hidden">
+                <div class="h-full bg-[#d4b89b] rounded-full" style="width: 8%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Species Distribution Card -->
+        <div class="bg-brand-surface p-6 rounded-2xl border border-brand-border shadow-soft space-y-4">
+          <h3 class="font-serif font-bold text-base text-brand-dark">Registered Companions Distribution</h3>
+          <div class="space-y-3 text-xs">
+            <div>
+              <div class="flex justify-between font-semibold mb-1">
+                <span>Dogs (Canine)</span>
+                <span>75%</span>
+              </div>
+              <div class="w-full h-2 rounded-full bg-brand-cream overflow-hidden">
+                <div class="h-full bg-brand-brown rounded-full" style="width: 75%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between font-semibold mb-1">
+                <span>Cats (Feline)</span>
+                <span>25%</span>
+              </div>
+              <div class="w-full h-2 rounded-full bg-brand-cream overflow-hidden">
+                <div class="h-full bg-[#8c6246] rounded-full" style="width: 25%"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-4 border-t border-brand-border/60 text-xs text-brand-muted">
+            <p><strong>Note:</strong> All booking metrics are synchronized in real time with the PetPals client portal.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- SECTION 9: SETTINGS (Admin accounts/rules) -->
+    <!-- ========================================== -->
+    <section id="section-settings" class="hidden space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl md:text-3xl font-serif font-bold text-brand-dark tracking-tight">Admin &amp; Facility Settings</h2>
+          <p class="text-sm text-brand-muted mt-0.5">Configure facility hours, emergency hotline contacts, and automated booking notifications.</p>
+        </div>
+      </div>
+
+      <form id="admin-settings-form" onsubmit="event.preventDefault(); AdminPortal.saveSettingsForm();" class="space-y-6 max-w-4xl">
+        <!-- Facility Information Card -->
+        <div class="bg-brand-surface p-6 rounded-2xl border border-brand-border shadow-soft space-y-4">
+          <h3 class="font-serif font-bold text-base text-brand-dark">Sanctuary &amp; Clinic Information</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+            <div>
+              <label class="block font-semibold text-brand-dark mb-1">Facility Name</label>
+              <input id="setting-facility-name" type="text" class="w-full px-3.5 py-2.5 rounded-xl bg-brand-cream border border-brand-border focus:ring-1 focus:ring-brand-brown outline-none">
+            </div>
+            <div>
+              <label class="block font-semibold text-brand-dark mb-1">Primary Contact Email</label>
+              <input id="setting-contact-email" type="email" class="w-full px-3.5 py-2.5 rounded-xl bg-brand-cream border border-brand-border focus:ring-1 focus:ring-brand-brown outline-none">
+            </div>
+            <div>
+              <label class="block font-semibold text-brand-dark mb-1">Emergency Hotline (24/7)</label>
+              <input id="setting-emergency-phone" type="text" class="w-full px-3.5 py-2.5 rounded-xl bg-brand-cream border border-brand-border focus:ring-1 focus:ring-brand-brown outline-none">
+            </div>
+            <div>
+              <label class="block font-semibold text-brand-dark mb-1">Operating Hours</label>
+              <input id="setting-operating-hours" type="text" class="w-full px-3.5 py-2.5 rounded-xl bg-brand-cream border border-brand-border focus:ring-1 focus:ring-brand-brown outline-none">
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block font-semibold text-brand-dark mb-1">Sanctuary Address</label>
+              <input id="setting-facility-address" type="text" class="w-full px-3.5 py-2.5 rounded-xl bg-brand-cream border border-brand-border focus:ring-1 focus:ring-brand-brown outline-none">
+            </div>
+          </div>
+        </div>
+
+        <!-- Automation & Rules Card -->
+        <div class="bg-brand-surface p-6 rounded-2xl border border-brand-border shadow-soft space-y-4">
+          <h3 class="font-serif font-bold text-base text-brand-dark">Booking &amp; Alert Rules</h3>
+          <div class="space-y-3 text-xs">
+            <label class="flex items-center gap-3 p-3 rounded-xl bg-brand-cream/50 border border-brand-border cursor-pointer">
+              <input id="setting-auto-confirm" type="checkbox" class="rounded text-brand-brown focus:ring-brand-brown w-4 h-4">
+              <div>
+                <span class="font-semibold text-brand-dark block">Auto-confirm bookings from verified clients</span>
+                <span class="text-brand-muted text-[11px]">Automatically mark incoming bookings from registered clients as confirmed.</span>
+              </div>
+            </label>
+            <label class="flex items-center gap-3 p-3 rounded-xl bg-brand-cream/50 border border-brand-border cursor-pointer">
+              <input id="setting-email-alerts" type="checkbox" class="rounded text-brand-brown focus:ring-brand-brown w-4 h-4">
+              <div>
+                <span class="font-semibold text-brand-dark block">Instant email notifications for new bookings</span>
+                <span class="text-brand-muted text-[11px]">Receive an immediate alert at the primary contact email whenever an appointment is placed.</span>
+              </div>
+            </label>
+            <label class="flex items-center gap-3 p-3 rounded-xl bg-brand-cream/50 border border-brand-border cursor-pointer">
+              <input id="setting-sms-alerts" type="checkbox" class="rounded text-brand-brown focus:ring-brand-brown w-4 h-4">
+              <div>
+                <span class="font-semibold text-brand-dark block">SMS notifications for urgent inquiries</span>
+                <span class="text-brand-muted text-[11px]">Send an SMS to the on-duty veterinary lead if an emergency hotline request is submitted.</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Admin Profile Credentials Card -->
+        <div class="bg-brand-surface p-6 rounded-2xl border border-brand-border shadow-soft space-y-4">
+          <h3 class="font-serif font-bold text-base text-brand-dark">Admin Profile Credentials</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+            <div>
+              <label class="block font-semibold text-brand-dark mb-1">Admin Display Name</label>
+              <input id="setting-admin-name" type="text" class="w-full px-3.5 py-2.5 rounded-xl bg-brand-cream border border-brand-border focus:ring-1 focus:ring-brand-brown outline-none">
+            </div>
+            <div>
+              <label class="block font-semibold text-brand-dark mb-1">Admin Sign-in Email</label>
+              <input id="setting-admin-email" type="email" class="w-full px-3.5 py-2.5 rounded-xl bg-brand-cream border border-brand-border focus:ring-1 focus:ring-brand-brown outline-none">
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-3">
+          <button type="submit" class="px-6 py-3 rounded-xl bg-brand-brown hover:bg-brand-brownHover text-white font-semibold text-xs shadow-md transition-colors">
+            Save Settings Changes
+          </button>
+        </div>
+      </form>
+    </section>
+
+  </main>
+  <!-- END: CentralContentArea -->
+
+  <!-- BEGIN: RightSidebarPanel (Dashboard only on xl screens) -->
+  <aside id="admin-right-sidebar" aria-label="Activity and Quick Actions" class="w-80 bg-brand-cream/60 shrink-0 border-l border-brand-border p-6 space-y-6 hidden xl:block">
+    <!-- Card: Recent Activity -->
+    <div class="bg-brand-surface p-5 rounded-2xl border border-brand-border shadow-soft">
+      <div class="flex items-center gap-2 mb-4">
+        <svg class="w-5 h-5 text-brand-brown stroke-[2] fill-none stroke-current" viewBox="0 0 24 24">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+        </svg>
+        <h3 class="font-serif font-bold text-base text-brand-dark">Recent Activity</h3>
+      </div>
+      <div class="space-y-4 text-xs">
+        <!-- Item 1 -->
+        <div class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded-full bg-status-greenBg text-status-green flex items-center justify-center shrink-0 mt-0.5">
+            <svg class="w-4 h-4 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
+              <rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect>
+              <line x1="16" x2="16" y1="2" y2="6"></line>
+              <line x1="8" x2="8" y1="2" y2="6"></line>
+            </svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="font-semibold text-brand-dark">New booking received</p>
+            <p class="text-[11px] text-brand-muted truncate">Grooming &amp; Spa - Bruno</p>
+          </div>
+          <span class="text-[10px] text-brand-muted shrink-0">10:24 AM</span>
+        </div>
+        <!-- Item 2 -->
+        <div class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded-full bg-brand-cream border border-brand-border text-brand-dark flex items-center justify-center shrink-0 mt-0.5">
+            <svg class="w-4 h-4 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="font-semibold text-brand-dark">User registered</p>
+            <p class="text-[11px] text-brand-muted truncate">Prathiksha S.</p>
+          </div>
+          <span class="text-[10px] text-brand-muted shrink-0">09:52 AM</span>
+        </div>
+        <!-- Item 3 -->
+        <div class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded-full bg-status-amberBg text-status-amber flex items-center justify-center shrink-0 mt-0.5">
+            <svg class="w-4 h-4 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
+              <circle cx="8" cy="6" r="2.2"></circle>
+              <circle cx="16" cy="6" r="2.2"></circle>
+              <circle cx="4" cy="11.5" r="2"></circle>
+              <circle cx="20" cy="11.5" r="2"></circle>
+              <ellipse cx="12" cy="17" rx="5" ry="4"></ellipse>
+            </svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="font-semibold text-brand-dark">Pet profile added</p>
+            <p class="text-[11px] text-brand-muted truncate">Milo (Tabby Cat)</p>
+          </div>
+          <span class="text-[10px] text-brand-muted shrink-0">09:30 AM</span>
+        </div>
+        <!-- Item 4 -->
+        <div class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded-full bg-brand-cream border border-brand-border text-brand-brown flex items-center justify-center shrink-0 mt-0.5">
+            <svg class="w-4 h-4 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="font-semibold text-brand-dark">New review received</p>
+            <p class="text-[11px] text-brand-muted truncate">Veterinary Care - 5 stars</p>
+          </div>
+          <span class="text-[10px] text-brand-muted shrink-0">08:20 AM</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card: Quick Actions -->
+    <div class="bg-brand-surface p-5 rounded-2xl border border-brand-border shadow-soft">
+      <div class="flex items-center gap-2 mb-4">
+        <svg class="w-5 h-5 text-brand-brown stroke-[2] fill-none stroke-current" viewBox="0 0 24 24">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+        </svg>
+        <h3 class="font-serif font-bold text-base text-brand-dark">Quick Actions</h3>
+      </div>
+      <div class="space-y-2.5">
+        <button onclick="AdminPortal.switchSection('services'); AdminPortal.openAddServiceModal();" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl border border-brand-border hover:border-brand-brown/40 bg-brand-cream/50 hover:bg-brand-cream text-xs font-semibold text-brand-dark transition-all group">
+          <span class="w-6 h-6 rounded-lg bg-brand-brown/10 text-brand-brown flex items-center justify-center font-bold text-sm group-hover:bg-brand-brown group-hover:text-white transition-colors">+</span>
+          <span>Add New Service</span>
+        </button>
+        <button onclick="AdminPortal.switchSection('users')" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl border border-brand-border hover:border-brand-brown/40 bg-brand-cream/50 hover:bg-brand-cream text-xs font-semibold text-brand-dark transition-all group">
+          <span class="w-6 h-6 rounded-lg bg-brand-brown/10 text-brand-brown flex items-center justify-center group-hover:bg-brand-brown group-hover:text-white transition-colors">
+            <svg class="w-3.5 h-3.5 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+            </svg>
+          </span>
+          <span>Manage Users</span>
+        </button>
+        <button onclick="AdminPortal.switchSection('bookings')" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl border border-brand-border hover:border-brand-brown/40 bg-brand-cream/50 hover:bg-brand-cream text-xs font-semibold text-brand-dark transition-all group">
+          <span class="w-6 h-6 rounded-lg bg-brand-brown/10 text-brand-brown flex items-center justify-center group-hover:bg-brand-brown group-hover:text-white transition-colors">
+            <svg class="w-3.5 h-3.5 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
+              <rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect>
+              <line x1="16" x2="16" y1="2" y2="6"></line>
+              <line x1="8" x2="8" y1="2" y2="6"></line>
+            </svg>
+          </span>
+          <span>View All Bookings</span>
+        </button>
+        <button onclick="AdminPortal.switchSection('pets')" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl border border-brand-border hover:border-brand-brown/40 bg-brand-cream/50 hover:bg-brand-cream text-xs font-semibold text-brand-dark transition-all group">
+          <span class="w-6 h-6 rounded-lg bg-brand-brown/10 text-brand-brown flex items-center justify-center group-hover:bg-brand-brown group-hover:text-white transition-colors">
+            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+              <circle cx="8" cy="6" r="2.2"></circle>
+              <circle cx="16" cy="6" r="2.2"></circle>
+              <circle cx="4" cy="11.5" r="2"></circle>
+              <circle cx="20" cy="11.5" r="2"></circle>
+              <ellipse cx="12" cy="17" rx="5" ry="4"></ellipse>
+            </svg>
+          </span>
+          <span>View Pet Directory</span>
+        </button>
+        <button onclick="AdminPortal.switchSection('reports')" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl border border-brand-border hover:border-brand-brown/40 bg-brand-cream/50 hover:bg-brand-cream text-xs font-semibold text-brand-dark transition-all group">
+          <span class="w-6 h-6 rounded-lg bg-brand-brown/10 text-brand-brown flex items-center justify-center group-hover:bg-brand-brown group-hover:text-white transition-colors">
+            <svg class="w-3.5 h-3.5 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
+              <line x1="18" x2="18" y1="20" y2="10"></line>
+              <line x1="12" x2="12" y1="20" y2="4"></line>
+              <line x1="6" x2="6" y1="20" y2="14"></line>
+            </svg>
+          </span>
+          <span>Generate Report</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+  <!-- END: RightSidebarPanel -->
+
 </div>
 <!-- END: MainDashboardLayout -->
+
+<!-- Dynamic Modal Container -->
+<div id="admin-modal-container"></div>
+
 <!-- BEGIN: BottomFooterBar -->
 <footer class="h-12 bg-brand-cream border-t border-brand-border px-6 md:px-8 flex items-center justify-between text-xs text-brand-muted">
-<p>© 2026 PetPals. All rights reserved.</p>
-<div class="flex items-center gap-2">
-<svg class="w-3.5 h-3.5 text-brand-brown fill-brand-brown inline" viewbox="0 0 24 24">
-<circle cx="8" cy="6" r="2.2"></circle>
-<circle cx="16" cy="6" r="2.2"></circle>
-<circle cx="4" cy="11.5" r="2"></circle>
-<circle cx="20" cy="11.5" r="2"></circle>
-<path d="M12 11c-3.5 0-6 2.5-6 6 0 1.9 1.8 3.5 4 3.5.9 0 1.5-.4 2-.8.5.4 1.1.8 2 .8 2.2 0 4-1.6 4-3.5 0-3.5-2.5-6-6-6z"></path>
-</svg>
-<span>Better Care • Happier Pets • A Kinder World</span>
-</div>
+  <p>© 2026 PetPals Administrator Portal. All rights reserved.</p>
+  <div class="flex items-center gap-2">
+    <svg class="w-3.5 h-3.5 text-brand-brown fill-brand-brown inline" viewBox="0 0 24 24">
+      <circle cx="8" cy="6" r="2.2"></circle>
+      <circle cx="16" cy="6" r="2.2"></circle>
+      <circle cx="4" cy="11.5" r="2"></circle>
+      <circle cx="20" cy="11.5" r="2"></circle>
+      <path d="M12 11c-3.5 0-6 2.5-6 6 0 1.9 1.8 3.5 4 3.5.9 0 1.5-.4 2-.8.5.4 1.1.8 2 .8 2.2 0 4-1.6 4-3.5 0-3.5-2.5-6-6-6z"></path>
+    </svg>
+    <span>Better Care • Happier Pets • A Kinder World</span>
+  </div>
 </footer>
 <!-- END: BottomFooterBar -->
-<script data-purpose="dashboard-interactions">
-    // Interactive feedback for buttons and chart segments
-    document.querySelectorAll('.donut-segment').forEach(segment => {
-      segment.addEventListener('mouseenter', () => {
-        segment.style.filter = 'drop-shadow(0 2px 6px rgba(0,0,0,0.15))';
-      });
-      segment.addEventListener('mouseleave', () => {
-        segment.style.filter = 'none';
-      });
+
+<script data-purpose="mobile-sidebar-toggle">
+  // Mobile drawer controls
+  const toggleBtn = document.getElementById('mobile-menu-toggle');
+  const closeBtn = document.getElementById('close-mobile-sidebar');
+  const sidebar = document.getElementById('admin-sidebar');
+  const backdrop = document.getElementById('mobile-sidebar-backdrop');
+
+  function openSidebar() {
+    sidebar.classList.remove('hidden');
+    backdrop.classList.remove('hidden');
+  }
+
+  function closeSidebar() {
+    sidebar.classList.add('hidden');
+    backdrop.classList.add('hidden');
+  }
+
+  toggleBtn?.addEventListener('click', openSidebar);
+  closeBtn?.addEventListener('click', closeSidebar);
+  backdrop?.addEventListener('click', closeSidebar);
+
+  // Close mobile sidebar on route switch
+  document.querySelectorAll('[data-admin-route]').forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth < 768) {
+        closeSidebar();
+      }
     });
-  </script>
-
-
-
-<script>
-// PetPals ADMIN-only navigation
-(function () {
-  const adminRoutes = {
-    dashboard: '/admin/dashboard',
-    bookings: '/admin/bookings',
-    'all-bookings': '/admin/bookings',
-    users: '/admin/users',
-    pets: '/admin/pets',
-    services: '/admin/services',
-    reviews: '/admin/reviews',
-    messages: '/admin/messages',
-    reports: '/admin/reports',
-    settings: '/admin/settings'
-  };
-
-  // Keep every admin navigation link inside /admin.
-  document.querySelectorAll('aside a[href^="#"]').forEach(link => {
-    const section = link.getAttribute('href').slice(1);
-    if (adminRoutes[section]) link.href = adminRoutes[section];
   });
-
-  // Admin-only quick actions must never send the admin into the user portal.
-  document.querySelectorAll('button').forEach(button => {
-    const label = (button.textContent || '').trim().toLowerCase();
-
-    if (label.includes('manage users')) {
-      button.addEventListener('click', () => window.location.href = '/admin/users');
-    } else if (label.includes('view all bookings')) {
-      button.addEventListener('click', () => window.location.href = '/admin/bookings');
-    } else if (label.includes('add new service')) {
-      button.addEventListener('click', () => window.location.href = '/admin/services');
-    } else if (label.includes('generate report')) {
-      button.addEventListener('click', () => window.location.href = '/admin/reports');
-    } else if (label.includes('view submissions')) {
-      button.addEventListener('click', () => window.location.href = '/admin/reports');
-    }
-  });
-
-  // Prevent accidental navigation to user-side routes from the admin page.
-  document.querySelectorAll('a').forEach(link => {
-    const href = link.getAttribute('href') || '';
-    if (/^\/(dashboard|my-bookings|my-pets|services|profile|book-service)/.test(href)) {
-      link.setAttribute('href', '/admin/dashboard');
-    }
-  });
-})();
 </script>
-</body></html>
+
+</body>
+</html>
