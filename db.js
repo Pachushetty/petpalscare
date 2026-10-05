@@ -2,6 +2,7 @@
 const { Pool } = require('pg');
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 require('dotenv').config();
 
@@ -9,21 +10,22 @@ const connectionString = process.env.DATABASE_URL;
 let pool = null;
 let isPostgres = false;
 
-// Initialize PostgreSQL Pool if DATABASE_URL is available
-if (connectionString && !connectionString.includes('your_postgresql_connection_string')) {
+// Initialize PostgreSQL Pool if a remote/Cloud SQL DATABASE_URL is available
+const isLocalhost = connectionString && (connectionString.includes('localhost') || connectionString.includes('127.0.0.1'));
+if (connectionString && !connectionString.includes('your_postgresql_connection_string') && !isLocalhost) {
   try {
     pool = new Pool({
       connectionString,
-      ssl: connectionString.includes('localhost') || connectionString.includes('127.0.0.1') ? false : { rejectUnauthorized: false },
-      connectionTimeoutMillis: 10000,
+      ssl: { rejectUnauthorized: false },
+      connectionTimeoutMillis: 2000,
       idleTimeoutMillis: 30000,
       max: 10
     });
     pool.on('error', (err) => {
-      console.error('[PostgreSQL] Unexpected error on idle client:', err.message);
+      console.warn('[PostgreSQL] Unexpected error on idle client:', err.message);
     });
   } catch (e) {
-    console.error('[PostgreSQL] Error initializing connection pool:', e);
+    console.warn('[PostgreSQL] Error initializing connection pool:', e);
   }
 }
 
@@ -405,6 +407,16 @@ async function initDatabase() {
       );
     `);
 
+    // 9. User Sessions Table
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS user_sessions (
+        token VARCHAR(128) PRIMARY KEY,
+        user_id VARCHAR(64) REFERENCES users(id) ON DELETE CASCADE,
+        created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+        expires_at TIMESTAMPTZ NOT NULL
+      );
+    `);
+
     // Seed default User if empty
     const usersCheck = await client.query('SELECT COUNT(*) FROM users');
     if (parseInt(usersCheck.rows[0].count, 10) === 0) {
@@ -649,6 +661,110 @@ async function getAllUsers() {
       totalSpent: '$' + (userBookings.length * 65)
     };
   });
+}
+
+// --- SESSION MANAGEMENT ---
+async function createSession(userId, durationDays = 7) {
+  const token = crypto.randomBytes(32).toString('hex');
+  const expiresAt = new Date(Date.now() + durationDays * 24 * 60 * 60 * 1000);
+
+  if (isPostgres && pool) {
+    await pool.query(
+      `INSERT INTO user_sessions (token, user_id, expires_at)
+       VALUES ($1, $2, $3)`,
+      [token, userId, expiresAt.toISOString()]
+    );
+    return { token, userId, expiresAt };
+  }
+
+  localStore.sessions = localStore.sessions || [];
+  localStore.sessions = localStore.sessions.filter(s => new Date(s.expires_at) > new Date());
+  localStore.sessions.push({
+    token,
+    user_id: userId,
+    created_at: new Date().toISOString(),
+    expires_at: expiresAt.toISOString()
+  });
+  saveLocalStore(localStore);
+  return { token, userId, expiresAt };
+}
+
+async function getSession(token) {
+  if (!token || typeof token !== 'string') return null;
+  const cleanToken = token.trim();
+  if (!cleanToken) return null;
+
+  if (isPostgres && pool) {
+    const res = await pool.query(
+      `SELECT s.token, s.user_id, s.expires_at,
+              u.id as uid, u.name, u.first_name, u.email, u.phone, u.location, u.avatar, u.role, u.created_at as user_created_at
+       FROM user_sessions s
+       JOIN users u ON u.id = s.user_id
+       WHERE s.token = $1 AND s.expires_at > CURRENT_TIMESTAMP
+       LIMIT 1`,
+      [cleanToken]
+    );
+    if (!res.rows[0]) return null;
+    const row = res.rows[0];
+    return {
+      session: {
+        token: row.token,
+        userId: row.user_id,
+        expiresAt: row.expires_at
+      },
+      user: {
+        id: row.uid,
+        name: row.name,
+        firstName: row.first_name,
+        email: row.email,
+        phone: row.phone,
+        location: row.location,
+        avatar: row.avatar,
+        role: row.role,
+        createdAt: row.user_created_at
+      }
+    };
+  }
+
+  localStore.sessions = localStore.sessions || [];
+  const found = localStore.sessions.find(s => s.token === cleanToken && new Date(s.expires_at) > new Date());
+  if (!found) return null;
+  const user = localStore.users.find(u => u.id === found.user_id);
+  if (!user) return null;
+  const { password_hash, ...safeUser } = user;
+  return {
+    session: {
+      token: found.token,
+      userId: found.user_id,
+      expiresAt: found.expires_at
+    },
+    user: safeUser
+  };
+}
+
+async function deleteSession(token) {
+  if (!token) return false;
+  const cleanToken = typeof token === 'string' ? token.trim() : '';
+  if (!cleanToken) return false;
+
+  if (isPostgres && pool) {
+    await pool.query('DELETE FROM user_sessions WHERE token = $1', [cleanToken]);
+    return true;
+  }
+  localStore.sessions = (localStore.sessions || []).filter(s => s.token !== cleanToken);
+  saveLocalStore(localStore);
+  return true;
+}
+
+async function deleteUserSessions(userId) {
+  if (!userId) return false;
+  if (isPostgres && pool) {
+    await pool.query('DELETE FROM user_sessions WHERE user_id = $1', [userId]);
+    return true;
+  }
+  localStore.sessions = (localStore.sessions || []).filter(s => s.user_id !== userId);
+  saveLocalStore(localStore);
+  return true;
 }
 
 // --- ADMIN AUTH ---
@@ -1354,6 +1470,10 @@ async function saveAdminSettings(sets) {
 
 module.exports = {
   initDatabase,
+  createSession,
+  getSession,
+  deleteSession,
+  deleteUserSessions,
   findUserByEmail,
   findUserById,
   createUser,

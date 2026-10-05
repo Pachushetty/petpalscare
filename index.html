@@ -77,6 +77,12 @@
       <!-- Form -->
       <form id="login-form" class="space-y-3">
 
+        <!-- Error alert -->
+        <div id="login-error-alert" class="hidden p-2.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2">
+          <span class="material-symbols-outlined text-red-600 text-base shrink-0">error</span>
+          <span id="login-error-text">Invalid email or password</span>
+        </div>
+
         <!-- Email -->
         <div>
           <label class="block text-[10px] font-bold tracking-wider uppercase text-on-surface-variant mb-1" for="email">Email Address</label>
@@ -149,26 +155,75 @@
       }
 
       const form = document.getElementById('login-form');
+      const submitBtn = form?.querySelector('button[type="submit"]');
+      const errorAlert = document.getElementById('login-error-alert');
+      const errorText = document.getElementById('login-error-text');
+
+      function showError(msg) {
+        if (errorAlert && errorText) {
+          errorText.textContent = msg || 'Invalid email or password. Please try again.';
+          errorAlert.classList.remove('hidden');
+        }
+      }
+      function clearError() {
+        if (errorAlert) {
+          errorAlert.classList.add('hidden');
+        }
+      }
+
       if (form) {
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', async function(e) {
           e.preventDefault();
+          clearError();
+
           const emailInput = document.getElementById('email');
-          const email = emailInput ? emailInput.value.trim() : '';
-          if (window.PetPalsStore) {
-            const existingUser = window.PetPalsStore.getUser();
-            if (email) {
-              const localPart = email.split('@')[0];
-              const fallbackName = localPart.charAt(0).toUpperCase() + localPart.slice(1);
-              window.PetPalsStore.saveUser({
-                email,
-                name: existingUser.name || fallbackName,
-                firstName: existingUser.firstName || fallbackName.split(' ')[0]
-              });
-            } else {
+          const passInput = document.getElementById('password');
+          const email = (emailInput ? emailInput.value : '').trim();
+          const password = passInput ? passInput.value : '';
+
+          if (!email || !password) {
+            showError('Please enter both your email address and password.');
+            return;
+          }
+
+          const originalBtnHtml = submitBtn.innerHTML;
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = `
+            <svg class="animate-spin h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span>Signing In...</span>
+          `;
+
+          try {
+            const res = await fetch('/api/auth/login', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({ email, password })
+            });
+
+            const data = await res.json();
+            if (!res.ok || !data.success) {
+              submitBtn.disabled = false;
+              submitBtn.innerHTML = originalBtnHtml;
+              showError(data.error || 'Invalid email or password. Please check your credentials.');
+              if (passInput) passInput.focus();
+              return;
+            }
+
+            // Successfully authenticated with backend PostgreSQL session
+            if (window.PetPalsStore) {
+              window.PetPalsStore.saveUser(data.user);
               window.PetPalsStore.setAuthenticated(true);
             }
+            window.location.href = '/dashboard';
+          } catch (err) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnHtml;
+            showError('Network error connecting to the server. Please try again.');
           }
-          window.location.href = '/dashboard';
         });
       }
 
@@ -176,16 +231,7 @@
       if (googleBtn) {
         googleBtn.addEventListener('click', function(e) {
           e.preventDefault();
-          if (window.PetPalsStore) {
-            const u = window.PetPalsStore.getUser();
-            window.PetPalsStore.saveUser({
-              email: u.email || 'prathikshashetty6355@gmail.com',
-              name: u.name || 'Prathiksha Shetty',
-              firstName: u.firstName || 'Prathiksha'
-            });
-            window.PetPalsStore.setAuthenticated(true);
-          }
-          window.location.href = '/dashboard';
+          showError('Please sign in with your email and password.');
         });
       }
     })();

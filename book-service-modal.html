@@ -327,7 +327,7 @@
 <button onclick="window.location.href='/my-pets'" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors w-full sm:w-auto" type="button">
   Cancel
 </button>
-<button onclick="window.location.href='/book-service-pet'" class="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full font-label-lg text-label-lg bg-primary-container hover:bg-primary text-on-primary shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 w-full sm:w-auto" type="button">
+<button id="continueToPetBtn" onclick="handleContinueToPet()" class="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full font-label-lg text-label-lg bg-primary-container hover:bg-primary text-on-primary shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 w-full sm:w-auto" type="button">
 <span>Continue to Pet Details</span>
 <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
 </button>
@@ -430,16 +430,21 @@
     'dental': { service: 'Preventative Dental Scaling', serviceCategory: 'medical', servicePrice: '$40.00', duration: '30 min' }
   };
 
+  window.handleContinueToPet = function() {
+    const checked = document.querySelector('input[name="service-option"]:checked')?.value || 'grooming';
+    if (window.PetPalsStore && serviceDetails[checked]) {
+      PetPalsStore.saveActiveBooking(serviceDetails[checked]);
+    }
+    window.location.href = '/book-service-pet';
+  };
+
   // Booking flow navigation
   document.querySelectorAll('button, a').forEach(el => {
     const text = (el.textContent || '').trim().toLowerCase();
     if (text.includes('continue to pet detail')) {
-      el.addEventListener('click', () => {
-        const checked = document.querySelector('input[name="service-option"]:checked')?.value || 'grooming';
-        if (window.PetPalsStore && serviceDetails[checked]) {
-          PetPalsStore.saveActiveBooking(serviceDetails[checked]);
-        }
-        window.location.href = '/book-service-pet';
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.handleContinueToPet();
       });
     } else if (text.includes('back to service') || text === 'cancel') {
       el.addEventListener('click', () => { window.location.href = '/services'; });

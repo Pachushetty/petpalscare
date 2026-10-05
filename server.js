@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const path = require('path');
 const fs = require('fs');
 const bcrypt = require('bcryptjs');
@@ -8,21 +9,27 @@ require('dotenv').config();
 const db = require('./db.js');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 const PUBLIC_DIR = __dirname;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
+app.use(cookieParser());
 app.use(express.json({ limit: '15mb' }));
 app.use(express.urlencoded({ extended: true, limit: '15mb' }));
 
-// Helper to extract authenticated user from header
-function getAuthUserId(req) {
-  const headerId = req.headers['x-user-id'];
-  if (headerId && typeof headerId === 'string' && headerId.trim()) {
-    return headerId.trim();
-  }
-  return 'usr-prathiksha'; // Default fallback user for seamless demo experience
+// Helper to extract authenticated user from session token (Cookie, Bearer header, or X-Session-Token)
+async function getAuthUser(req) {
+  const token = req.cookies?.petpals_session ||
+    (req.headers.authorization && req.headers.authorization.startsWith('Bearer ') ? req.headers.authorization.slice(7) : null) ||
+    req.headers['x-session-token'];
+
+  if (!token) return null;
+  const sessionData = await db.getSession(token);
+  return sessionData?.user || null;
 }
 
 // -------------------------------------------------------------
@@ -47,24 +54,49 @@ app.post('/api/auth/register', async (req, res) => {
       return res.status(400).json({ error: 'Email and password are required' });
     }
 
-    const existing = await db.findUserByEmail(email);
+    const trimmedEmail = email.trim().toLowerCase();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmedEmail)) {
+      return res.status(400).json({ error: 'Please enter a valid email address' });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({ error: 'Password must be at least 6 characters long' });
+    }
+
+    const existing = await db.findUserByEmail(trimmedEmail);
     if (existing) {
       return res.status(409).json({ error: 'An account with this email already exists' });
     }
 
     const newUser = await db.createUser({
-      name: name || 'Pet Parent',
-      email,
+      name: (name || '').trim() || 'Pet Parent',
+      email: trimmedEmail,
       password,
-      phone: phone || '+91 98765 43210',
-      location: location || 'Mangalore, Karnataka'
+      phone: (phone || '').trim() || '+91 98765 43210',
+      location: (location || '').trim() || 'Mangalore, Karnataka'
     });
 
+    const session = await db.createSession(newUser.id);
     const { password_hash, ...safeUser } = newUser;
-    res.status(201).json({ success: true, user: safeUser });
+
+    // Set secure HTTP cookie
+    res.cookie('petpals_session', session.token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+
+    res.status(201).json({
+      success: true,
+      token: session.token,
+      user: safeUser
+    });
   } catch (err) {
     console.error('Register error:', err);
-    res.status(500).json({ error: 'Failed to create account' });
+    res.status(500).json({ error: 'Failed to create account. Please try again.' });
   }
 });
 
@@ -75,7 +107,8 @@ app.post('/api/auth/login', async (req, res) => {
       return res.status(400).json({ error: 'Email and password are required' });
     }
 
-    const user = await db.findUserByEmail(email);
+    const trimmedEmail = email.trim().toLowerCase();
+    const user = await db.findUserByEmail(trimmedEmail);
     if (!user) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
@@ -85,23 +118,50 @@ app.post('/api/auth/login', async (req, res) => {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
+    const session = await db.createSession(user.id);
     const { password_hash, ...safeUser } = user;
-    res.json({ success: true, user: safeUser });
+
+    // Set secure HTTP cookie
+    res.cookie('petpals_session', session.token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+
+    res.json({
+      success: true,
+      token: session.token,
+      user: safeUser
+    });
   } catch (err) {
     console.error('Login error:', err);
-    res.status(500).json({ error: 'Login failed' });
+    res.status(500).json({ error: 'Login failed. Please try again.' });
+  }
+});
+
+app.post('/api/auth/logout', async (req, res) => {
+  try {
+    const token = req.cookies?.petpals_session || req.headers['x-session-token'];
+    if (token) {
+      await db.deleteSession(token);
+    }
+    res.clearCookie('petpals_session', { path: '/' });
+    res.json({ success: true, message: 'Logged out successfully' });
+  } catch (err) {
+    console.error('Logout error:', err);
+    res.status(500).json({ error: 'Failed to log out' });
   }
 });
 
 app.get('/api/auth/me', async (req, res) => {
   try {
-    const userId = getAuthUserId(req);
-    const user = await db.findUserById(userId);
+    const user = await getAuthUser(req);
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(401).json({ error: 'Not authenticated. Please log in.' });
     }
-    const { password_hash, ...safeUser } = user;
-    res.json(safeUser);
+    res.json(user);
   } catch (err) {
     console.error('Get me error:', err);
     res.status(500).json({ error: 'Failed to fetch user' });
@@ -110,8 +170,11 @@ app.get('/api/auth/me', async (req, res) => {
 
 app.put('/api/auth/profile', async (req, res) => {
   try {
-    const userId = getAuthUserId(req);
-    const updated = await db.updateUser(userId, req.body);
+    const user = await getAuthUser(req);
+    if (!user) {
+      return res.status(401).json({ error: 'Not authenticated. Please log in.' });
+    }
+    const updated = await db.updateUser(user.id, req.body);
     if (!updated) {
       return res.status(404).json({ error: 'User not found' });
     }
@@ -157,8 +220,11 @@ app.get('/api/pets', async (req, res) => {
       const allPets = await db.getAllPets();
       return res.json(allPets);
     }
-    const userId = getAuthUserId(req);
-    const pets = await db.getPetsByUserId(userId);
+    const user = await getAuthUser(req);
+    if (!user) {
+      return res.status(401).json({ error: 'Authentication required. Please log in.' });
+    }
+    const pets = await db.getPetsByUserId(user.id);
     res.json(pets);
   } catch (err) {
     console.error('Get pets error:', err);
@@ -168,11 +234,14 @@ app.get('/api/pets', async (req, res) => {
 
 app.post('/api/pets', async (req, res) => {
   try {
-    const userId = getAuthUserId(req);
+    const user = await getAuthUser(req);
+    if (!user) {
+      return res.status(401).json({ error: 'Authentication required. Please log in.' });
+    }
     if (!req.body.name) {
       return res.status(400).json({ error: 'Pet name is required' });
     }
-    const newPet = await db.createPet(req.body, userId);
+    const newPet = await db.createPet(req.body, user.id);
     res.status(201).json(newPet);
   } catch (err) {
     console.error('Create pet error:', err);
@@ -183,7 +252,15 @@ app.post('/api/pets', async (req, res) => {
 app.put('/api/pets/:id', async (req, res) => {
   try {
     const petId = req.params.id;
-    const userId = req.query.admin === 'true' ? null : getAuthUserId(req);
+    const isAdmin = req.query.admin === 'true';
+    let userId = null;
+    if (!isAdmin) {
+      const user = await getAuthUser(req);
+      if (!user) {
+        return res.status(401).json({ error: 'Authentication required. Please log in.' });
+      }
+      userId = user.id;
+    }
     const updated = await db.updatePet(petId, req.body, userId);
     if (!updated) {
       return res.status(404).json({ error: 'Pet not found or unauthorized' });
@@ -198,7 +275,15 @@ app.put('/api/pets/:id', async (req, res) => {
 app.delete('/api/pets/:id', async (req, res) => {
   try {
     const petId = req.params.id;
-    const userId = req.query.admin === 'true' ? null : getAuthUserId(req);
+    const isAdmin = req.query.admin === 'true';
+    let userId = null;
+    if (!isAdmin) {
+      const user = await getAuthUser(req);
+      if (!user) {
+        return res.status(401).json({ error: 'Authentication required. Please log in.' });
+      }
+      userId = user.id;
+    }
     await db.deletePet(petId, userId);
     res.json({ success: true, message: 'Pet removed' });
   } catch (err) {
@@ -261,8 +346,11 @@ app.get('/api/bookings', async (req, res) => {
       const allBookings = await db.getAllBookings();
       return res.json(allBookings);
     }
-    const userId = getAuthUserId(req);
-    const bookings = await db.getBookingsByUserId(userId);
+    const user = await getAuthUser(req);
+    if (!user) {
+      return res.status(401).json({ error: 'Authentication required. Please log in.' });
+    }
+    const bookings = await db.getBookingsByUserId(user.id);
     res.json(bookings);
   } catch (err) {
     console.error('Get bookings error:', err);
@@ -272,8 +360,11 @@ app.get('/api/bookings', async (req, res) => {
 
 app.post('/api/bookings', async (req, res) => {
   try {
-    const userId = getAuthUserId(req);
-    const booking = await db.createBooking(req.body, userId);
+    const user = await getAuthUser(req);
+    if (!user) {
+      return res.status(401).json({ error: 'Authentication required. Please log in.' });
+    }
+    const booking = await db.createBooking(req.body, user.id);
     res.status(201).json(booking);
   } catch (err) {
     console.error('Create booking error:', err);
@@ -455,11 +546,62 @@ const PAGE_ROUTES = {
   '/mobile-portal': 'mobile-portal.html'
 };
 
-// Route specific page mappings
+const PROTECTED_ROUTES = new Set([
+  '/dashboard',
+  '/my-pets',
+  '/my-bookings',
+  '/profile',
+  '/book-service',
+  '/book-new-service',
+  '/book-service-modal',
+  '/book-service-pet',
+  '/book-service-schedule',
+  '/book-service-review',
+  '/booking-confirmed',
+  '/bookings-pet-dashboard'
+]);
+
+const PROTECTED_HTML_FILES = new Set([
+  'dashboard.html',
+  'my-pets.html',
+  'my-bookings.html',
+  'profile.html',
+  'book-service-modal.html',
+  'book-service-pet.html',
+  'book-service-schedule.html',
+  'book-service-review.html',
+  'booking-confirmed.html',
+  'bookings-pet-dashboard.html'
+]);
+
+// Route specific page mappings with session protection
 Object.keys(PAGE_ROUTES).forEach(route => {
-  app.get(route, (req, res) => {
+  app.get(route, async (req, res) => {
+    if (PROTECTED_ROUTES.has(route)) {
+      const user = await getAuthUser(req);
+      if (!user) {
+        return res.redirect('/login');
+      }
+    } else if ((route === '/login' || route === '/register') && req.query.switch !== 'true') {
+      const user = await getAuthUser(req);
+      if (user) {
+        return res.redirect('/dashboard');
+      }
+    }
     res.sendFile(path.join(PUBLIC_DIR, PAGE_ROUTES[route]));
   });
+});
+
+// Guard direct HTML access for protected pages before static middleware
+app.use(async (req, res, next) => {
+  const cleanPath = req.path.replace(/^\/+/, '');
+  if (PROTECTED_HTML_FILES.has(cleanPath)) {
+    const user = await getAuthUser(req);
+    if (!user) {
+      return res.redirect('/login');
+    }
+  }
+  next();
 });
 
 // Serve static assets from workspace root (js, css, images, html)
@@ -468,10 +610,14 @@ app.use(express.static(PUBLIC_DIR, {
 }));
 
 // Fallback for clean HTML routes or 404
-app.use((req, res) => {
+app.use(async (req, res) => {
   const cleanPath = req.path.replace(/^\/+/, '');
   const candidate = path.join(PUBLIC_DIR, cleanPath + '.html');
   if (fs.existsSync(candidate)) {
+    if (PROTECTED_HTML_FILES.has(cleanPath + '.html')) {
+      const user = await getAuthUser(req);
+      if (!user) return res.redirect('/login');
+    }
     return res.sendFile(candidate);
   }
   res.status(404).sendFile(path.join(PUBLIC_DIR, 'home.html'));

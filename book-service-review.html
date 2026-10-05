@@ -108,18 +108,19 @@
 <div class="bg-surface-container-lowest rounded-DEFAULT p-5 sm:p-6 shadow-sm space-y-5">
 <div class="flex items-center justify-between">
 <div class="flex items-center gap-2.5">
-<div class="w-10 h-10 rounded-full bg-secondary-container/40 flex items-center justify-center text-primary">
+<div id="reviewServiceIcon" class="w-10 h-10 rounded-full bg-secondary-container/40 flex items-center justify-center text-primary shrink-0">
 <span class="material-symbols-outlined text-[22px]">shower</span>
 </div>
 <div>
-<div class="flex items-center gap-2">
-<h2 class="font-headline-sm text-headline-sm text-on-surface">Grooming &amp; Spa</h2>
-<span class="px-2 py-0.5 bg-surface-container font-label-sm text-label-sm text-on-surface-variant rounded-full">75 min</span>
+<div class="flex flex-wrap items-center gap-2">
+<h2 id="reviewServiceName" class="font-headline-sm text-headline-sm text-on-surface">Grooming &amp; Spa Experience</h2>
+<span id="reviewServiceDuration" class="px-2 py-0.5 bg-surface-container font-label-sm text-label-sm text-on-surface-variant rounded-full">75 min</span>
+<span id="reviewServiceHeaderPrice" class="px-2.5 py-0.5 bg-primary-fixed text-on-primary-fixed-variant font-label-sm text-label-sm font-semibold rounded-full">₹45.00 INR</span>
 </div>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Signature full bath, breed-standard trim &amp; ear hygiene</p>
+<p id="reviewServiceDesc" class="font-body-sm text-body-sm text-on-surface-variant">Signature full bath, breed-standard trim &amp; ear hygiene</p>
 </div>
 </div>
-<button class="text-primary hover:text-on-primary-fixed-variant font-label-md text-label-md flex items-center gap-0.5" type="button">
+<button id="editServiceBtn" onclick="window.location.href='/book-service'" class="text-primary hover:text-on-primary-fixed-variant font-label-md text-label-md flex items-center gap-0.5 cursor-pointer shrink-0" type="button">
                   Edit <span class="material-symbols-outlined text-[16px]">edit</span>
 </button>
 </div>
@@ -127,17 +128,17 @@
 <div class="p-3.5 bg-surface-container-low rounded-DEFAULT flex items-center justify-between">
 <div class="flex items-center gap-3">
 <div class="w-12 h-12 rounded-full overflow-hidden shrink-0 bg-surface-container">
-<img class="w-full h-full object-cover" data-alt="Close up portrait of a cheerful, well groomed golden retriever dog with silky golden coat sitting in a warm sunlit veterinary spa" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAt33nyXQXhT-DJMkAFp1xH-yhXnfTrMSPm0zrgnfDDg4CQK9KZDbKLy1hSdwMwsuH4szL0NdOBb_7AKjfnlWOMUAXBVcmIqOmPNxsinja33H1Yc26HWDcIRG-O0dWxnJuad3dZZEVI8uKp0PF2PozWhy4SJqIsPytKeH55LdWZ5clX4bLU6z5qbYSeqfqeQEXWfBPIR1ueDdWdKtfSZRtjYs1W3dDSV3cSZWzSkPhQZuWth6GZG2a42A"/>
+<img id="reviewPetPhoto" class="w-full h-full object-cover" data-alt="Pet photo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAt33nyXQXhT-DJMkAFp1xH-yhXnfTrMSPm0zrgnfDDg4CQK9KZDbKLy1hSdwMwsuH4szL0NdOBb_7AKjfnlWOMUAXBVcmIqOmPNxsinja33H1Yc26HWDcIRG-O0dWxnJuad3dZZEVI8uKp0PF2PozWhy4SJqIsPytKeH55LdWZ5clX4bLU6z5qbYSeqfqeQEXWfBPIR1ueDdWdKtfSZRtjYs1W3dDSV3cSZWzSkPhQZuWth6GZG2a42A"/>
 </div>
 <div>
 <div class="flex items-center gap-2">
-<span class="font-title-md text-title-md text-on-surface font-semibold">Milo</span>
-<span class="px-2 py-0.5 bg-surface-container-lowest text-secondary font-label-sm text-label-sm rounded-full">Friendly &amp; Calm</span>
+<span id="reviewPetName" class="font-title-md text-title-md text-on-surface font-semibold">Milo</span>
+<span id="reviewPetDisposition" class="px-2 py-0.5 bg-surface-container-lowest text-secondary font-label-sm text-label-sm rounded-full">Friendly &amp; Calm</span>
 </div>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Golden Retriever • 3 yrs • 32 kg</p>
+<p id="reviewPetSpecs" class="font-body-sm text-body-sm text-on-surface-variant">Golden Retriever • 3 yrs • 32 kg</p>
 </div>
 </div>
-<button class="text-primary hover:text-on-primary-fixed-variant font-label-md text-label-md" type="button">Change Pet</button>
+<button id="changePetBtn" onclick="window.location.href='/book-service-pet'" class="text-primary hover:text-on-primary-fixed-variant font-label-md text-label-md cursor-pointer shrink-0" type="button">Change Pet</button>
 </div>
 <!-- Details Grid (Time, Specialist, Location) -->
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1">
@@ -148,12 +149,12 @@
 <span class="material-symbols-outlined text-primary text-[18px]">verified</span>
 </div>
 <div class="flex items-center gap-2.5">
-<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container">
-<img class="w-full h-full object-cover" data-alt="Portrait of Sarah Jenkins, a professional female pet aesthetician in clean warm brown PetPals spa apron smiling warmly with soft ambient studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZ-fI_j4oYoHOFSb7MrYA3eMzkP6SnMTvJAq-3ODK8xmHOVvAr0bWc9fO5Uju2MnVg3I5e-N499tJQ3Q8_e2xX6LffuOx-Av2bBlE23RngQifpUxsOol_W8hkzvrT1wInuxOWfHyLfjh7F-nOZoT_Mkthgeu1XURsn2eRq5HqJdl0Kf_XNAhX_ne2CXkzX672W09BGjnHt2gWiz-TPcYH8O0LD4FNhwOCgx_gaX9Sq0hDi3U_YDKr5jg"/>
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container shrink-0">
+<img id="reviewSpecialistPhoto" class="w-full h-full object-cover" data-alt="Portrait of Specialist" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZ-fI_j4oYoHOFSb7MrYA3eMzkP6SnMTvJAq-3ODK8xmHOVvAr0bWc9fO5Uju2MnVg3I5e-N499tJQ3Q8_e2xX6LffuOx-Av2bBlE23RngQifpUxsOol_W8hkzvrT1wInuxOWfHyLfjh7F-nOZoT_Mkthgeu1XURsn2eRq5HqJdl0Kf_XNAhX_ne2CXkzX672W09BGjnHt2gWiz-TPcYH8O0LD4FNhwOCgx_gaX9Sq0hDi3U_YDKr5jg"/>
 </div>
-<div>
-<p class="font-label-lg text-label-lg text-on-surface">Sarah Jenkins</p>
-<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<div class="min-w-0">
+<p id="reviewSpecialistName" class="font-label-lg text-label-lg text-on-surface font-semibold truncate">Sarah Jenkins</p>
+<p id="reviewSpecialistRole" class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
                         Coat &amp; Spa Specialist
                         <span class="text-secondary font-semibold">★ 4.9</span>
 </p>
@@ -164,13 +165,13 @@
 <div class="p-3.5 bg-surface-container-low rounded-DEFAULT">
 <div class="flex items-center justify-between mb-1.5">
 <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Appointment Time</span>
-<button class="text-primary font-label-sm text-label-sm hover:underline" type="button">Reschedule</button>
+<button id="rescheduleBtn" onclick="window.location.href='/book-service-schedule'" class="text-primary font-label-sm text-label-sm hover:underline cursor-pointer" type="button">Reschedule</button>
 </div>
 <div class="flex items-start gap-2">
-<span class="material-symbols-outlined text-secondary text-[20px] mt-0.5">calendar_month</span>
+<span class="material-symbols-outlined text-secondary text-[20px] mt-0.5 shrink-0">calendar_month</span>
 <div>
-<p class="font-label-lg text-label-lg text-on-surface">Thursday, Nov 13, 2025</p>
-<p class="font-body-sm text-body-sm text-on-surface-variant">10:30 AM – 11:45 AM PST</p>
+<p id="reviewAppointmentDate" class="font-label-lg text-label-lg text-on-surface font-semibold">Thursday, Nov 13, 2026</p>
+<p id="reviewAppointmentTime" class="font-body-sm text-body-sm text-on-surface-variant">10:30 AM – 11:45 AM</p>
 </div>
 </div>
 </div>
@@ -178,25 +179,25 @@
 <div class="p-3.5 bg-surface-container-low rounded-DEFAULT sm:col-span-2">
 <div class="flex items-center justify-between mb-1.5">
 <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Location</span>
-<span class="font-label-sm text-label-sm text-secondary">Flagship Center</span>
+<span class="font-label-sm text-label-sm text-secondary font-semibold">Flagship Center</span>
 </div>
 <div class="flex items-start gap-2.5">
 <div class="w-7 h-7 rounded-full bg-surface-container flex items-center justify-center shrink-0 mt-0.5 text-primary">
 <span class="material-symbols-outlined text-[17px]">location_on</span>
 </div>
 <div>
-<p class="font-label-lg text-label-lg text-on-surface">PetPals Flagship Spa &amp; Wellness Lounge</p>
-<p class="font-body-sm text-body-sm text-on-surface-variant">124 Blossom Lane, Suite 200, San Francisco, CA • Dedicated pet drop-off parking available</p>
+<p id="reviewLocationName" class="font-label-lg text-label-lg text-on-surface font-semibold">PetPals Flagship Spa &amp; Wellness Lounge</p>
+<p id="reviewLocationAddress" class="font-body-sm text-body-sm text-on-surface-variant">124 Blossom Lane, Suite 200, San Francisco, CA • Dedicated pet drop-off parking available</p>
 </div>
 </div>
 </div>
 <!-- Special Notes / Instructions -->
 <div class="p-3.5 bg-secondary-container/20 rounded-DEFAULT sm:col-span-2 flex items-start gap-2.5">
-<span class="material-symbols-outlined text-secondary text-[20px] mt-0.5">sticky_note_2</span>
+<span class="material-symbols-outlined text-secondary text-[20px] mt-0.5 shrink-0">sticky_note_2</span>
 <div class="flex-1">
-<span class="font-label-md text-label-md text-on-surface font-semibold">Special Instructions for Stylist:</span>
-<p class="font-body-sm text-body-sm text-on-surface-variant italic mt-0.5">
-                      "Milo is sensitive around loud blowers. Prefers low-noise hand drying and extra gentle handling around ears."
+<span class="font-label-md text-label-md text-on-surface font-semibold">Special Instructions for Caretaker:</span>
+<p id="reviewNotes" class="font-body-sm text-body-sm text-on-surface-variant italic mt-0.5">
+                      "Friendly &amp; Calm. Extra gentle handling around ears."
                     </p>
 </div>
 </div>
@@ -205,48 +206,48 @@
 <!-- Price Breakdown Card -->
 <div class="bg-surface-container-lowest rounded-DEFAULT p-5 sm:p-6 shadow-sm space-y-4">
 <div class="flex items-center justify-between">
-<h3 class="font-title-md text-title-md text-on-surface">Cost Breakdown</h3>
+<h3 class="font-title-md text-title-md text-on-surface font-bold">Cost Breakdown</h3>
 <span class="font-body-sm text-body-sm text-secondary font-medium flex items-center gap-1">
 <span class="material-symbols-outlined text-[16px]">lock</span> Price Locked
                 </span>
 </div>
 <div class="space-y-2.5 font-body-md text-body-md text-on-surface-variant">
 <div class="flex justify-between items-center">
-<span class="text-on-surface">Base Service (Grooming &amp; Spa - Large Breed)</span>
-<span class="font-medium text-on-surface">$45.00</span>
+<span id="reviewCostBaseLabel" class="text-on-surface">Base Service (Grooming &amp; Spa Experience)</span>
+<span id="reviewCostBasePrice" class="font-semibold text-on-surface">₹45.00 INR</span>
 </div>
 <div class="flex justify-between items-center">
 <div class="flex items-center gap-1.5">
 <span class="material-symbols-outlined text-[16px] text-primary">spa</span>
 <span>Add-on: Herbal Flea &amp; Tick Coat Rinse</span>
 </div>
-<span class="font-medium text-on-surface">$12.00</span>
+<span id="reviewCostAddon1" class="font-medium text-on-surface">₹12.00 INR</span>
 </div>
 <div class="flex justify-between items-center">
 <div class="flex items-center gap-1.5">
 <span class="material-symbols-outlined text-[16px] text-primary">eco</span>
 <span>Add-on: Organic Blueberry Facial &amp; Paw Balm</span>
 </div>
-<span class="font-medium text-on-surface">$8.00</span>
+<span id="reviewCostAddon2" class="font-medium text-on-surface">₹8.00 INR</span>
 </div>
 <div class="flex justify-between items-center text-body-sm">
 <span class="flex items-center gap-1">
                     Care Concierge, Sanitization &amp; Towel Service
                     <span class="material-symbols-outlined text-[14px] text-outline" title="Includes sterile equipment prep, aromatherapy, and dedicated comfort assistant">info</span>
 </span>
-<span>$4.50</span>
+<span id="reviewCostFee" class="font-medium text-on-surface">₹4.50 INR</span>
 </div>
 <div class="flex justify-between items-center text-body-sm">
-<span>Estimated Taxes (SF City &amp; County)</span>
-<span>$4.85</span>
+<span>Estimated Taxes (City &amp; State GST)</span>
+<span id="reviewCostTax" class="font-medium text-on-surface">₹4.85 INR</span>
 </div>
 </div>
 <!-- Promo Code Box -->
 <div class="pt-2">
 <div class="flex items-center gap-2 p-1.5 bg-surface-container-low rounded-full">
 <span class="material-symbols-outlined text-outline ml-2.5 text-[20px]">sell</span>
-<input class="bg-transparent text-body-sm font-body-sm text-on-surface placeholder:text-outline focus:outline-none flex-1 px-1" placeholder="Promo code or gift certificate" type="text"/>
-<button class="px-4 py-1.5 bg-surface-container-highest hover:bg-secondary-container hover:text-on-secondary-container text-on-surface font-label-md text-label-md rounded-full transition-all" type="button">
+<input id="promoCodeInput" class="bg-transparent text-body-sm font-body-sm text-on-surface placeholder:text-outline focus:outline-none flex-1 px-1" placeholder="Promo code or gift certificate" type="text"/>
+<button id="applyPromoBtn" class="px-4 py-1.5 bg-surface-container-highest hover:bg-secondary-container hover:text-on-secondary-container text-on-surface font-label-md text-label-md rounded-full transition-all cursor-pointer" type="button">
                     Apply
                   </button>
 </div>
@@ -258,7 +259,7 @@
 <p class="font-body-sm text-body-sm text-on-surface-variant">Includes all taxes, products, and fees</p>
 </div>
 <div class="text-right">
-<span class="font-headline-sm text-headline-sm text-primary font-bold">$74.35</span>
+<span id="reviewCostTotal" class="font-headline-sm text-headline-sm text-primary font-bold">₹74.35 INR</span>
 <p class="font-body-sm text-body-sm text-secondary">Pay now or upon arrival</p>
 </div>
 </div>
@@ -269,43 +270,43 @@
 <!-- Contact & Real-time Update Consent -->
 <div class="bg-surface-container-lowest rounded-DEFAULT p-5 sm:p-6 shadow-sm space-y-4">
 <div class="flex items-center justify-between">
-<h3 class="font-title-md text-title-md text-on-surface">Client &amp; Updates</h3>
-<button class="font-label-sm text-label-sm text-primary hover:underline" type="button">Change</button>
+<h3 class="font-title-md text-title-md text-on-surface font-bold">Client &amp; Updates</h3>
+<button id="changeClientBtn" onclick="window.location.href='/profile'" class="font-label-sm text-label-sm text-primary hover:underline cursor-pointer" type="button">Change</button>
 </div>
 <div class="p-3.5 bg-surface-container-low rounded-DEFAULT space-y-2 text-body-sm">
 <div class="flex items-center gap-2 text-on-surface">
 <span class="material-symbols-outlined text-[18px] text-secondary">person</span>
-<span class="font-medium">Sarah Jenkins (Guardian: Priya S.)</span>
+<span id="reviewClientName" class="font-medium">Sarah Jenkins (Guardian: Priya S.)</span>
 </div>
 <div class="flex items-center gap-2 text-on-surface-variant">
 <span class="material-symbols-outlined text-[18px] text-secondary">mail</span>
-<span>sarah.j@example.com</span>
+<span id="reviewClientEmail">sarah.j@example.com</span>
 </div>
 <div class="flex items-center gap-2 text-on-surface-variant">
 <span class="material-symbols-outlined text-[18px] text-secondary">call</span>
-<span>+1 (555) 234-5678</span>
+<span id="reviewClientPhone">+1 (555) 234-5678</span>
 </div>
 </div>
 <label class="flex items-start gap-3 p-3 bg-surface-container rounded-DEFAULT cursor-pointer select-none">
 <input checked="" class="mt-1 h-4 w-4 rounded text-primary-container focus:ring-primary-container/20 accent-primary" type="checkbox"/>
 <div class="text-body-sm leading-snug">
 <span class="font-medium text-on-surface">Send real-time SMS &amp; photo milestones</span>
-<p class="text-on-surface-variant text-[11px] mt-0.5">Receive cute photos when Milo is in the bath, resting, and ready for pickup!</p>
+<p class="text-on-surface-variant text-[11px] mt-0.5">Receive cute photos when your pet is in the bath, resting, and ready for pickup!</p>
 </div>
 </label>
 </div>
 <!-- Payment Method Selection -->
 <div class="bg-surface-container-lowest rounded-DEFAULT p-5 sm:p-6 shadow-sm space-y-4">
-<h3 class="font-title-md text-title-md text-on-surface">Payment Preference</h3>
+<h3 class="font-title-md text-title-md text-on-surface font-bold">Payment Preference</h3>
 <div class="space-y-2.5" id="paymentOptions">
 <!-- Option 1: Card (Default selected) -->
-<div class="p-3.5 rounded-DEFAULT bg-surface-container-low hover:bg-surface-container transition-all cursor-pointer">
+<div class="p-3.5 rounded-DEFAULT bg-surface-container ring-2 ring-primary-container transition-all cursor-pointer">
 <label class="flex items-start justify-between cursor-pointer">
 <div class="flex items-center gap-3">
 <input checked="" class="h-4 w-4 text-primary-container accent-primary" name="payment_choice" type="radio" value="card"/>
 <div>
-<p class="font-label-lg text-label-lg text-on-surface">Credit / Debit Card</p>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Mastercard ending in <span class="font-mono font-medium text-on-surface">•••• 4821</span></p>
+<p class="font-label-lg text-label-lg text-on-surface font-semibold">Credit / Debit Card / UPI</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Instant secure gateway • Cards, NetBanking, UPI</p>
 </div>
 </div>
 <div class="flex items-center gap-1 text-on-surface-variant">
@@ -327,7 +328,7 @@
 <div class="flex items-center gap-3">
 <input class="h-4 w-4 text-primary-container accent-primary" name="payment_choice" type="radio" value="digital_wallet"/>
 <div>
-<p class="font-label-lg text-label-lg text-on-surface">Apple Pay / Google Pay</p>
+<p class="font-label-lg text-label-lg text-on-surface font-semibold">Google Pay / PhonePe / Paytm</p>
 <p class="font-body-sm text-body-sm text-on-surface-variant">Instant 1-touch secure authorization</p>
 </div>
 </div>
@@ -342,7 +343,7 @@
 <div class="flex items-center gap-3">
 <input class="h-4 w-4 text-primary-container accent-primary" name="payment_choice" type="radio" value="in_person"/>
 <div>
-<p class="font-label-lg text-label-lg text-on-surface">Pay at Spa Arrival</p>
+<p class="font-label-lg text-label-lg text-on-surface font-semibold">Pay at Sanctuary Arrival</p>
 <p class="font-body-sm text-body-sm text-on-surface-variant">Cash, physical card, or PetPals Gift Wallet</p>
 </div>
 </div>
@@ -358,7 +359,7 @@
 <span class="font-semibold text-body-md">100% Gentle Care Guarantee</span>
 </div>
 <p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
-                If Milo feels overly anxious or if you are not fully delighted with the results, our lead pet nurse will re-accommodate or refund the service without question.
+                If your pet feels overly anxious or if you are not fully delighted with the results, our lead pet specialist will re-accommodate or refund the service without question.
               </p>
 <div class="pt-1 flex items-center gap-1.5 text-on-surface font-label-sm text-label-sm">
 <span class="material-symbols-outlined text-[16px] text-secondary">update</span>
@@ -381,17 +382,17 @@
 <span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-medium">All taxes &amp; fees included</span>
 </div>
 <p class="font-body-sm text-body-sm text-on-surface-variant">
-Due Today • <span class="font-headline-sm text-headline-sm text-primary font-bold ml-1" id="reviewFooterTotal">$74.35</span>
+Due Today • <span class="font-headline-sm text-headline-sm text-primary font-bold ml-1" id="reviewFooterTotal">₹74.35 INR</span>
 </p>
 </div>
 </div>
 <!-- Action Buttons -->
 <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
-<button onclick="window.location.href='/book-service-schedule'" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors w-full sm:w-auto" type="button">
+<button id="backToScheduleBtn" onclick="window.location.href='/book-service-schedule'" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors w-full sm:w-auto cursor-pointer" type="button">
 <span class="material-symbols-outlined text-[18px]">arrow_back</span>
 <span>Back to Schedule</span>
 </button>
-<button id="confirmBookingBtn" class="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full font-label-lg text-label-lg bg-primary-container hover:bg-primary text-on-primary shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 w-full sm:w-auto" type="button">
+<button id="confirmBookingBtn" class="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full font-label-lg text-label-lg bg-primary-container hover:bg-primary text-on-primary shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 w-full sm:w-auto cursor-pointer" type="button">
 <span>Confirm &amp; Book Appointment</span>
 <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
 </button>
@@ -414,53 +415,6 @@ Due Today • <span class="font-headline-sm text-headline-sm text-primary font-b
 </div>
 </div>
 </div>
-<script>
-    (function() {
-      // Payment option visual selection highlight micro-interaction
-      const paymentRadios = document.querySelectorAll('input[name="payment_choice"]');
-      paymentRadios.forEach(radio => {
-        radio.addEventListener('change', function() {
-          paymentRadios.forEach(r => {
-            const card = r.closest('label').parentElement;
-            if (card) {
-              card.classList.remove('ring-2', 'ring-primary-container', 'bg-surface-container');
-              card.classList.add('bg-surface-container-low');
-            }
-          });
-          if (this.checked) {
-            const activeCard = this.closest('label').parentElement;
-            if (activeCard) {
-              activeCard.classList.remove('bg-surface-container-low');
-              activeCard.classList.add('bg-surface-container');
-            }
-          }
-        });
-      });
-
-      // Submit confirmation feedback
-      const confirmBtn = document.getElementById('confirmBookingBtn');
-      if (confirmBtn) {
-        confirmBtn.addEventListener('click', function() {
-          const originalHTML = confirmBtn.innerHTML;
-          confirmBtn.innerHTML = `
-            <span class="material-symbols-outlined text-[20px] animate-spin">progress_activity</span>
-            <span>Securing Milo's Appointment...</span>
-          `;
-          confirmBtn.disabled = true;
-          
-          setTimeout(() => {
-            confirmBtn.innerHTML = `
-              <span class="material-symbols-outlined text-[20px]">check_circle</span>
-              <span>Booking Confirmed! #PP-84920</span>
-            `;
-            confirmBtn.classList.remove('bg-primary-container');
-            confirmBtn.classList.add('bg-secondary');
-          }, 1200);
-        });
-      }
-    })();
-  </script>
-</div></main><footer class="w-full bg-surface-container-low border-t border-outline-variant/60 pt-16 pb-12"><div class="max-w-[1200px] mx-auto px-gutter"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-10 mb-12"><div class="space-y-space-md"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[28px] text-primary" style="font-variation-settings: 'FILL' 1;">pets</span><span class="font-headline-sm text-headline-sm text-primary tracking-tight">PetPals</span></div><p class="font-headline-sm text-title-md text-secondary italic">Caring for Every Paw, Every Day</p><p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">Happy pets. Healthy lives. We're here for every paw, every day.</p><div class="flex items-center gap-space-xs pt-space-xs"><a aria-label="Facebook" class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-primary-container hover:text-on-primary transition-colors" href="#"><span class="material-symbols-outlined text-[18px]">public</span></a><a aria-label="Instagram" class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-primary-container hover:text-on-primary transition-colors" href="#"><span class="material-symbols-outlined text-[18px]">photo_camera</span></a><a aria-label="X Twitter" class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-primary-container hover:text-on-primary transition-colors" href="#"><span class="material-symbols-outlined text-[18px]">tag</span></a><a aria-label="YouTube" class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-primary-container hover:text-on-primary transition-colors" href="#"><span class="material-symbols-outlined text-[18px]">smart_display</span></a></div></div><div><h3 class="font-title-md text-title-md text-on-surface mb- space-md">Quick Links</h3><ul class="space-y-2.5 font-body-md text-body-md text-on-surface-variant"><li><a class="hover:text-primary transition-colors" data-path="home" href="#">Home</a></li><li><a class="hover:text-primary transition-colors" data-path="about-us" href="#">About Us</a></li><li><a class="hover:text-primary transition-colors" data-path="contact" href="#">Contact</a></li><li><a class="hover:text-primary transition-colors" data-path="faqs" href="#">FAQs</a></li><li><a class="hover:text-primary transition-colors" data-path="careers" href="#">Careers</a></li></ul></div><div><h3 class="font-title-md text-title-md text-on-surface mb-space-md">Pet Services</h3><ul class="space-y-2.5 font-body-md text-body-md text-on-surface-variant"><li><a class="hover:text-primary transition-colors" data-path="pet-medical" href="#">Veterinary Care</a></li><li><a class="hover:text-primary transition-colors" data-path="pet-care" href="#">Pet Boarding</a></li><li><a class="hover:text-primary transition-colors" data-path="pet-care" href="#">Dog Walking</a></li><li><a class="hover:text-primary transition-colors" data-path="pet-care" href="#">Grooming &amp; Spa</a></li><li><a class="hover:text-primary transition-colors" data-path="pet-care" href="#">Pet Training</a></li><li><a class="hover:text-primary transition-colors" data-path="pet-care" href="#">Pet Sitting</a></li></ul></div><div class="space-y-space-md"><h3 class="font-title-md text-title-md text-on-surface">Contact Us</h3><div class="space-y-3 font-body-md text-body-md text-on-surface-variant"><div class="flex items-start gap-space-xs"><span class="material-symbols-outlined text-primary text-[20px] mt-0.5">call</span><span>+1 (800) 555-PALS</span></div><div class="flex items-start gap-space-xs"><span class="material-symbols-outlined text-primary text-[20px] mt-0.5">mail</span><span>hello@petpals.com</span></div><div class="flex items-start gap-space-xs"><span class="material-symbols-outlined text-primary text-[20px] mt-0.5">location_on</span><span>124 Blossom Lane, Suite 200, San Francisco, CA</span></div></div></div></div><div class="pt-8 border-t border-outline-variant/40 flex flex-col md:flex-row items-center justify-between gap-4 font-body-sm text-body-sm text-on-surface-variant"><p>© 2025 PetPals Inc. All rights reserved. Caring for Every Paw, Every Day.</p><div class="flex items-center gap-space-md"><a class="hover:text-on-surface transition-colors" data-path="privacy-policy" href="#">Privacy Policy</a><span class="text-outline-variant">•</span><a class="hover:text-on-surface transition-colors" data-path="terms-of-service" href="#">Terms of Service</a></div></div></div></footer>
 <script>
 (function() {
   // Sidebar navigation routing
@@ -493,7 +447,6 @@ Due Today • <span class="font-headline-sm text-headline-sm text-primary font-b
     const text = (link.textContent || '').trim();
     if (link.href.includes('#') || link.getAttribute('href') === '#') {
       if (text === 'View All' || text.includes('View all')) {
-        // Try to figure out context from parent
         const parent = link.closest('[class]');
         const parentText = parent ? parent.textContent : '';
         if (parentText.toLowerCase().includes('booking')) link.href = '/my-bookings';
@@ -507,156 +460,259 @@ Due Today • <span class="font-headline-sm text-headline-sm text-primary font-b
     el.style.cursor = 'pointer';
     el.addEventListener('click', () => { window.location.href = '/profile'; });
   });
-})();
-</script>
 
-<script>
-(function() {
+  // Payment radio option highlight
+  const paymentRadios = document.querySelectorAll('input[name="payment_choice"]');
+  paymentRadios.forEach(radio => {
+    radio.addEventListener('change', function() {
+      paymentRadios.forEach(r => {
+        const card = r.closest('label')?.parentElement;
+        if (card) {
+          card.classList.remove('ring-2', 'ring-primary-container', 'bg-surface-container');
+          card.classList.add('bg-surface-container-low');
+        }
+      });
+      if (this.checked) {
+        const activeCard = this.closest('label')?.parentElement;
+        if (activeCard) {
+          activeCard.classList.remove('bg-surface-container-low');
+          activeCard.classList.add('bg-surface-container', 'ring-2', 'ring-primary-container');
+        }
+      }
+    });
+  });
+
+  // Promo code interaction
+  const applyPromoBtn = document.getElementById('applyPromoBtn');
+  const promoInput = document.getElementById('promoCodeInput');
+  if (applyPromoBtn && promoInput) {
+    applyPromoBtn.addEventListener('click', () => {
+      const code = promoInput.value.trim().toUpperCase();
+      if (!code) return;
+      applyPromoBtn.textContent = 'Applied!';
+      applyPromoBtn.classList.remove('bg-surface-container-highest');
+      applyPromoBtn.classList.add('bg-primary-container', 'text-on-primary');
+      if (window.toast) {
+        toast(`Promo code ${code} applied successfully!`, 'success');
+      }
+    });
+  }
+
+  function parsePrice(val) {
+    if (typeof val === 'number') return val;
+    if (!val) return 45;
+    const num = parseFloat(String(val).replace(/[^0-9.]/g, ''));
+    return isNaN(num) || num <= 0 ? 45 : num;
+  }
+
+  function formatINR(amount) {
+    return '₹' + Number(amount).toFixed(2) + ' INR';
+  }
+
   function initReviewPage() {
     if (!window.PetPalsStore) return;
-    const active = PetPalsStore.getActiveBooking();
-    const user = PetPalsStore.getUser();
+    const active = PetPalsStore.getActiveBooking() || {};
+    const user = PetPalsStore.getUser() || { name: 'Prathiksha Shetty', email: 'shettyypachu@gmail.com', phone: '+91 98765 43210' };
+    const pets = PetPalsStore.getPets() || [];
 
-    // 1. Populate Service
-    const serviceTitle = document.querySelector('.lg\\:col-span-7 h2.font-headline-sm');
-    if (serviceTitle && active.service) {
-      serviceTitle.textContent = active.service;
+    // 1. Service & Pricing in ₹ INR
+    const serviceName = active.service || 'Grooming & Spa Experience';
+    const duration = active.duration || '75 min';
+    const basePrice = parsePrice(active.servicePrice || 45);
+
+    let addon1 = 12.00;
+    let addon2 = 8.00;
+    let fee = 4.50;
+    let tax = 4.85;
+
+    if (basePrice >= 100) {
+      addon1 = Math.round(basePrice * 0.15);
+      addon2 = Math.round(basePrice * 0.10);
+      fee = Math.round(basePrice * 0.05);
+      tax = Math.round(basePrice * 0.06);
+    }
+    const totalAmount = basePrice + addon1 + addon2 + fee + tax;
+
+    const sNameEl = document.getElementById('reviewServiceName');
+    if (sNameEl) sNameEl.textContent = serviceName;
+
+    const sDurationEl = document.getElementById('reviewServiceDuration');
+    if (sDurationEl) sDurationEl.textContent = duration;
+
+    const sHeaderPriceEl = document.getElementById('reviewServiceHeaderPrice');
+    if (sHeaderPriceEl) sHeaderPriceEl.textContent = formatINR(basePrice);
+
+    const costBaseLabel = document.getElementById('reviewCostBaseLabel');
+    if (costBaseLabel) costBaseLabel.textContent = `Base Service (${serviceName})`;
+
+    const costBasePrice = document.getElementById('reviewCostBasePrice');
+    if (costBasePrice) costBasePrice.textContent = formatINR(basePrice);
+
+    const costAddon1 = document.getElementById('reviewCostAddon1');
+    if (costAddon1) costAddon1.textContent = formatINR(addon1);
+
+    const costAddon2 = document.getElementById('reviewCostAddon2');
+    if (costAddon2) costAddon2.textContent = formatINR(addon2);
+
+    const costFee = document.getElementById('reviewCostFee');
+    if (costFee) costFee.textContent = formatINR(fee);
+
+    const costTax = document.getElementById('reviewCostTax');
+    if (costTax) costTax.textContent = formatINR(tax);
+
+    const costTotal = document.getElementById('reviewCostTotal');
+    if (costTotal) costTotal.textContent = formatINR(totalAmount);
+
+    const footerTotal = document.getElementById('reviewFooterTotal');
+    if (footerTotal) footerTotal.textContent = formatINR(totalAmount);
+
+    // Update service icon & contextual description
+    const descEl = document.getElementById('reviewServiceDesc');
+    const iconEl = document.getElementById('reviewServiceIcon');
+    const sLower = serviceName.toLowerCase();
+    if (sLower.includes('vet') || sLower.includes('health') || sLower.includes('medical')) {
+      if (descEl) descEl.textContent = 'Comprehensive veterinary health check, vitals assessment, and wellness exam';
+      if (iconEl) iconEl.innerHTML = '<span class="material-symbols-outlined text-[22px]">stethoscope</span>';
+    } else if (sLower.includes('walk')) {
+      if (descEl) descEl.textContent = 'Engaging 60-min outdoor exercise session with GPS route tracking & hydration check';
+      if (iconEl) iconEl.innerHTML = '<span class="material-symbols-outlined text-[22px]">directions_walk</span>';
+    } else if (sLower.includes('board')) {
+      if (descEl) descEl.textContent = 'Sanctuary private suite boarding with luxury bedding, daily playtime, and night checks';
+      if (iconEl) iconEl.innerHTML = '<span class="material-symbols-outlined text-[22px]">hotel</span>';
+    } else if (sLower.includes('train')) {
+      if (descEl) descEl.textContent = 'Positive reinforcement behavior and companion obedience training session';
+      if (iconEl) iconEl.innerHTML = '<span class="material-symbols-outlined text-[22px]">sports_score</span>';
+    } else if (sLower.includes('dental')) {
+      if (descEl) descEl.textContent = 'Gentle preventative dental scaling, tartar removal, and oral hygiene treatment';
+      if (iconEl) iconEl.innerHTML = '<span class="material-symbols-outlined text-[22px]">dentistry</span>';
     }
 
-    // 2. Populate Pet details
-    const petNameEl = document.querySelector('.lg\\:col-span-7 .font-title-md');
-    if (petNameEl && active.petName) {
-      petNameEl.textContent = active.petName;
-    }
-    const petMetaEl = document.querySelector('.lg\\:col-span-7 p.font-body-sm');
-    if (petMetaEl && active.petBreed) {
-      petMetaEl.textContent = `${active.petBreed} • ${active.petAge || 'Companion'} • ${active.petWeight || 'Pet'}`;
-    }
-    const petImg = document.querySelector('.lg\\:col-span-7 .w-12.h-12 img');
-    if (petImg && active.petPhoto) {
-      petImg.src = active.petPhoto;
+    // 2. Pet details
+    const petName = active.petName || 'Milo';
+    const petBreed = active.petBreed || 'Golden Retriever';
+    const petAge = active.petAge || '3 yrs';
+    const petWeight = active.petWeight || '32 kg';
+    const petDisposition = active.notes && !active.notes.startsWith('{') && active.notes.length < 40 ? active.notes : 'Friendly & Calm';
+
+    const pNameEl = document.getElementById('reviewPetName');
+    if (pNameEl) pNameEl.textContent = petName;
+
+    const pDispEl = document.getElementById('reviewPetDisposition');
+    if (pDispEl) pDispEl.textContent = petDisposition;
+
+    const pSpecsEl = document.getElementById('reviewPetSpecs');
+    if (pSpecsEl) pSpecsEl.textContent = `${petBreed} • ${petAge} • ${petWeight}`;
+
+    const pPhotoEl = document.getElementById('reviewPetPhoto');
+    if (pPhotoEl) {
+      const photoSrc = active.petPhoto || active.petAvatar || (pets.length > 0 && pets[0].avatar) || 'https://lh3.googleusercontent.com/aida-public/AB6AXuAt33nyXQXhT-DJMkAFp1xH-yhXnfTrMSPm0zrgnfDDg4CQK9KZDbKLy1hSdwMwsuH4szL0NdOBb_7AKjfnlWOMUAXBVcmIqOmPNxsinja33H1Yc26HWDcIRG-O0dWxnJuad3dZZEVI8uKp0PF2PozWhy4SJqIsPytKeH55LdWZ5clX4bLU6z5qbYSeqfqeQEXWfBPIR1ueDdWdKtfSZRtjYs1W3dDSV3cSZWzSkPhQZuWth6GZG2a42A';
+      pPhotoEl.src = photoSrc;
+      pPhotoEl.alt = petName;
     }
 
     // 3. Specialist
-    if (active.specialist) {
-      const specNameEl = Array.from(document.querySelectorAll('.lg\\:col-span-7 p.font-label-lg'))
-        .find(el => el.textContent.includes('Sarah') || el.closest('.sm\\:grid-cols-2'));
-      if (specNameEl) specNameEl.textContent = active.specialist;
+    const specName = active.specialist || 'Sarah Jenkins';
+    const specRole = active.specialistRole || 'Coat Specialist ★ 4.9';
+
+    const specNameEl = document.getElementById('reviewSpecialistName');
+    if (specNameEl) specNameEl.textContent = specName;
+
+    const specRoleEl = document.getElementById('reviewSpecialistRole');
+    if (specRoleEl) {
+      specRoleEl.innerHTML = `${specRole.replace('★ 4.9', '').trim()} <span class="text-secondary font-semibold">★ 4.9</span>`;
     }
 
-    // 4. Date & Time
-    if (active.date) {
-      const dateEl = Array.from(document.querySelectorAll('.lg\\:col-span-7 p.font-label-lg'))
-        .find(el => el.textContent.includes('Nov') || el.textContent.includes('202'));
-      if (dateEl) dateEl.textContent = active.date;
-    }
-    if (active.time) {
-      const timeEl = Array.from(document.querySelectorAll('.lg\\:col-span-7 p.font-body-sm'))
-        .find(el => el.textContent.includes('AM') || el.textContent.includes('PM'));
-      if (timeEl) timeEl.textContent = `${active.time} PST`;
-    }
+    // 4. Date & Schedule Time
+    const dateStr = active.date || '13 Nov 2026';
+    const timeStr = active.time || '10:30 AM';
 
-    // 5. Special instructions
-    if (active.notes) {
-      const notesEl = document.querySelector('.lg\\:col-span-7 p.italic');
-      if (notesEl) notesEl.textContent = `"${active.notes}"`;
-    }
+    const dateEl = document.getElementById('reviewAppointmentDate');
+    if (dateEl) dateEl.textContent = dateStr;
 
-    // 6. Pricing
-    const price = active.servicePrice || '$65.00';
-    const numPrice = parseFloat(price.replace(/[^0-9.]/g, '')) || 65;
-    const baseServiceRow = Array.from(document.querySelectorAll('.lg\\:col-span-7 .space-y-2\\.5 > div'))[0];
-    if (baseServiceRow) {
-      const priceSpan = baseServiceRow.querySelector('span:last-child');
-      if (priceSpan) priceSpan.textContent = `$${numPrice.toFixed(2)}`;
+    const timeEl = document.getElementById('reviewAppointmentTime');
+    if (timeEl) timeEl.textContent = `${timeStr} (Local Sanctuary Time)`;
+
+    // 5. Location / Address
+    const locName = active.location || 'PetPals Flagship Spa & Wellness Lounge • Suite 4';
+    const locNameEl = document.getElementById('reviewLocationName');
+    if (locNameEl) locNameEl.textContent = locName;
+
+    // 6. Special Instructions
+    const notesEl = document.getElementById('reviewNotes');
+    if (notesEl) {
+      notesEl.textContent = active.notes ? `"${active.notes}"` : `"${petName} is ${petDisposition.toLowerCase()}. Extra gentle handling around ears."`;
     }
-    // Total price
-    const totalAmount = (numPrice + 29.35).toFixed(2);
-    document.querySelectorAll('.font-headline-sm').forEach(el => {
-      if (el.textContent.includes('$')) {
-        el.textContent = `$${totalAmount}`;
-      }
-    });
 
     // 7. Client & Updates info
     if (user) {
-      const clientNameEl = document.querySelector('.lg\\:col-span-5 .p-3\\.5 .font-medium');
-      if (clientNameEl) {
-        clientNameEl.textContent = `${user.name} (Pet Parent)`;
-      }
-      const clientEmailEl = document.querySelector('.lg\\:col-span-5 .p-3\\.5 .text-on-surface-variant:nth-of-type(2) span');
-      if (clientEmailEl && user.email) {
-        clientEmailEl.textContent = user.email;
-      }
-      const clientPhoneEl = document.querySelector('.lg\\:col-span-5 .p-3\\.5 .text-on-surface-variant:nth-of-type(3) span');
-      if (clientPhoneEl && user.phone) {
-        clientPhoneEl.textContent = user.phone;
-      }
+      const cNameEl = document.getElementById('reviewClientName');
+      if (cNameEl) cNameEl.textContent = `${user.name || 'Prathiksha Shetty'} (Guardian: Pet Parent)`;
+      const cEmailEl = document.getElementById('reviewClientEmail');
+      if (cEmailEl && user.email) cEmailEl.textContent = user.email;
+      const cPhoneEl = document.getElementById('reviewClientPhone');
+      if (cPhoneEl && user.phone) cPhoneEl.textContent = user.phone;
     }
 
-    // Reference number in header
-    const refNum = active.id || ('PP-' + Math.floor(10000 + Math.random() * 90000));
+    // 8. Booking Reference ID (Targeting ONLY the ref span, never destroying the modal DOM)
+    const refNum = (active.id && active.id.startsWith('PP-')) ? active.id : ('PP-' + Math.floor(10000 + Math.random() * 90000));
     active.id = refNum;
     PetPalsStore.saveActiveBooking(active);
-    const refBadge = Array.from(document.querySelectorAll('div')).find(d => d.textContent.includes('Booking Ref:'));
-    if (refBadge) {
-      refBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span> Booking Ref: #${refNum}`;
+
+    const refTextEl = document.getElementById('bookingRefText');
+    if (refTextEl) {
+      refTextEl.textContent = `Booking Ref: #${refNum.replace('#', '')}`;
     }
-  }
 
-  // Navigation handlers
-  document.querySelectorAll('button, a').forEach(el => {
-    const text = (el.textContent || '').trim().toLowerCase();
-    if (text.includes('change pet')) {
-      el.addEventListener('click', () => { window.location.href = '/book-service-pet'; });
-    } else if (text.includes('edit') && el.closest('.lg\\:col-span-7')) {
-      el.addEventListener('click', () => { window.location.href = '/services'; });
-    } else if (text.includes('reschedule') && el.closest('.lg\\:col-span-7')) {
-      el.addEventListener('click', () => { window.location.href = '/book-service-schedule'; });
-    } else if (text.includes('back to schedule')) {
-      el.addEventListener('click', () => { window.location.href = '/book-service-schedule'; });
-    } else if (text.includes('change') && el.closest('.lg\\:col-span-5')) {
-      el.addEventListener('click', () => { window.location.href = '/profile'; });
-    }
-  });
+    // 9. Confirm Booking button logic
+    const confirmBtn = document.getElementById('confirmBookingBtn');
+    if (confirmBtn) {
+      // Clear any previous cloned listeners
+      confirmBtn.onclick = function() {
+        confirmBtn.disabled = true;
+        confirmBtn.innerHTML = `
+          <span class="material-symbols-outlined text-[20px] animate-spin">progress_activity</span>
+          <span>Securing ${petName}'s Appointment...</span>
+        `;
 
-  // Confirm booking button
-  const confirmBtn = document.getElementById('confirmBookingBtn') ||
-    Array.from(document.querySelectorAll('button')).find(b => b.textContent.includes('Confirm & Book'));
-  if (confirmBtn) {
-    confirmBtn.addEventListener('click', () => {
-      if (window.PetPalsStore) {
-        const active = PetPalsStore.getActiveBooking();
-        const price = active.servicePrice || '$65.00';
-        const numPrice = parseFloat(price.replace(/[^0-9.]/g, '')) || 65;
-        const total = `$${(numPrice + 29.35).toFixed(2)}`;
-
-        const createdBooking = PetPalsStore.addBooking({
-          id: active.id || ('PP-' + Math.floor(10000 + Math.random() * 90000)),
-          service: active.service || 'Grooming & Spa Experience',
+        const bookingPayload = {
+          id: refNum,
+          service: serviceName,
           serviceCategory: active.serviceCategory || 'grooming',
-          servicePrice: total,
-          duration: active.duration || '75 min',
-          petId: active.petId || 'pet-1',
-          petName: active.petName || 'Bruno',
-          petBreed: active.petBreed || 'Golden Retriever',
-          petPhoto: active.petPhoto || 'https://lh3.googleusercontent.com/aida/AEtjO1Uuc_lq8IwyBwbjSlNL1obmQxxUrnJznxdjFzSncsyQDO1-YLIUzfA26YIg8yEhskgu9bqGS8QeWYZPTGpIQD6FXUjqJOTEPL92yxV6_uo66Re6T62xuKeC1UJF5zhXDGpeUIx3UpOQOFfTvElfqK-3SvN_G681f6Is0T7pjxiMowIXYwAQiutnTNbf70J32lVHH31Pn4LZk54wkstesIfLUzUa5mtuN06jDWNkEWTtCVkamIVdAptB-t6J',
-          date: active.date || '13 Nov 2026',
-          time: active.time || '10:30 AM',
-          specialist: active.specialist || 'Sarah Jenkins',
-          specialistRole: active.specialistRole || 'Coat Specialist ★ 4.9',
-          notes: active.notes || '',
-          location: 'PetPals Flagship Spa & Wellness Lounge • Suite 4',
-          status: 'Upcoming'
-        });
+          servicePrice: formatINR(totalAmount),
+          duration: duration,
+          petId: active.petId || (pets.length > 0 ? pets[0].id : 'pet-1'),
+          petName: petName,
+          petBreed: petBreed,
+          petAge: petAge,
+          petWeight: petWeight,
+          petAvatar: active.petPhoto || active.petAvatar || (pets.length > 0 ? pets[0].avatar : 'https://lh3.googleusercontent.com/aida-public/AB6AXuAt33nyXQXhT-DJMkAFp1xH-yhXnfTrMSPm0zrgnfDDg4CQK9KZDbKLy1hSdwMwsuH4szL0NdOBb_7AKjfnlWOMUAXBVcmIqOmPNxsinja33H1Yc26HWDcIRG-O0dWxnJuad3dZZEVI8uKp0PF2PozWhy4SJqIsPytKeH55LdWZ5clX4bLU6z5qbYSeqfqeQEXWfBPIR1ueDdWdKtfSZRtjYs1W3dDSV3cSZWzSkPhQZuWth6GZG2a42A'),
+          petPhoto: active.petPhoto || active.petAvatar,
+          date: dateStr,
+          time: timeStr,
+          specialist: specName,
+          specialistRole: specRole,
+          location: locName,
+          status: 'Upcoming',
+          paid: true,
+          ownerName: user ? user.name : 'Prathiksha Shetty',
+          notes: active.notes || petDisposition
+        };
 
+        // Persist using existing PetPalsStore methods
+        const createdBooking = PetPalsStore.addBooking(bookingPayload);
         PetPalsStore.saveActiveBooking(createdBooking);
-      }
-      window.location.href = '/booking-confirmed';
-    });
+        try {
+          localStorage.setItem('petpals_last_confirmed', JSON.stringify(createdBooking));
+        } catch (e) {}
+
+        setTimeout(() => {
+          window.location.href = '/booking-confirmed';
+        }, 400);
+      };
+    }
   }
 
-  // Close/X buttons
+  // Close/X buttons -> Return to services
   document.querySelectorAll('button[aria-label*="Close"], button[aria-label*="close"]').forEach(btn => {
     btn.addEventListener('click', () => {
       window.location.href = '/services';

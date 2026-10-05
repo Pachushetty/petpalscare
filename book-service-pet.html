@@ -277,7 +277,7 @@
 <span class="material-symbols-outlined text-[18px]">arrow_back</span>
 <span>Back to Services</span>
 </button>
-<button onclick="window.location.href='/book-service-schedule'" class="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full font-label-lg text-label-lg bg-primary-container hover:bg-primary text-on-primary shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 w-full sm:w-auto" type="button">
+<button id="continueToScheduleBtn" onclick="handleContinueToSchedule()" class="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full font-label-lg text-label-lg bg-primary-container hover:bg-primary text-on-primary shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 w-full sm:w-auto" type="button">
 <span>Continue to Schedule</span>
 <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
 </button>
@@ -566,24 +566,30 @@
   };
 
   // Continue to Schedule
+  window.handleContinueToSchedule = function() {
+    const pets = PetPalsStore.getPets();
+    const pet = pets.find(p => p.id === selectedPetId) || pets[0];
+    if (pet) {
+      PetPalsStore.saveActiveBooking({
+        petId: pet.id,
+        petName: pet.name,
+        petBreed: pet.breed || pet.species,
+        petAge: pet.age || '1 year',
+        petWeight: pet.weight || '5.0 kg',
+        petAvatar: pet.avatar,
+        petPhoto: pet.photo || pet.avatar,
+        notes: selectedTemperament
+      });
+    }
+    window.location.href = '/book-service-schedule';
+  };
+
   document.querySelectorAll('button, a').forEach(el => {
     const text = (el.textContent || '').trim().toLowerCase();
     if (text.includes('continue to schedule')) {
-      el.addEventListener('click', () => {
-        const pets = PetPalsStore.getPets();
-        const pet = pets.find(p => p.id === selectedPetId) || pets[0];
-        if (pet) {
-          PetPalsStore.saveActiveBooking({
-            petId: pet.id,
-            petName: pet.name,
-            petBreed: pet.breed || pet.species,
-            petAge: pet.age || '1 year',
-            petWeight: pet.weight || '5.0 kg',
-            petAvatar: pet.avatar,
-            notes: selectedTemperament
-          });
-        }
-        window.location.href = '/book-service-schedule';
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.handleContinueToSchedule();
       });
     } else if (text.includes('back to service') || text === 'cancel') {
       el.addEventListener('click', () => { window.location.href = '/services'; });

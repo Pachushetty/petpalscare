@@ -157,9 +157,8 @@
   const API = {
     async get(endpoint) {
       try {
-        const user = PetPalsStore.getUser();
         const res = await fetch(endpoint, {
-          headers: { 'x-user-id': user.id || 'usr-prathiksha' }
+          credentials: 'include'
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return await res.json();
@@ -170,12 +169,11 @@
     },
     async post(endpoint, data) {
       try {
-        const user = PetPalsStore.getUser();
         const res = await fetch(endpoint, {
           method: 'POST',
+          credentials: 'include',
           headers: {
-            'Content-Type': 'application/json',
-            'x-user-id': user.id || 'usr-prathiksha'
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify(data)
         });
@@ -188,12 +186,11 @@
     },
     async put(endpoint, data) {
       try {
-        const user = PetPalsStore.getUser();
         const res = await fetch(endpoint, {
           method: 'PUT',
+          credentials: 'include',
           headers: {
-            'Content-Type': 'application/json',
-            'x-user-id': user.id || 'usr-prathiksha'
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify(data)
         });
@@ -206,10 +203,9 @@
     },
     async delete(endpoint) {
       try {
-        const user = PetPalsStore.getUser();
         const res = await fetch(endpoint, {
           method: 'DELETE',
-          headers: { 'x-user-id': user.id || 'usr-prathiksha' }
+          credentials: 'include'
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return await res.json();
@@ -224,16 +220,19 @@
     getUser() {
       try {
         const data = localStorage.getItem(STORAGE_KEYS.USER);
-        if (data) return JSON.parse(data);
+        if (data) {
+          const parsed = JSON.parse(data);
+          if (parsed && (parsed.id || parsed.email)) return parsed;
+        }
       } catch (e) {
         console.warn('Error reading user from localStorage', e);
       }
-      return { ...DEFAULT_USER };
+      return null;
     },
 
     saveUser(userData) {
       try {
-        const current = this.getUser();
+        const current = this.getUser() || {};
         const updated = { ...current, ...userData };
         if (updated.name) {
           updated.firstName = updated.name.trim().split(' ')[0] || updated.name;
@@ -242,7 +241,7 @@
         localStorage.setItem(STORAGE_KEYS.AUTH, 'true');
         this.broadcast('user-updated', updated);
 
-        // Sync with PostgreSQL backend API
+        // Sync with PostgreSQL backend API if authenticated
         API.put('/api/auth/profile', updated).catch(err => console.warn('Failed to sync profile with backend:', err));
 
         return updated;
@@ -440,30 +439,48 @@
     // Asynchronously fetch latest data from PostgreSQL backend
     async syncFromBackend() {
       try {
-        const [user, pets, bookings] = await Promise.all([
-          API.get('/api/auth/me'),
+        const user = await API.get('/api/auth/me');
+        const currentPath = window.location.pathname;
+        const protectedPaths = [
+          '/dashboard', '/my-pets', '/my-bookings', '/profile',
+          '/book-service', '/book-new-service', '/book-service-modal',
+          '/book-service-pet', '/book-service-schedule', '/book-service-review',
+          '/booking-confirmed', '/bookings-pet-dashboard'
+        ];
+        const isProtected = protectedPaths.some(p => currentPath === p || currentPath.startsWith(p + '/'));
+
+        if (!user || !user.id) {
+          localStorage.removeItem(STORAGE_KEYS.USER);
+          localStorage.setItem(STORAGE_KEYS.AUTH, 'false');
+          if (isProtected) {
+            window.location.href = '/login';
+            return;
+          }
+          return;
+        }
+
+        const current = this.getUser() || {};
+        const merged = { ...current, ...user };
+        localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(merged));
+        localStorage.setItem(STORAGE_KEYS.AUTH, 'true');
+        this.broadcast('user-updated', merged);
+
+        const [pets, bookings] = await Promise.all([
           API.get('/api/pets'),
           API.get('/api/bookings')
         ]);
 
-        if (user && user.id) {
-          const current = this.getUser();
-          const merged = { ...current, ...user };
-          localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(merged));
-          this.broadcast('user-updated', merged);
-        }
-
-        if (Array.isArray(pets) && pets.length > 0) {
+        if (Array.isArray(pets)) {
           localStorage.setItem(STORAGE_KEYS.PETS, JSON.stringify(pets));
           this.broadcast('pets-updated', pets);
         }
 
-        if (Array.isArray(bookings) && bookings.length > 0) {
+        if (Array.isArray(bookings)) {
           localStorage.setItem(STORAGE_KEYS.BOOKINGS, JSON.stringify(bookings));
           this.broadcast('bookings-updated', bookings);
         }
       } catch (err) {
-        console.warn('Backend sync failed, using cached store:', err);
+        console.warn('Backend sync error:', err);
       }
     },
 
@@ -489,10 +506,9 @@
     isAuthenticated() {
       try {
         const auth = localStorage.getItem(STORAGE_KEYS.AUTH);
-        if (auth === 'true') return true;
-        if (auth === 'false') return false;
-        // If not set, check if user session exists in localStorage
-        return localStorage.getItem(STORAGE_KEYS.USER) !== null;
+        if (auth !== 'true') return false;
+        const u = this.getUser();
+        return Boolean(u && (u.id || u.email));
       } catch (e) {
         return false;
       }
@@ -501,6 +517,9 @@
     setAuthenticated(status) {
       try {
         localStorage.setItem(STORAGE_KEYS.AUTH, status ? 'true' : 'false');
+        if (!status) {
+          localStorage.removeItem(STORAGE_KEYS.USER);
+        }
         this.broadcast('auth-changed', { authenticated: Boolean(status) });
       } catch (e) {
         console.error('Error setting auth state', e);
@@ -520,14 +539,21 @@
       return true;
     },
 
-    logout() {
+    async logout() {
       try {
-        localStorage.setItem(STORAGE_KEYS.AUTH, 'false');
+        await API.post('/api/auth/logout', {});
+      } catch (e) {}
+      try {
+        localStorage.removeItem(STORAGE_KEYS.AUTH);
+        localStorage.removeItem(STORAGE_KEYS.USER);
+        localStorage.removeItem(STORAGE_KEYS.PETS);
+        localStorage.removeItem(STORAGE_KEYS.BOOKINGS);
+        localStorage.removeItem('petpals_active_booking');
       } catch (e) {}
       showToast('Signed out successfully.', 'logout');
       setTimeout(() => {
-        window.location.href = '/login';
-      }, 400);
+        window.location.href = '/login?switch=true';
+      }, 300);
     },
 
     broadcast(event, detail) {
@@ -625,7 +651,7 @@
 
   // Create & mount User Dropdown Menu in header
   function initHeaderUserMenu() {
-    const user = PetPalsStore.getUser();
+    const user = PetPalsStore.getUser() || { name: 'Pet Parent', firstName: 'Pet Parent', email: '', avatar: '' };
     const userPills = document.querySelectorAll('header .cursor-pointer, header .rounded-full.bg-surface-container-lowest');
 
     userPills.forEach(pill => {
@@ -635,7 +661,7 @@
       
       // Update name text
       const nameSpan = pill.querySelector('span:not(.material-symbols-outlined)');
-      if (nameSpan) nameSpan.textContent = user.firstName || 'Prathiksha';
+      if (nameSpan) nameSpan.textContent = user.firstName || 'Pet Parent';
 
       // Attach dropdown wrapper
       pill.style.position = 'relative';
@@ -648,10 +674,10 @@
         menu.className = 'absolute right-0 top-14 w-60 bg-surface-container-lowest rounded-2xl shadow-xl border border-outline-variant/40 py-2 hidden z-50 transition-all transform origin-top-right';
         menu.innerHTML = `
           <div class="px-4 py-3 border-b border-outline-variant/30 flex items-center gap-3">
-            <img id="dropdown-user-avatar" src="${user.avatar}" class="w-10 h-10 rounded-full object-cover shadow-sm bg-surface-container" alt="User">
+            <img id="dropdown-user-avatar" src="${user.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'}" class="w-10 h-10 rounded-full object-cover shadow-sm bg-surface-container" alt="User">
             <div class="flex flex-col min-w-0">
-              <span id="dropdown-user-name" class="font-label-lg text-label-lg font-semibold text-on-surface truncate">${user.name}</span>
-              <span id="dropdown-user-email" class="font-body-sm text-body-sm text-on-surface-variant truncate">${user.email}</span>
+              <span id="dropdown-user-name" class="font-label-lg text-label-lg font-semibold text-on-surface truncate">${user.name || 'Pet Parent'}</span>
+              <span id="dropdown-user-email" class="font-body-sm text-body-sm text-on-surface-variant truncate">${user.email || 'Signed in'}</span>
             </div>
           </div>
           <div class="py-1">
@@ -673,7 +699,7 @@
             </a>
           </div>
           <div class="border-t border-outline-variant/30 pt-1">
-            <a href="/login" id="dropdown-logout-btn" class="flex items-center gap-3 px-4 py-2.5 text-error hover:bg-error-container/30 text-body-sm font-medium transition-colors cursor-pointer">
+            <a href="/login?switch=true" id="dropdown-logout-btn" class="flex items-center gap-3 px-4 py-2.5 text-error hover:bg-error-container/30 text-body-sm font-medium transition-colors cursor-pointer">
               <span class="material-symbols-outlined text-[19px]">logout</span>
               <span>Sign Out</span>
             </a>
@@ -778,13 +804,13 @@
       document.getElementById('assistance-chat-btn')?.addEventListener('click', () => {
         modal.classList.add('hidden');
         try {
-          const user = PetPalsStore.getUser();
+          const user = PetPalsStore.getUser() || {};
           const msgsKey = 'petpals_admin_messages';
           const existing = JSON.parse(localStorage.getItem(msgsKey) || '[]');
           existing.unshift({
             id: 'msg-' + Date.now(),
-            name: user.name || 'Prathiksha Shetty',
-            email: user.email || 'prathiksha@gmail.com',
+            name: user.name || 'Pet Parent',
+            email: user.email || 'user@example.com',
             phone: user.phone || '+91 98765 43210',
             date: 'Today, ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             subject: 'Concierge Hotline Chat Request',
@@ -799,15 +825,27 @@
       });
     }
 
-    // Attach to sidebar Need Assistance cards
-    document.querySelectorAll('.bg-surface-container-lowest\\/60, .bg-surface-container-lowest').forEach(card => {
-      if (card.textContent.includes('Need Assistance') || card.textContent.includes('Concierge Hotline')) {
-        card.style.cursor = 'pointer';
-        card.addEventListener('click', () => {
-          modal.classList.remove('hidden');
-        });
-      }
+    // Attach ONLY to explicit sidebar Need Assistance widget cards
+    document.querySelectorAll('aside div.bg-surface-container-lowest\\/60, aside [data-action="assistance"], aside #sidebar-assistance-card').forEach(card => {
+      card.style.cursor = 'pointer';
+      card.addEventListener('click', (e) => {
+        e.stopPropagation();
+        modal.classList.remove('hidden');
+      });
     });
+
+    // Also attach to explicit hotline buttons if explicitly marked
+    document.querySelectorAll('[data-action="open-assistance-modal"]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        modal.classList.remove('hidden');
+      });
+    });
+
+    // Expose explicit helper
+    window.openAssistanceModal = function() {
+      modal.classList.remove('hidden');
+    };
   }
 
   // Interactive Live Search Bar

@@ -67,6 +67,12 @@
       <!-- Form -->
       <form id="register-form" class="space-y-2.5">
 
+        <!-- Error alert -->
+        <div id="register-error-alert" class="hidden p-2.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2">
+          <span class="material-symbols-outlined text-red-600 text-base shrink-0">error</span>
+          <span id="register-error-text">Please check your information</span>
+        </div>
+
         <!-- Row 1: Name + Phone -->
         <div class="grid grid-cols-2 gap-3">
           <div>
@@ -175,28 +181,114 @@
       makeToggle('toggle-confirm', 'confirm-password', 'confirm-icon');
 
       const form = document.getElementById('register-form');
+      const submitBtn = form?.querySelector('button[type="submit"]');
+      const errorAlert = document.getElementById('register-error-alert');
+      const errorText = document.getElementById('register-error-text');
+
+      function showError(msg) {
+        if (errorAlert && errorText) {
+          errorText.textContent = msg || 'Please check your information and try again.';
+          errorAlert.classList.remove('hidden');
+        }
+      }
+      function clearError() {
+        if (errorAlert) {
+          errorAlert.classList.add('hidden');
+        }
+      }
+
       if (form) {
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', async function(e) {
           e.preventDefault();
+          clearError();
+
           const nameInput = document.getElementById('name');
           const phoneInput = document.getElementById('phone');
           const emailInput = document.getElementById('email');
+          const passInput = document.getElementById('password');
+          const confirmInput = document.getElementById('confirm-password');
+          const termsInput = document.getElementById('terms');
 
-          const name = nameInput ? nameInput.value.trim() : 'Pet Parent';
+          const name = nameInput ? nameInput.value.trim() : '';
           const phone = phoneInput ? phoneInput.value.trim() : '';
           const email = emailInput ? emailInput.value.trim() : '';
-          const firstName = name.split(' ')[0] || name;
+          const password = passInput ? passInput.value : '';
+          const confirmPassword = confirmInput ? confirmInput.value : '';
 
-          if (window.PetPalsStore) {
-            window.PetPalsStore.saveUser({
-              name,
-              firstName,
-              email,
-              phone
-            });
-            window.PetPalsStore.setAuthenticated(true);
+          // Validation
+          if (!name || name.length < 2) {
+            showError('Please enter your full name (at least 2 characters).');
+            if (nameInput) nameInput.focus();
+            return;
           }
-          window.location.href = '/dashboard';
+
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!email || !emailRegex.test(email)) {
+            showError('Please enter a valid email address.');
+            if (emailInput) emailInput.focus();
+            return;
+          }
+
+          if (!password || password.length < 6) {
+            showError('Password must be at least 6 characters long.');
+            if (passInput) passInput.focus();
+            return;
+          }
+
+          if (password !== confirmPassword) {
+            showError('Passwords do not match. Please re-enter your password.');
+            if (confirmInput) confirmInput.focus();
+            return;
+          }
+
+          if (termsInput && !termsInput.checked) {
+            showError('You must agree to the Terms of Service & Privacy Policy.');
+            return;
+          }
+
+          const originalBtnHtml = submitBtn.innerHTML;
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = `
+            <svg class="animate-spin h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span>Creating Account...</span>
+          `;
+
+          try {
+            const res = await fetch('/api/auth/register', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({
+                name,
+                email,
+                password,
+                phone,
+                location: 'Mangalore, Karnataka'
+              })
+            });
+
+            const data = await res.json();
+            if (!res.ok || !data.success) {
+              submitBtn.disabled = false;
+              submitBtn.innerHTML = originalBtnHtml;
+              showError(data.error || 'Failed to create account. Please try again.');
+              return;
+            }
+
+            // Successfully registered and authenticated with PostgreSQL session
+            if (window.PetPalsStore) {
+              window.PetPalsStore.saveUser(data.user);
+              window.PetPalsStore.setAuthenticated(true);
+            }
+            window.location.href = '/dashboard';
+          } catch (err) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnHtml;
+            showError('Network error connecting to the server. Please try again.');
+          }
         });
       }
 
@@ -204,16 +296,7 @@
       if (googleBtn) {
         googleBtn.addEventListener('click', function(e) {
           e.preventDefault();
-          if (window.PetPalsStore) {
-            const u = window.PetPalsStore.getUser();
-            window.PetPalsStore.saveUser({
-              email: u.email || 'prathikshashetty6355@gmail.com',
-              name: u.name || 'Prathiksha Shetty',
-              firstName: u.firstName || 'Prathiksha'
-            });
-            window.PetPalsStore.setAuthenticated(true);
-          }
-          window.location.href = '/dashboard';
+          showError('Please create your account using the registration form.');
         });
       }
     })();
