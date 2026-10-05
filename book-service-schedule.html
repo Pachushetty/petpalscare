@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "secondary-container": "#fdceae", "on-secondary-container": "#78563c", "on-primary-fixed-variant": "#633e25", "on-background": "#1c1c19", "on-primary-container": "#ffe9dd", "outline-variant": "#d5c3ba", "on-tertiary-fixed-variant": "#4c463b", "tertiary-fixed": "#ebe1d2", "outline": "#83746c", "surface-dim": "#dcdad5", "background": "#fcf9f4", "surface-container-highest": "#e5e2dd", "on-surface": "#1c1c19", "on-tertiary": "#ffffff", "secondary-fixed-dim": "#ebbd9e", "primary-fixed-dim": "#f0bc9a", "surface-container-high": "#ebe8e3", "tertiary-fixed-dim": "#cfc5b7", "on-tertiary-container": "#f6ecdc", "surface-variant": "#e5e2dd", "on-error-container": "#93000a", "inverse-on-surface": "#f3f0eb", "secondary": "#7a573d", "on-tertiary-fixed": "#201b12", "surface-tint": "#7d553a", "on-secondary": "#ffffff", "tertiary-container": "#716a5e", "surface-container": "#f0ede9", "on-secondary-fixed-variant": "#5f4028", "surface-container-lowest": "#ffffff", "inverse-primary": "#f0bc9a", "on-primary": "#ffffff", "on-secondary-fixed": "#2d1603", "surface": "#fcf9f4", "surface-bright": "#fcf9f4", "primary": "#714a30", "error-container": "#ffdad6", "on-primary-fixed": "#301401", "error": "#ba1a1a", "tertiary": "#595247", "surface-container-low": "#f6f3ee", "on-error": "#ffffff", "primary-fixed": "#ffdcc7", "primary-container": "#8c6246", "on-surface-variant": "#50443d", "inverse-surface": "#31302d", "secondary-fixed": "#ffdcc5" }, "borderRadius": { "DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px" }, "spacing": { "space-sm": "0.5rem", "gutter-mobile": "1rem", "gutter": "1.5rem", "margin": "3rem", "space-xl": "2.5rem", "space-xs": "0.25rem", "space-md": "1rem", "margin-mobile": "1.25rem", "space-lg": "1.5rem" }, "fontFamily": { "headline-sm": [ "Playfair Display" ], "display-mobile": [ "Playfair Display" ], "body-sm": [ "Plus Jakarta Sans" ], "headline-lg-mobile": [ "Playfair Display" ], "label-lg": [ "Plus Jakarta Sans" ], "label-sm": [ "Plus Jakarta Sans" ], "headline-lg": [ "Playfair Display" ], "title-md": [ "Plus Jakarta Sans" ], "display": [ "Playfair Display" ], "body-lg": [ "Plus Jakarta Sans" ], "body-md": [ "Plus Jakarta Sans" ], "label-md": [ "Plus Jakarta Sans" ], "headline-md": [ "Playfair Display" ] }, "fontSize": { "headline-sm": [ "20px", { "lineHeight": "28px", "fontWeight": "600" } ], "display-mobile": [ "34px", { "lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "700" } ], "body-sm": [ "12px", { "lineHeight": "18px", "fontWeight": "400" } ], "headline-lg-mobile": [ "26px", { "lineHeight": "34px", "fontWeight": "700" } ], "label-lg": [ "15px", { "lineHeight": "20px", "fontWeight": "600" } ], "label-sm": [ "11px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "600" } ], "headline-lg": [ "36px", { "lineHeight": "44px", "letterSpacing": "-0.01em", "fontWeight": "700" } ], "title-md": [ "18px", { "lineHeight": "26px", "fontWeight": "600" } ], "display": [ "52px", { "lineHeight": "60px", "letterSpacing": "-0.02em", "fontWeight": "700" } ], "body-lg": [ "16px", { "lineHeight": "26px", "fontWeight": "400" } ], "body-md": [ "14px", { "lineHeight": "22px", "fontWeight": "400" } ], "label-md": [ "13px", { "lineHeight": "18px", "fontWeight": "500" } ], "headline-md": [ "24px", { "lineHeight": "32px", "fontWeight": "600" } ] } } } };</script></head><body class="bg-background font-body-md text-body-md text-on-surface antialiased"><header class="fixed top-0 inset-x-0 z-50 bg-surface/90 backdrop-blur-md border-b border-outline-variant/60 shadow-[0_4px_24px_-4px_rgba(44,36,32,0.04)]"><div class="h-20 max-w-[1200px] mx-auto px-gutter flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[28px] text-primary" style="font-variation-settings: 'FILL' 1;">pets</span><span class="font-headline-sm text-headline-sm text-primary tracking-tight">PetPals</span></div><div class="flex items-center gap-space-sm"><div class="hidden md:flex items-center bg-surface-container-lowest border border-outline-variant/70 rounded-full px-space-md py-1.5 focus-within:border-primary-container focus-within:ring-2 focus-within:ring-primary-container/20 transition-all"><span class="material-symbols-outlined text-outline text-[18px] mr-space-xs">search</span><input class="bg-transparent font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none w-36 lg:w-48" placeholder="Search services, products..." type="text"/></div><a class="hidden sm:inline-flex items-center justify-center font-label-lg text-label-lg bg-primary-container text-on-primary rounded-full px-6 py-2.5 hover:bg-primary transition-all shadow-sm" data-path="booking" href="#">Book Now</a><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><button aria-label="Toggle Menu" class="lg:hidden p-2 rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[24px]">menu</span></button></div></div></header><main class="w-full pt-20 bg-background"><div class="flex flex-col w-full relative">
+<div class="fixed inset-0 z-40 bg-on-surface/40 backdrop-blur-md transition-opacity"></div>
+<div class="relative z-50 flex items-center justify-center p-4 md:p-8 min-h-[calc(100vh-5rem)]">
+<div class="w-full max-w-[1020px] bg-surface-container-lowest rounded-xl shadow-2xl p-6 md:p-10 relative overflow-hidden flex flex-col gap-8">
+<div class="absolute -top-10 -right-10 w-44 h-44 rounded-full bg-secondary-container/20 pointer-events-none blur-2xl"></div>
+<div class="absolute top-4 right-16 opacity-[0.06] pointer-events-none select-none text-primary">
+<span class="material-symbols-outlined text-8xl">pets</span>
+</div>
+<div class="absolute bottom-6 left-6 opacity-[0.05] pointer-events-none select-none text-primary">
+<span class="material-symbols-outlined text-7xl">pets</span>
+</div>
+<div class="flex flex-col gap-3 relative">
+<div class="flex items-center justify-between">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-low text-primary text-label-sm font-label-sm tracking-widest uppercase">
+<span class="material-symbols-outlined text-sm">pets</span>
+            PetPals Concierge
+          </span>
+<button aria-label="Close dialog" class="w-9 h-9 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface-variant hover:text-on-surface flex items-center justify-center transition-colors" type="button">
+<span class="material-symbols-outlined text-lg">close</span>
+</button>
+</div>
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Book a Service</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Tailored comfort and attentive medical-grade care for your furry family member.</p>
+</div>
+</div>
+<div class="relative w-full py-1">
+<div class="absolute top-5 left-8 right-8 h-1 bg-surface-container rounded-full pointer-events-none -z-0">
+<div class="h-full bg-primary-container rounded-full w-2/3 transition-all duration-500"></div>
+</div>
+<div class="grid grid-cols-4 gap-2 relative z-10">
+<div class="flex flex-col items-center text-center gap-2 group cursor-pointer">
+<div class="w-10 h-10 rounded-full bg-primary-container text-on-primary flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-lg font-bold">check</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="font-label-md text-label-md text-on-surface font-semibold">1. Service</span>
+<span class="font-label-sm text-label-sm text-primary">Completed</span>
+</div>
+</div>
+<div class="flex flex-col items-center text-center gap-2 group cursor-pointer">
+<div class="w-10 h-10 rounded-full bg-primary-container text-on-primary flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-lg font-bold">check</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="font-label-md text-label-md text-on-surface font-semibold">2. Pet Details</span>
+<span class="font-label-sm text-primary">Completed</span>
+</div>
+</div>
+<div class="flex flex-col items-center text-center gap-2">
+<div class="w-10 h-10 rounded-full bg-primary-container text-on-primary flex items-center justify-center shadow-md scale-105">
+<span class="font-label-lg text-label-lg font-bold">3</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="font-label-md text-label-md text-on-surface font-bold">3. Schedule</span>
+<span class="font-label-sm text-label-sm text-primary font-semibold">In Progress</span>
+</div>
+</div>
+<div class="flex flex-col items-center text-center gap-2 opacity-60">
+<div class="w-10 h-10 rounded-full bg-surface-container text-on-surface-variant flex items-center justify-center">
+<span class="font-label-lg text-label-lg font-medium">4</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="font-label-md text-label-md text-on-surface-variant">4. Summary</span>
+<span class="font-label-sm text-label-sm text-outline">Review</span>
+</div>
+</div>
+</div>
+</div>
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-3 p-4 rounded-xl bg-surface-container-low">
+<div class="flex items-center gap-3">
+<span class="px-2.5 py-1 rounded-full bg-primary text-on-primary font-label-sm text-label-sm font-bold tracking-wide">STEP 3 OF 4</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Select Date &amp; Time</h2>
+</div>
+<div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container-lowest text-on-surface-variant font-label-md text-label-md shadow-sm">
+<span class="w-2 h-2 rounded-full bg-secondary-container"></span>
+<span class="font-semibold text-on-surface">Grooming &amp; Spa ($65)</span>
+<span class="text-outline">•</span>
+<span class="italic">Milo (Golden Retriever)</span>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<div class="lg:col-span-5 bg-surface-container-low p-6 rounded-xl flex flex-col gap-5">
+<div class="flex items-center justify-between">
+<h3 class="font-title-md text-title-md text-on-surface">November 2025</h3>
+<div class="flex items-center gap-1">
+<button aria-label="Previous month" class="w-8 h-8 rounded-full bg-surface-container-lowest hover:bg-surface text-on-surface flex items-center justify-center transition-colors shadow-sm" type="button">
+<span class="material-symbols-outlined text-base">chevron_left</span>
+</button>
+<button aria-label="Next month" class="w-8 h-8 rounded-full bg-surface-container-lowest hover:bg-surface text-on-surface flex items-center justify-center transition-colors shadow-sm" type="button">
+<span class="material-symbols-outlined text-base">chevron_right</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-7 gap-1 text-center font-label-sm text-label-sm text-outline font-semibold">
+<div>Mo</div>
+<div>Tu</div>
+<div>We</div>
+<div>Th</div>
+<div>Fr</div>
+<div>Sa</div>
+<div>Su</div>
+</div>
+<div class="grid grid-cols-7 gap-1.5 text-center font-label-md text-label-md">
+<div class="h-10 flex items-center justify-center text-outline/40">27</div>
+<div class="h-10 flex items-center justify-center text-outline/40">28</div>
+<div class="h-10 flex items-center justify-center text-outline/40">29</div>
+<div class="h-10 flex items-center justify-center text-outline/40">30</div>
+<div class="h-10 flex items-center justify-center text-outline/40">31</div>
+<div class="h-10 flex items-center justify-center text-outline/50">1</div>
+<div class="h-10 flex items-center justify-center text-outline/50">2</div>
+<div class="h-10 flex items-center justify-center text-outline/50">3</div>
+<div class="h-10 flex items-center justify-center text-outline/50">4</div>
+<div class="h-10 flex items-center justify-center text-outline/50">5</div>
+<div class="h-10 flex items-center justify-center text-outline/50">6</div>
+<div class="h-10 flex items-center justify-center text-outline/50">7</div>
+<div class="h-10 flex items-center justify-center text-outline/50">8</div>
+<div class="h-10 flex items-center justify-center text-outline/50">9</div>
+<div class="h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors">
+<span>10</span>
+<span class="w-1 h-1 rounded-full bg-secondary"></span>
+</div>
+<div class="h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors">
+<span>11</span>
+<span class="w-1 h-1 rounded-full bg-secondary"></span>
+</div>
+<div class="h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors">
+<span>12</span>
+<span class="w-1 h-1 rounded-full bg-secondary"></span>
+</div>
+<div class="h-10 flex flex-col items-center justify-center rounded-full bg-primary-container text-on-primary font-bold shadow-md cursor-pointer">
+<span>13</span>
+<span class="w-1 h-1 rounded-full bg-on-primary"></span>
+</div>
+<div class="h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors">
+<span>14</span>
+<span class="w-1 h-1 rounded-full bg-secondary"></span>
+</div>
+<div class="h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors">
+<span>15</span>
+<span class="w-1 h-1 rounded-full bg-secondary"></span>
+</div>
+<div class="h-10 flex items-center justify-center text-outline/50">16</div>
+<div class="h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors">
+<span>17</span>
+<span class="w-1 h-1 rounded-full bg-secondary"></span>
+</div>
+<div class="h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors">
+<span>18</span>
+<span class="w-1 h-1 rounded-full bg-secondary"></span>
+</div>
+<div class="h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors">
+<span>19</span>
+<span class="w-1 h-1 rounded-full bg-secondary"></span>
+</div>
+<div class="h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors">
+<span>20</span>
+<span class="w-1 h-1 rounded-full bg-secondary"></span>
+</div>
+<div class="h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors">
+<span>21</span>
+<span class="w-1 h-1 rounded-full bg-secondary"></span>
+</div>
+<div class="h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors">
+<span>22</span>
+<span class="w-1 h-1 rounded-full bg-secondary"></span>
+</div>
+<div class="h-10 flex items-center justify-center text-outline/50">23</div>
+<div class="h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors">
+<span>24</span>
+<span class="w-1 h-1 rounded-full bg-secondary"></span>
+</div>
+<div class="h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors">
+<span>25</span>
+<span class="w-1 h-1 rounded-full bg-secondary"></span>
+</div>
+<div class="h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors">
+<span>26</span>
+<span class="w-1 h-1 rounded-full bg-secondary"></span>
+</div>
+<div class="h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors">
+<span>27</span>
+<span class="w-1 h-1 rounded-full bg-secondary"></span>
+</div>
+<div class="h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors">
+<span>28</span>
+<span class="w-1 h-1 rounded-full bg-secondary"></span>
+</div>
+<div class="h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors">
+<span>29</span>
+<span class="w-1 h-1 rounded-full bg-secondary"></span>
+</div>
+<div class="h-10 flex items-center justify-center text-outline/50">30</div>
+</div>
+<div class="flex items-center justify-between pt-3 text-label-sm font-label-sm text-on-surface-variant">
+<span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-secondary"></span> Available</span>
+<span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-primary-container"></span> Selected</span>
+<span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-surface-container-highest"></span> Fully Booked</span>
+</div>
+<div class="p-3.5 rounded-xl bg-surface-container-lowest flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-xl">event_available</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Thursday, Nov 13, 2025</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">4 open arrival windows available</span>
+</div>
+</div>
+</div>
+<div class="lg:col-span-7 flex flex-col gap-6">
+<div class="flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<h3 class="font-title-md text-title-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl">schedule</span>
+                Available Arrival Windows
+              </h3>
+<span class="font-body-sm text-body-sm text-outline">San Francisco (PST)</span>
+</div>
+<div class="flex flex-col gap-3.5">
+<div class="flex flex-col gap-2">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Morning (09:00 AM – 12:00 PM)</span>
+<div class="flex flex-wrap gap-2.5">
+<button class="px-4 py-2 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md transition-all shadow-sm" type="button">
+                    09:30 AM
+                  </button>
+<button class="px-4 py-2 rounded-full bg-primary-container text-on-primary font-label-md text-label-md flex items-center gap-1.5 shadow-md" type="button">
+<span class="material-symbols-outlined text-sm">check</span>
+                    10:30 AM
+                  </button>
+<button class="px-4 py-2 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md transition-all shadow-sm" type="button">
+                    11:15 AM
+                  </button>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Afternoon (01:00 PM – 04:00 PM)</span>
+<div class="flex flex-wrap gap-2.5">
+<button class="px-4 py-2 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md transition-all shadow-sm" type="button">
+                    01:30 PM
+                  </button>
+<button class="px-4 py-2 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md transition-all shadow-sm" type="button">
+                    02:45 PM
+                  </button>
+<button class="px-4 py-2 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md transition-all shadow-sm" type="button">
+                    03:30 PM
+                  </button>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Late Afternoon (04:00 PM – 06:00 PM)</span>
+<div class="flex flex-wrap items-center gap-2.5">
+<button class="px-4 py-2 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md flex items-center gap-2 transition-all shadow-sm" type="button">
+<span>04:30 PM</span>
+<span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm text-[10px]">1 spot left</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-3">
+<h3 class="font-title-md text-title-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl">badge</span>
+              Preferred Care Specialist / Groomer <span class="font-body-sm text-body-sm text-outline font-normal">(Optional)</span>
+</h3>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-2.5">
+<label class="relative flex flex-col p-3 rounded-xl bg-surface-container text-on-surface cursor-pointer shadow-sm transition-all">
+<div class="flex items-center justify-between mb-1.5">
+<span class="font-label-md text-label-md font-bold">Any Master Groomer</span>
+<input checked="" class="accent-primary-container h-4 w-4" name="specialist" type="radio"/>
+</div>
+<span class="font-body-sm text-body-sm text-primary font-medium">Fastest booking</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Assigned to next available certified stylist</span>
+</label>
+<label class="relative flex flex-col p-3 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface cursor-pointer transition-all">
+<div class="flex items-start justify-between gap-2 mb-1.5">
+<div class="flex items-center gap-2">
+<img class="w-8 h-8 rounded-full object-cover" data-alt="Warm portrait of Sarah Jenkins, certified pet groomer with gentle smile, wearing a sand beige grooming apron in a brightly lit modern pet salon." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAg86trt7Q8PcVxpjydwp95dnTPKXf8JLSxsd9315YKyTe8lEqDJk36O_Zo9kCc6_VE6B9PZ9DKECEFHR8Fa8gvKwZjIKl0-Qu3nLxmpPPqF8xZyawdDqpjuji8wzloWsT4Wt0tBo1ai1vifwq_LsGyybM8wDBPUYcy_KzDnvZnMh88pLDdX4WyxqQRog2GGbSDjfsgrmD4z-6MW0aid4IBNjqR3EnSLM-enWBMjEBNdpNh0Mud0kuoMg"/>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold leading-tight">Sarah Jenkins</span>
+<span class="font-body-sm text-body-sm text-secondary leading-tight">Coat &amp; Spa</span>
+</div>
+</div>
+<input class="accent-primary-container h-4 w-4 mt-1" name="specialist" type="radio"/>
+</div>
+<div class="flex items-center gap-1 font-label-sm text-label-sm text-on-surface-variant mt-1">
+<span class="material-symbols-outlined text-amber-500 text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-bold text-on-surface">4.9</span>
+<span class="text-outline">• 320+ sessions</span>
+</div>
+</label>
+<label class="relative flex flex-col p-3 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface cursor-pointer transition-all">
+<div class="flex items-start justify-between gap-2 mb-1.5">
+<div class="flex items-center gap-2">
+<img class="w-8 h-8 rounded-full object-cover" data-alt="Portrait of David Miller, calm senior canine handling specialist wearing cocoa colored polo in a warm sunlit veterinary spa clinic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4VkFKgNeN-FbOdvUcAi6mi3v-RAItkYFs9zr2QijdVLj2PqPECXG6FbsxEKDY6jI0vvU84iQnyaUmFhN6aK43-M-nzGgwrOtbDfqv_rEfHDjwNxEXYpBoVIejEVx2QEAqzcU0SDni3v1wNHcuvgODjtQagPIWCYCclwscobmwkwZjO6NeExehXEELaZQ96mON_YAtiVauxYRHshe_-76n1gaxttr5I9m251IbaEFG_6Al70m_iMO1kA"/>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold leading-tight">David Miller</span>
+<span class="font-body-sm text-body-sm text-secondary leading-tight">Senior Handling</span>
+</div>
+</div>
+<input class="accent-primary-container h-4 w-4 mt-1" name="specialist" type="radio"/>
+</div>
+<div class="flex items-center gap-1 font-label-sm text-label-sm text-on-surface-variant mt-1">
+<span class="material-symbols-outlined text-amber-500 text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-bold text-on-surface">5.0</span>
+<span class="text-outline">• 410+ sessions</span>
+</div>
+</label>
+</div>
+</div>
+<div class="flex flex-col gap-2.5">
+<h3 class="font-title-md text-title-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl">pin_drop</span>
+              Service Location Option
+            </h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+<label class="flex items-center justify-between p-3.5 rounded-xl bg-surface-container text-on-surface cursor-pointer shadow-sm">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">storefront</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-bold">PetPals Flagship Spa</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">124 Blossom Lane, Suite 200</span>
+</div>
+</div>
+<input checked="" class="accent-primary-container h-4 w-4" name="location_type" type="radio"/>
+</label>
+<label class="flex items-center justify-between p-3.5 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface cursor-pointer transition-all">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary">local_shipping</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold">In-Home Concierge Van</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Mobile luxury spa at doorstep (+$15)</span>
+</div>
+</div>
+<input class="accent-primary-container h-4 w-4" name="location_type" type="radio"/>
+</label>
+</div>
+</div>
+</div>
+</div>
+<div class="pt-6 mt-2 border-t-0 bg-surface-container-low/70 -mx-6 md:-mx-10 -mb-6 md:-mb-10 p-6 md:p-8 rounded-b-xl flex flex-col md:flex-row items-center justify-between gap-4">
+<button class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-surface-container-lowest hover:bg-surface text-on-surface font-label-lg text-label-lg transition-all shadow-sm w-full md:w-auto" type="button">
+<span class="material-symbols-outlined text-lg">arrow_back</span>
+          Back to Pet Details
+        </button>
+<div class="hidden lg:flex items-center gap-2 px-4 py-2 rounded-full bg-surface-container-lowest text-on-surface font-body-sm text-body-sm shadow-sm">
+<span class="material-symbols-outlined text-primary text-base">calendar_month</span>
+<span class="font-semibold">Thursday, Nov 13 at 10:30 AM</span>
+<span class="text-outline">•</span>
+<span class="text-on-surface-variant">Est. Duration: 75 min</span>
+</div>
+<button class="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-primary-container hover:bg-primary text-on-primary font-label-lg text-label-lg transition-all shadow-md hover:shadow-lg w-full md:w-auto" type="button">
+<span>Continue to Summary</span>
+<span class="material-symbols-outlined text-lg">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div></main><footer class="w-full bg-surface-container-low border-t border-outline-variant/60 pt-16 pb-12"><div class="max-w-[1200px] mx-auto px-gutter"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-10 mb-12"><div class="space-y-space-md"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[28px] text-primary" style="font-variation-settings: 'FILL' 1;">pets</span><span class="font-headline-sm text-headline-sm text-primary tracking-tight">PetPals</span></div><p class="font-headline-sm text-title-md text-secondary italic">Caring for Every Paw, Every Day</p><p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">Happy pets. Healthy lives. We're here for every paw, every day.</p><div class="flex items-center gap-space-xs pt-space-xs"><a aria-label="Facebook" class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-primary-container hover:text-on-primary transition-colors" href="#"><span class="material-symbols-outlined text-[18px]">public</span></a><a aria-label="Instagram" class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-primary-container hover:text-on-primary transition-colors" href="#"><span class="material-symbols-outlined text-[18px]">photo_camera</span></a><a aria-label="X Twitter" class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-primary-container hover:text-on-primary transition-colors" href="#"><span class="material-symbols-outlined text-[18px]">tag</span></a><a aria-label="YouTube" class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-primary-container hover:text-on-primary transition-colors" href="#"><span class="material-symbols-outlined text-[18px]">smart_display</span></a></div></div><div><h3 class="font-title-md text-title-md text-on-surface mb- space-md">Quick Links</h3><ul class="space-y-2.5 font-body-md text-body-md text-on-surface-variant"><li><a class="hover:text-primary transition-colors" data-path="home" href="#">Home</a></li><li><a class="hover:text-primary transition-colors" data-path="about-us" href="#">About Us</a></li><li><a class="hover:text-primary transition-colors" data-path="contact" href="#">Contact</a></li><li><a class="hover:text-primary transition-colors" data-path="faqs" href="#">FAQs</a></li><li><a class="hover:text-primary transition-colors" data-path="careers" href="#">Careers</a></li></ul></div><div><h3 class="font-title-md text-title-md text-on-surface mb-space-md">Pet Services</h3><ul class="space-y-2.5 font-body-md text-body-md text-on-surface-variant"><li><a class="hover:text-primary transition-colors" data-path="pet-medical" href="#">Veterinary Care</a></li><li><a class="hover:text-primary transition-colors" data-path="pet-care" href="#">Pet Boarding</a></li><li><a class="hover:text-primary transition-colors" data-path="pet-care" href="#">Dog Walking</a></li><li><a class="hover:text-primary transition-colors" data-path="pet-care" href="#">Grooming &amp; Spa</a></li><li><a class="hover:text-primary transition-colors" data-path="pet-care" href="#">Pet Training</a></li><li><a class="hover:text-primary transition-colors" data-path="pet-care" href="#">Pet Sitting</a></li></ul></div><div class="space-y-space-md"><h3 class="font-title-md text-title-md text-on-surface">Contact Us</h3><div class="space-y-3 font-body-md text-body-md text-on-surface-variant"><div class="flex items-start gap-space-xs"><span class="material-symbols-outlined text-primary text-[20px] mt-0.5">call</span><span>+1 (800) 555-PALS</span></div><div class="flex items-start gap-space-xs"><span class="material-symbols-outlined text-primary text-[20px] mt-0.5">mail</span><span>hello@petpals.com</span></div><div class="flex items-start gap-space-xs"><span class="material-symbols-outlined text-primary text-[20px] mt-0.5">location_on</span><span>124 Blossom Lane, Suite 200, San Francisco, CA</span></div></div></div></div><div class="pt-8 border-t border-outline-variant/40 flex flex-col md:flex-row items-center justify-between gap-4 font-body-sm text-body-sm text-on-surface-variant"><p>© 2025 PetPals Inc. All rights reserved. Caring for Every Paw, Every Day.</p><div class="flex items-center gap-space-md"><a class="hover:text-on-surface transition-colors" data-path="privacy-policy" href="#">Privacy Policy</a><span class="text-outline-variant">•</span><a class="hover:text-on-surface transition-colors" data-path="terms-of-service" href="#">Terms of Service</a></div></div></div></footer>
+<script>
+(function() {
+  // Sidebar navigation routing
+  const navRoutes = {
+    'dashboard': '/dashboard',
+    'my-bookings': '/my-bookings',
+    'my-pets': '/my-pets',
+    'services': '/services',
+    'profile': '/profile',
+    'logout': '/'
+  };
+  document.querySelectorAll('aside nav a[data-path]').forEach(link => {
+    const path = link.getAttribute('data-path');
+    if (navRoutes[path]) {
+      link.href = navRoutes[path];
+    }
+  });
+  // Logout link
+  document.querySelectorAll('aside a[data-path="logout"]').forEach(link => {
+    link.href = '/';
+  });
+  // "Book New Service" button in header
+  document.querySelectorAll('header button').forEach(btn => {
+    if (btn.textContent.trim().includes('Book New Service')) {
+      btn.addEventListener('click', () => { window.location.href = '/book-service'; });
+    }
+  });
+  // "View All" links -> route to relevant pages
+  document.querySelectorAll('a').forEach(link => {
+    const text = (link.textContent || '').trim();
+    if (link.href.includes('#') || link.getAttribute('href') === '#') {
+      if (text === 'View All' || text.includes('View all')) {
+        // Try to figure out context from parent
+        const parent = link.closest('[class]');
+        const parentText = parent ? parent.textContent : '';
+        if (parentText.toLowerCase().includes('booking')) link.href = '/my-bookings';
+        else if (parentText.toLowerCase().includes('pet')) link.href = '/my-pets';
+        else if (parentText.toLowerCase().includes('service')) link.href = '/services';
+      }
+    }
+  });
+  // Profile avatar link -> /profile
+  document.querySelectorAll('header .cursor-pointer').forEach(el => {
+    el.style.cursor = 'pointer';
+    el.addEventListener('click', () => { window.location.href = '/profile'; });
+  });
+})();
+</script>
+
+<script>
+(function() {
+  // Booking flow navigation
+  document.querySelectorAll('button, a').forEach(el => {
+    const text = (el.textContent || '').trim().toLowerCase();
+    if (text.includes('continue to pet detail')) {
+      el.addEventListener('click', () => { window.location.href = '/book-service-pet'; });
+    } else if (text.includes('back to service')) {
+      el.addEventListener('click', () => { window.location.href = '/services'; });
+    } else if (text.includes('continue to schedule')) {
+      el.addEventListener('click', () => { window.location.href = '/book-service-schedule'; });
+    } else if (text.includes('back to pet detail')) {
+      el.addEventListener('click', () => { window.location.href = '/book-service-pet'; });
+    } else if (text.includes('continue to summary')) {
+      el.addEventListener('click', () => { window.location.href = '/book-service-review'; });
+    } else if (text.includes('back to schedule')) {
+      el.addEventListener('click', () => { window.location.href = '/book-service-schedule'; });
+    } else if (text.includes('confirm') && text.includes('book')) {
+      el.addEventListener('click', () => { window.location.href = '/booking-confirmed'; });
+    } else if (text.includes('return to pet dashboard') || text.includes('return to dashboard') || text.includes('view dashboard')) {
+      el.addEventListener('click', () => { window.location.href = '/dashboard'; });
+      if (el.tagName === 'A') el.href = '/dashboard';
+    } else if (text === 'cancel') {
+      el.addEventListener('click', () => { window.location.href = '/services'; });
+    }
+  });
+  
+  // Close/X buttons -> go back
+  document.querySelectorAll('button[aria-label*="Close"], button[aria-label*="close"]').forEach(btn => {
+    btn.addEventListener('click', () => { history.back(); });
+  });
+})();
+</script>
+</body></html>

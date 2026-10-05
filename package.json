@@ -1,0 +1,13 @@
+{
+  "name": "petpals-care-portal",
+  "version": "1.0.0",
+  "description": "PetPals Care Portal Login Flow",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["petpals", "care-portal"],
+  "author": "",
+  "license": "ISC"
+}
