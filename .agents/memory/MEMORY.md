@@ -1,1 +1,1 @@
-- [New account defaults](new-account-defaults.md) — keep demo bookings and profile photos off new customer accounts unless users add their own.
+- [New account defaults](new-account-defaults.md) — keep optional profile data empty until users add it, and let them update or remove it.

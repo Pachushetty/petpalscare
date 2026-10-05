@@ -43,7 +43,23 @@ async function getAuthUser(req) {
 
   if (!token) return null;
   const sessionData = await db.getSession(token);
-  return sessionData?.user || null;
+  const sessionUser = sessionData?.user;
+  if (!sessionUser?.id) return null;
+
+  let user = await db.findUserById(sessionUser.id);
+  if (!user) return null;
+  if (db.isGeneratedProfileAvatar(user)) {
+    try {
+      const cleanedUser = await db.updateUser(user.id, { avatar: null });
+      user = cleanedUser || { ...user, avatar: null };
+    } catch (err) {
+      console.warn('Could not clear generated profile photo:', err.message);
+      user = { ...user, avatar: null };
+    }
+  }
+  const { password_hash, ...safeUser } = user;
+  safeUser.firstName = safeUser.firstName || safeUser.first_name || safeUser.name?.trim().split(/\s+/)[0] || 'Member';
+  return safeUser;
 }
 
 async function getAuthUserId(req) {
@@ -182,7 +198,8 @@ app.get('/api/auth/me', async (req, res) => {
     if (!user) {
       return res.status(401).json({ error: 'Not authenticated. Please log in.' });
     }
-    res.json(user);
+    const { password_hash, ...safeUser } = user;
+    res.json(safeUser);
   } catch (err) {
     console.error('Get me error:', err);
     res.status(500).json({ error: 'Failed to fetch user' });
@@ -195,7 +212,46 @@ app.put('/api/auth/profile', async (req, res) => {
     if (!user) {
       return res.status(401).json({ error: 'Not authenticated. Please log in.' });
     }
-    const updated = await db.updateUser(user.id, req.body);
+    const body = req.body || {};
+    const profileData = {};
+    for (const field of ['name', 'email', 'phone', 'location', 'avatar']) {
+      if (Object.prototype.hasOwnProperty.call(body, field)) profileData[field] = body[field];
+    }
+    if (Object.prototype.hasOwnProperty.call(body, 'address') && !Object.prototype.hasOwnProperty.call(profileData, 'location')) {
+      profileData.location = body.address;
+    }
+
+    if (Object.prototype.hasOwnProperty.call(profileData, 'name') &&
+        (typeof profileData.name !== 'string' || !profileData.name.trim())) {
+      return res.status(400).json({ error: 'Full name is required.' });
+    }
+    if (Object.prototype.hasOwnProperty.call(profileData, 'email')) {
+      if (typeof profileData.email !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profileData.email.trim())) {
+        return res.status(400).json({ error: 'Please enter a valid email address.' });
+      }
+      profileData.email = profileData.email.trim().toLowerCase();
+      const existing = await db.findUserByEmail(profileData.email);
+      if (existing && existing.id !== user.id) {
+        return res.status(409).json({ error: 'An account with this email already exists.' });
+      }
+    }
+
+    for (const field of ['phone', 'location']) {
+      if (Object.prototype.hasOwnProperty.call(profileData, field) &&
+          profileData[field] !== null && typeof profileData[field] !== 'string') {
+        return res.status(400).json({ error: `Invalid ${field} value.` });
+      }
+    }
+    if (Object.prototype.hasOwnProperty.call(profileData, 'avatar') &&
+        profileData.avatar !== null && typeof profileData.avatar !== 'string') {
+      return res.status(400).json({ error: 'Invalid profile photo.' });
+    }
+
+    if (Object.keys(profileData).length === 0) {
+      return res.status(400).json({ error: 'No profile changes were provided.' });
+    }
+
+    const updated = await db.updateUser(user.id, profileData);
     if (!updated) {
       return res.status(404).json({ error: 'User not found' });
     }
@@ -203,6 +259,9 @@ app.put('/api/auth/profile', async (req, res) => {
     res.json({ success: true, user: safeUser });
   } catch (err) {
     console.error('Update profile error:', err);
+    if (err.code === '23505') {
+      return res.status(409).json({ error: 'An account with this email already exists.' });
+    }
     res.status(500).json({ error: 'Failed to update profile' });
   }
 });

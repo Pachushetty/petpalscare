@@ -16,7 +16,7 @@
     email: 'prathiksha@gmail.com',
     phone: '+91 98765 43210',
     location: 'Mangalore, Karnataka',
-    avatar: 'https://lh3.googleusercontent.com/aida/AEtjO1W2uQrDJs4Vq5TYFXxKRstMqlWwR7xI1Vd89lXd1ZvB7avK7gnREQ5WOfaUosw8l-wR8L7-eAfCJuvY7Cdxkt317Wkh_wn-EKHXll2I84VoOFaioaG2l8yZtkkQGVoXM8G4qG0iUi8m9vS2hjJib1qyvdhI6AzazhdyK9EGdq-j_RpdlDJb8JyxcEVyEU7peCGUk_svquzx-8jfE0aefqTpVg7JuQ55FJTJZ-LnWWoZI1waQwUpguaERD58ZXbKt52BFZtBOSmgo_4'
+    avatar: null
   };
 
   const PROFILE_AVATAR_PLACEHOLDER = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(
@@ -27,7 +27,7 @@
     const avatar = typeof user?.avatar === 'string' ? user.avatar.trim() : '';
     const isAutoAssignedAvatar =
       avatar.includes('photo-1535713875002-d1d0cf377fde') ||
-      (user?.id !== 'usr-prathiksha' && avatar.includes('aida/AEtjO1W2uQrDJs4Vq5TYFXxKRstMqlWw'));
+      avatar.includes('aida/AEtjO1W2uQrDJs4Vq5TYFXxKRstMqlWw');
     return avatar && !isAutoAssignedAvatar ? avatar : PROFILE_AVATAR_PLACEHOLDER;
   }
 
@@ -259,6 +259,11 @@
       return getDisplayAvatar(user);
     },
 
+    hasProfilePhoto(user = this.getUser()) {
+      const avatar = typeof user?.avatar === 'string' ? user.avatar.trim() : '';
+      return Boolean(avatar && getDisplayAvatar(user) === avatar);
+    },
+
     getUser() {
       try {
         const currentUid = localStorage.getItem(STORAGE_KEYS.CURRENT_UID);
@@ -280,34 +285,47 @@
       return null;
     },
 
-    saveUser(userData) {
-      try {
-        if (!userData || (!userData.id && !userData.email)) return userData;
-        const current = this.getUser();
-        const isSameUser = current && (
-          (userData.id && current.id && userData.id === current.id) ||
-          (userData.email && current.email && userData.email.toLowerCase() === current.email.toLowerCase())
-        );
-        const updated = isSameUser ? { ...current, ...userData } : { ...userData };
-        if (updated.name) {
-          updated.firstName = updated.name.trim().split(' ')[0] || updated.name;
-        }
-        localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(updated));
-        localStorage.setItem(STORAGE_KEYS.AUTH, 'true');
-        if (updated.id) {
-          localStorage.setItem(STORAGE_KEYS.CURRENT_UID, updated.id);
-          localStorage.setItem(`${STORAGE_KEYS.USER}_${updated.id}`, JSON.stringify(updated));
-        }
-        this.broadcast('user-updated', updated);
-
-        // Sync with PostgreSQL backend API if authenticated
-        API.put('/api/auth/profile', updated).catch(err => console.warn('Failed to sync profile with backend:', err));
-
-        return updated;
-      } catch (e) {
-        console.error('Error saving user to localStorage', e);
-        return userData;
+    async saveUser(userData) {
+      if (!userData || typeof userData !== 'object') {
+        throw new Error('Profile changes are missing.');
       }
+      const current = this.getUser();
+      if (!current?.id) {
+        throw new Error('Please sign in again before updating your profile.');
+      }
+
+      const patch = {};
+      for (const field of ['name', 'email', 'phone', 'location', 'avatar']) {
+        if (Object.prototype.hasOwnProperty.call(userData, field)) patch[field] = userData[field];
+      }
+      if (Object.prototype.hasOwnProperty.call(userData, 'address') && !Object.prototype.hasOwnProperty.call(patch, 'location')) {
+        patch.location = userData.address;
+      }
+      if (typeof patch.name === 'string') patch.name = patch.name.trim();
+      if (typeof patch.email === 'string') patch.email = patch.email.trim().toLowerCase();
+      for (const field of ['phone', 'location']) {
+        if (Object.prototype.hasOwnProperty.call(patch, field) && typeof patch[field] === 'string') {
+          patch[field] = patch[field].trim() || null;
+        }
+      }
+      if (Object.prototype.hasOwnProperty.call(patch, 'avatar') &&
+          (typeof patch.avatar !== 'string' || !patch.avatar.trim())) {
+        patch.avatar = null;
+      }
+
+      const response = await API.put('/api/auth/profile', patch);
+      if (!response?.success || !response.user) {
+        throw new Error('Your profile could not be saved. Please try again.');
+      }
+
+      const saved = { ...current, ...response.user };
+      saved.firstName = saved.first_name || saved.firstName || saved.name?.trim().split(/\s+/)[0] || 'Member';
+      localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(saved));
+      localStorage.setItem(STORAGE_KEYS.AUTH, 'true');
+      localStorage.setItem(STORAGE_KEYS.CURRENT_UID, saved.id);
+      localStorage.setItem(`${STORAGE_KEYS.USER}_${saved.id}`, JSON.stringify(saved));
+      this.broadcast('user-updated', saved);
+      return saved;
     },
 
     getPets() {
@@ -974,7 +992,7 @@
             id: 'msg-' + Date.now(),
             name: user.name || 'Pet Parent',
             email: user.email || 'user@example.com',
-            phone: user.phone || '+91 98765 43210',
+            phone: user.phone || '',
             date: 'Today, ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             subject: 'Concierge Hotline Chat Request',
             message: 'Client connected via 24/7 Veterinary & Concierge Hotline. Needs immediate assistance or advice for their pets.',

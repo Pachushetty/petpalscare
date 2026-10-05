@@ -247,9 +247,7 @@
       headerNameEl.textContent = user.firstName || (user.name ? user.name.split(' ')[0] : 'Profile');
     }
     const headerAvatarEl = document.querySelector('header img[alt="Profile"]');
-    if (headerAvatarEl && user.avatar) {
-      headerAvatarEl.src = user.avatar;
-    }
+    if (headerAvatarEl) headerAvatarEl.src = PetPalsStore.getDisplayAvatar(user);
 
     // KPIs
     const upcomingBookings = bookings.filter(b => b.status === 'Upcoming');

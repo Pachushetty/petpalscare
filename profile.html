@@ -240,13 +240,16 @@
               <!-- Profile Details Left -->
               <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6">
                 <!-- Avatar with Photo Upload -->
-                <div class="relative w-24 h-24 rounded-full bg-surface-container flex items-center justify-center text-primary-container shrink-0 overflow-hidden shadow-inner group">
-                  <img id="profile-avatar-img" class="w-full h-full object-cover rounded-full" src="https://lh3.googleusercontent.com/aida/AEtjO1W2uQrDJs4Vq5TYFXxKRstMqlWwR7xI1Vd89lXd1ZvB7avK7gnREQ5WOfaUosw8l-wR8L7-eAfCJuvY7Cdxkt317Wkh_wn-EKHXll2I84VoOFaioaG2l8yZtkkQGVoXM8G4qG0iUi8m9vS2hjJib1qyvdhI6AzazhdyK9EGdq-j_RpdlDJb8JyxcEVyEU7peCGUk_svquzx-8jfE0aefqTpVg7JuQ55FJTJZ-LnWWoZI1waQwUpguaERD58ZXbKt52BFZtBOSmgo_4" alt="User Profile Photo"/>
-                  <button id="upload-photo-btn" aria-label="Upload photo" class="absolute inset-0 bg-inverse-surface/40 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center transition-opacity text-on-primary text-xs font-label-sm cursor-pointer" type="button" title="Change profile photo">
-                    <span class="material-symbols-outlined text-2xl">photo_camera</span>
-                    <span class="text-[10px] mt-0.5">Upload</span>
-                  </button>
-                  <input id="avatar-file-input" type="file" accept="image/*" class="hidden"/>
+                <div class="flex flex-col items-center gap-2 shrink-0">
+                  <div class="relative w-24 h-24 rounded-full bg-surface-container flex items-center justify-center text-primary-container overflow-hidden shadow-inner group">
+                    <img id="profile-avatar-img" class="w-full h-full object-cover rounded-full" alt="User Profile Photo"/>
+                    <button id="upload-photo-btn" aria-label="Upload photo" class="absolute inset-0 bg-inverse-surface/40 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center transition-opacity text-on-primary text-xs font-label-sm cursor-pointer" type="button" title="Change profile photo">
+                      <span class="material-symbols-outlined text-2xl">photo_camera</span>
+                      <span class="text-[10px] mt-0.5">Upload</span>
+                    </button>
+                    <input id="avatar-file-input" type="file" accept="image/*" class="hidden"/>
+                  </div>
+                  <button id="remove-photo-btn" class="hidden text-xs font-label-sm text-error hover:underline" type="button">Remove photo</button>
                 </div>
 
                 <!-- Meta and Contact Info -->
@@ -264,11 +267,11 @@
                     </div>
                     <div class="flex items-center gap-2.5">
                       <span class="material-symbols-outlined text-[18px] text-outline">call</span>
-                      <span id="profile-display-phone">+91 98765 43210</span>
+                      <span id="profile-display-phone"></span>
                     </div>
                     <div class="flex items-center gap-2.5">
                       <span class="material-symbols-outlined text-[18px] text-outline">location_on</span>
-                      <span id="profile-display-location">Mangalore, Karnataka</span>
+                      <span id="profile-display-location"></span>
                     </div>
                   </div>
                 </div>
@@ -574,13 +577,17 @@
         const user = PetPalsStore.getUser();
         document.getElementById('profile-display-name').textContent = user.name || 'Pet Parent';
         document.getElementById('profile-display-email').textContent = user.email || 'user@example.com';
-        document.getElementById('profile-display-phone').textContent = user.phone || '+91 98765 43210';
-        document.getElementById('profile-display-location').textContent = user.location || user.address || 'Mangalore, Karnataka';
+        document.getElementById('profile-display-phone').textContent = user.phone || '';
+        document.getElementById('profile-display-location').textContent = user.location || user.address || '';
         const avatarSrc = PetPalsStore.getDisplayAvatar(user);
         const avatarEl = document.getElementById('profile-avatar-img');
         const headerAvatar = document.getElementById('header-user-avatar');
+        const removePhotoBtn = document.getElementById('remove-photo-btn');
         if (avatarEl) avatarEl.src = avatarSrc;
         if (headerAvatar) headerAvatar.src = avatarSrc;
+        if (removePhotoBtn) {
+          removePhotoBtn.classList.toggle('hidden', !PetPalsStore.hasProfilePhoto(user));
+        }
         const firstName = user.firstName || (user.name ? user.name.split(' ')[0] : 'Member');
         const headerName = document.getElementById('header-user-firstname');
         if (headerName) headerName.textContent = firstName;
@@ -599,19 +606,27 @@
       document.getElementById('open-edit-profile-btn')?.addEventListener('click', openEditProfileModal);
       document.getElementById('quick-edit-profile-btn')?.addEventListener('click', openEditProfileModal);
 
-      document.getElementById('edit-profile-form')?.addEventListener('submit', function(e) {
+      document.getElementById('edit-profile-form')?.addEventListener('submit', async function(e) {
         e.preventDefault();
         const updated = {
           name: document.getElementById('edit-name').value.trim(),
           email: document.getElementById('edit-email').value.trim(),
           phone: document.getElementById('edit-phone').value.trim(),
-          location: document.getElementById('edit-location').value.trim(),
-          address: document.getElementById('edit-location').value.trim()
+          location: document.getElementById('edit-location').value.trim()
         };
-        PetPalsStore.saveUser(updated);
-        renderUserProfile();
-        PetPalsUI.closeModal('edit-profile-modal');
-        PetPalsUI.toast('Profile details updated successfully! ✨');
+        const saveButton = this.querySelector('button[type="submit"]');
+        if (saveButton) saveButton.disabled = true;
+        try {
+          await PetPalsStore.saveUser(updated);
+          renderUserProfile();
+          PetPalsUI.closeModal('edit-profile-modal');
+          PetPalsUI.toast('Profile details updated successfully!', 'success');
+        } catch (error) {
+          console.error('Profile update failed:', error);
+          PetPalsUI.toast(error.message || 'Profile could not be saved. Please try again.', 'error');
+        } finally {
+          if (saveButton) saveButton.disabled = false;
+        }
       });
 
       // 3. CHANGE PASSWORD LOGIC
@@ -647,17 +662,64 @@
       const photoInput = document.getElementById('avatar-file-input');
 
       photoBtn?.addEventListener('click', () => photoInput.click());
-      photoInput?.addEventListener('change', function(e) {
+      photoInput?.addEventListener('change', async function(e) {
         const file = e.target.files[0];
         if (!file) return;
-        const reader = new FileReader();
-        reader.onload = function(ev) {
-          const avatarUrl = ev.target.result;
-          PetPalsStore.saveUser({ avatar: avatarUrl });
+        if (!file.type.startsWith('image/')) {
+          PetPalsUI.toast('Choose an image file to upload.', 'error');
+          photoInput.value = '';
+          return;
+        }
+        if (file.size > 10 * 1024 * 1024) {
+          PetPalsUI.toast('Choose an image smaller than 10 MB.', 'error');
+          photoInput.value = '';
+          return;
+        }
+        try {
+          const avatarUrl = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onerror = () => reject(new Error('The image could not be read.'));
+            reader.onload = () => {
+              const image = new Image();
+              image.onerror = () => reject(new Error('The selected file is not a readable image.'));
+              image.onload = () => {
+                const maxSide = 512;
+                const scale = Math.min(1, maxSide / Math.max(image.width, image.height));
+                const canvas = document.createElement('canvas');
+                canvas.width = Math.max(1, Math.round(image.width * scale));
+                canvas.height = Math.max(1, Math.round(image.height * scale));
+                const context = canvas.getContext('2d');
+                if (!context) return reject(new Error('Image processing is unavailable.'));
+                context.drawImage(image, 0, 0, canvas.width, canvas.height);
+                resolve(canvas.toDataURL('image/jpeg', 0.82));
+              };
+              image.src = reader.result;
+            };
+            reader.readAsDataURL(file);
+          });
+          await PetPalsStore.saveUser({ avatar: avatarUrl });
           renderUserProfile();
-          PetPalsUI.toast('Profile photo updated! 📸');
-        };
-        reader.readAsDataURL(file);
+          PetPalsUI.toast('Profile photo saved!', 'success');
+        } catch (error) {
+          console.error('Profile photo upload failed:', error);
+          PetPalsUI.toast(error.message || 'Profile photo could not be saved.', 'error');
+        } finally {
+          photoInput.value = '';
+        }
+      });
+
+      document.getElementById('remove-photo-btn')?.addEventListener('click', async function() {
+        this.disabled = true;
+        try {
+          await PetPalsStore.saveUser({ avatar: null });
+          renderUserProfile();
+          PetPalsUI.toast('Profile photo removed.', 'success');
+        } catch (error) {
+          console.error('Profile photo removal failed:', error);
+          PetPalsUI.toast(error.message || 'Profile photo could not be removed.', 'error');
+        } finally {
+          this.disabled = false;
+        }
       });
 
       // 5. ACCOUNT SETTINGS TOGGLES (PERSISTENT)

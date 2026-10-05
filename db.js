@@ -74,7 +74,7 @@ const DEFAULT_USER = {
   password_hash: bcrypt.hashSync('prathiksha123', 10),
   phone: '+91 98765 43210',
   location: 'Mangalore, Karnataka',
-  avatar: 'https://lh3.googleusercontent.com/aida/AEtjO1W2uQrDJs4Vq5TYFXxKRstMqlWwR7xI1Vd89lXd1ZvB7avK7gnREQ5WOfaUosw8l-wR8L7-eAfCJuvY7Cdxkt317Wkh_wn-EKHXll2I84VoOFaioaG2l8yZtkkQGVoXM8G4qG0iUi8m9vS2hjJib1qyvdhI6AzazhdyK9EGdq-j_RpdlDJb8JyxcEVyEU7peCGUk_svquzx-8jfE0aefqTpVg7JuQ55FJTJZ-LnWWoZI1waQwUpguaERD58ZXbKt52BFZtBOSmgo_4',
+  avatar: null,
   role: 'user',
   created_at: new Date('2026-01-15T09:00:00Z').toISOString(),
   updated_at: new Date().toISOString()
@@ -562,6 +562,18 @@ async function findUserById(id) {
   return (localStore.users || []).find(u => u.id === id) || null;
 }
 
+function optionalProfileValue(value) {
+  if (value === undefined || value === null) return null;
+  const normalized = String(value).trim();
+  return normalized || null;
+}
+
+function isGeneratedProfileAvatar(user) {
+  const avatar = typeof user?.avatar === 'string' ? user.avatar : '';
+  return avatar.includes('photo-1535713875002-d1d0cf377fde') ||
+    avatar.includes('aida/AEtjO1W2uQrDJs4Vq5TYFXxKRstMqlWw');
+}
+
 async function createUser(data) {
   const id = data.id || 'usr-' + Date.now();
   const firstName = data.firstName || (data.name ? data.name.split(' ')[0] : 'Member');
@@ -575,9 +587,9 @@ async function createUser(data) {
     first_name: firstName,
     email: data.email.toLowerCase().trim(),
     password_hash: passwordHash,
-    phone: (data.phone || '').trim(),
-    location: (data.location || '').trim(),
-    avatar: data.avatar || null,
+    phone: optionalProfileValue(data.phone),
+    location: optionalProfileValue(data.location),
+    avatar: optionalProfileValue(data.avatar),
     role: data.role || 'user',
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
@@ -621,12 +633,19 @@ async function updateUser(id, data) {
   const existing = await findUserById(id);
   if (!existing) return null;
 
-  const name = data.name !== undefined ? data.name : existing.name;
-  const firstName = data.firstName !== undefined ? data.firstName : (data.name ? data.name.split(' ')[0] : existing.first_name);
-  const email = data.email !== undefined ? data.email.toLowerCase().trim() : existing.email;
-  const phone = data.phone !== undefined ? data.phone : existing.phone;
-  const location = data.location !== undefined ? data.location : (data.address !== undefined ? data.address : existing.location);
-  const avatar = data.avatar !== undefined ? data.avatar : existing.avatar;
+  const name = data.name !== undefined ? optionalProfileValue(data.name) : existing.name;
+  if (!name) throw new Error('Full name is required.');
+  const firstName = data.firstName !== undefined
+    ? optionalProfileValue(data.firstName)
+    : (data.name !== undefined ? name.split(' ')[0] : existing.first_name);
+  const email = data.email !== undefined ? String(data.email).trim().toLowerCase() : existing.email;
+  const phone = data.phone !== undefined ? optionalProfileValue(data.phone) : optionalProfileValue(existing.phone);
+  const location = data.location !== undefined
+    ? optionalProfileValue(data.location)
+    : (data.address !== undefined ? optionalProfileValue(data.address) : optionalProfileValue(existing.location));
+  const avatar = data.avatar !== undefined
+    ? optionalProfileValue(data.avatar)
+    : (isGeneratedProfileAvatar(existing) ? null : optionalProfileValue(existing.avatar));
   const passwordHash = data.password
     ? (isBcryptHash(data.password) ? data.password : bcrypt.hashSync(String(data.password), 10))
     : (data.password_hash || existing.password_hash);
@@ -646,8 +665,10 @@ async function updateUser(id, data) {
         saveLocalStore(localStore);
         return res.rows[0];
       }
+      return null;
     } catch (err) {
-      console.warn('[PostgreSQL] updateUser failed, updating local store:', err.message);
+      console.error('[PostgreSQL] updateUser failed:', err.message);
+      throw err;
     }
   }
 
@@ -1557,6 +1578,7 @@ module.exports = {
   deleteUserSessions,
   findUserByEmail,
   findUserById,
+  isGeneratedProfileAvatar,
   createUser,
   updateUser,
   getAllUsers,
