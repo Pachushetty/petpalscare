@@ -9,7 +9,7 @@ require('dotenv').config();
 const db = require('./db.js');
 
 const app = express();
-const PORT = 3000;
+const PORT = Number(process.env.PORT) || 3000;
 const PUBLIC_DIR = __dirname;
 
 // Middleware
@@ -88,26 +88,30 @@ app.post('/api/auth/register', async (req, res) => {
       return res.status(409).json({ error: 'An account with this email already exists. Please sign in instead.' });
     }
 
+    const trimmedName = (name || '').trim();
+    if (trimmedName.length < 2) {
+      return res.status(400).json({ error: 'Please enter your full name (at least 2 characters).' });
+    }
+
     const newUser = await db.createUser({
-      name: (name || '').trim() || 'Pet Parent',
+      name: trimmedName,
       email: trimmedEmail,
       password,
       phone: (phone || '').trim(),
       location: (location || '').trim()
     });
 
-    const session = await db.createSession(newUser.id);
     const { password_hash, ...safeUser } = newUser;
-
-    setSessionCookie(req, res, session.token);
 
     res.status(201).json({
       success: true,
-      token: session.token,
       user: safeUser
     });
   } catch (err) {
     console.error('Register error:', err);
+    if (err.code === '23505') {
+      return res.status(409).json({ error: 'An account with this email already exists. Please sign in instead.' });
+    }
     res.status(500).json({ error: 'Failed to create account. Please try again.' });
   }
 });

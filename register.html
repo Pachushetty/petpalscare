@@ -257,10 +257,11 @@
           `;
 
           try {
-            const res = await fetch('/api/auth/register', {
+            const registerUrl = new URL('/api/auth/register', window.location.origin);
+            const res = await fetch(registerUrl, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              credentials: 'include',
+              credentials: 'same-origin',
               body: JSON.stringify({
                 name,
                 email,
@@ -270,7 +271,14 @@
               })
             });
 
-            const data = await res.json();
+            const responseText = await res.text();
+            let data;
+            try {
+              data = responseText ? JSON.parse(responseText) : {};
+            } catch (parseError) {
+              console.error('[Registration] API returned a non-JSON response:', res.status, responseText.slice(0, 500));
+              throw new Error(`Registration service returned an unexpected response (HTTP ${res.status}).`);
+            }
             if (!res.ok || !data.success) {
               submitBtn.disabled = false;
               submitBtn.innerHTML = originalBtnHtml;
@@ -278,29 +286,24 @@
               return;
             }
 
-            // Fresh account created: clear any prior user's cached storage
+            // Start the new account's sign-in flow without carrying over another user's session or cache.
             try {
+              localStorage.removeItem('petpals_session_token');
               localStorage.removeItem('petpals_pets');
               localStorage.removeItem('petpals_bookings');
               localStorage.removeItem('petpals_active_booking');
               localStorage.removeItem('petpals_user');
+              localStorage.removeItem('petpals_auth');
+              localStorage.removeItem('petpals_current_user_id');
             } catch (e) {}
-
-            // Successfully registered and authenticated with PostgreSQL session
-            if (data.token) {
-              try {
-                localStorage.setItem('petpals_session_token', data.token);
-                document.cookie = 'petpals_session=' + encodeURIComponent(data.token) + '; path=/; max-age=604800; SameSite=Lax';
-              } catch (e) {}
-            }
-            if (window.PetPalsStore) {
-              window.PetPalsStore.login(data.user, data.token);
-            }
-            window.location.href = '/dashboard?session_token=' + encodeURIComponent(data.token || '');
+            const secureCookie = window.location.protocol === 'https:' ? '; Secure' : '';
+            document.cookie = 'petpals_session=; path=/; max-age=0; SameSite=Lax' + secureCookie;
+            window.location.href = '/login?switch=true&registered=true';
           } catch (err) {
+            console.error('[Registration] Request failed:', err);
             submitBtn.disabled = false;
             submitBtn.innerHTML = originalBtnHtml;
-            showError('Network error connecting to the server. Please try again.');
+            showError(err.message || 'Network error connecting to the server. Please try again.');
           }
         });
       }

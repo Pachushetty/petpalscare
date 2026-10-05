@@ -219,15 +219,15 @@ const DEFAULT_BOOKINGS = [
 
 const DEFAULT_REVIEWS = [
   { id: 'rev-1', user_id: DEFAULT_USER_ID, user_name: 'Prathiksha Shetty', user_avatar: DEFAULT_USER.avatar, pet: 'Bruno (Golden Retriever)', rating: 5, service_name: 'Grooming & Spa Experience', status: 'Approved', featured: true, comment: 'Sarah took incredible care of Bruno! He came home so clean, soft, and completely stress-free. The report card was wonderful.', created_at: new Date('2026-10-02T14:00:00Z').toISOString() },
-  { id: 'rev-2', user_id: 'usr-2', user_name: 'Sneha R.', user_avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80', pet: 'Simba (Spitz)', rating: 5, service_name: 'Veterinary Comprehensive Exam', status: 'Approved', featured: false, comment: 'Dr. Emily Chen was so gentle and thorough. The online records access makes tracking vaccinations effortless.', created_at: new Date('2026-09-28T10:00:00Z').toISOString() },
-  { id: 'rev-3', user_id: 'usr-3', user_name: 'Arjun T.', user_avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80', pet: 'Charlie (Beagle)', rating: 4, service_name: 'Canine Adventure Walking', status: 'Approved', featured: false, comment: 'Alex is great with high-energy dogs. Charlie had a blast and slept like a log afterwards!', created_at: new Date('2026-09-25T11:00:00Z').toISOString() },
+  { id: 'rev-2', user_id: null, user_name: 'Sneha R.', user_avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80', pet: 'Simba (Spitz)', rating: 5, service_name: 'Veterinary Comprehensive Exam', status: 'Approved', featured: false, comment: 'Dr. Emily Chen was so gentle and thorough. The online records access makes tracking vaccinations effortless.', created_at: new Date('2026-09-28T10:00:00Z').toISOString() },
+  { id: 'rev-3', user_id: null, user_name: 'Arjun T.', user_avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80', pet: 'Charlie (Beagle)', rating: 4, service_name: 'Canine Adventure Walking', status: 'Approved', featured: false, comment: 'Alex is great with high-energy dogs. Charlie had a blast and slept like a log afterwards!', created_at: new Date('2026-09-25T11:00:00Z').toISOString() },
   { id: 'rev-4', user_id: DEFAULT_USER_ID, user_name: 'Prathiksha Shetty', user_avatar: DEFAULT_USER.avatar, pet: 'Milo (Cat)', rating: 5, service_name: 'Luxury Sanctuary Boarding', status: 'Pending', featured: false, comment: 'Leaving Milo for 3 days was hard, but the daily video check-ins put our minds completely at ease.', created_at: new Date('2026-09-20T16:00:00Z').toISOString() }
 ];
 
 const DEFAULT_MESSAGES = [
   { id: 'msg-1', user_id: DEFAULT_USER_ID, name: 'Prathiksha Shetty', email: 'prathiksha@gmail.com', phone: '+91 98765 43210', subject: 'Inquiry: Holiday Boarding Suite for Bruno', message: 'Hello PetPals team! We are planning a 4-day trip in November. Does the luxury suite include specialized dietary meal prep for Bruno (grain-free)?', status: 'Unread', reply: '', created_at: new Date('2026-10-05T09:15:00Z').toISOString() },
-  { id: 'msg-2', user_id: 'usr-2', name: 'Sneha Rao', email: 'sneha.rao@gmail.com', phone: '+91 98451 22334', subject: 'Booster Vaccination Schedule', message: 'Hi! Could Dr. Emily confirm if Milo needs his Rabies booster before next month or if the current certificate is still valid?', status: 'Replied', reply: 'Certificate is valid through Nov 2027! No action needed at this time.', replied_at: 'Yesterday, 5:00 PM', created_at: new Date('2026-10-04T16:20:00Z').toISOString() },
-  { id: 'msg-3', user_id: 'usr-3', name: 'Arjun Talwar', email: 'arjun.t@outlook.com', phone: '+91 99120 44556', subject: 'Weekend Walk Availability', message: 'Hi team, do you have an opening for an individual walk this Saturday morning at 9 AM for Charlie?', status: 'Replied', reply: 'Booked and confirmed for Saturday 9:00 AM with Alex.', replied_at: '04 Oct 2026', created_at: new Date('2026-10-04T08:30:00Z').toISOString() }
+  { id: 'msg-2', user_id: null, name: 'Sneha Rao', email: 'sneha.rao@gmail.com', phone: '+91 98451 22334', subject: 'Booster Vaccination Schedule', message: 'Hi! Could Dr. Emily confirm if Milo needs his Rabies booster before next month or if the current certificate is still valid?', status: 'Replied', reply: 'Certificate is valid through Nov 2027! No action needed at this time.', replied_at: 'Yesterday, 5:00 PM', created_at: new Date('2026-10-04T16:20:00Z').toISOString() },
+  { id: 'msg-3', user_id: null, name: 'Arjun Talwar', email: 'arjun.t@outlook.com', phone: '+91 99120 44556', subject: 'Weekend Walk Availability', message: 'Hi team, do you have an opening for an individual walk this Saturday morning at 9 AM for Charlie?', status: 'Replied', reply: 'Booked and confirmed for Saturday 9:00 AM with Alex.', replied_at: '04 Oct 2026', created_at: new Date('2026-10-04T08:30:00Z').toISOString() }
 ];
 
 const DEFAULT_SETTINGS = {
@@ -264,9 +264,9 @@ async function initDatabase() {
     return;
   }
 
+  let client;
   try {
-    const client = await pool.connect();
-    isPostgres = true;
+    client = await pool.connect();
     console.log('[PostgreSQL] Connected successfully to PostgreSQL database.');
 
     await client.query('BEGIN');
@@ -512,10 +512,21 @@ async function initDatabase() {
 
     await client.query('COMMIT');
     client.release();
+    client = null;
+    isPostgres = true;
     console.log('[PostgreSQL] Database schemas verified and ready.');
   } catch (err) {
-    console.error('[PostgreSQL] Failed to initialize PostgreSQL schemas, falling back to local store:', err.message);
+    if (client) {
+      try {
+        await client.query('ROLLBACK');
+      } catch (rollbackError) {
+        console.warn('[PostgreSQL] Schema rollback failed:', rollbackError.message);
+      }
+      client.release(true);
+    }
     isPostgres = false;
+    console.error('[PostgreSQL] Failed to initialize database schemas:', err.message);
+    throw err;
   }
 }
 
@@ -579,10 +590,15 @@ async function createUser(data) {
       const res = await pool.query(
         `INSERT INTO users (id, name, first_name, email, password_hash, phone, location, avatar, role)
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-         ON CONFLICT (email) DO UPDATE SET password_hash = $5, updated_at = CURRENT_TIMESTAMP
+         ON CONFLICT (email) DO NOTHING
          RETURNING *`,
         [user.id, user.name, user.first_name, user.email, user.password_hash, user.phone, user.location, user.avatar, user.role]
       );
+      if (!res.rows[0]) {
+        const duplicateError = new Error('An account with this email already exists.');
+        duplicateError.code = '23505';
+        throw duplicateError;
+      }
       // Synchronize in localStore as well so both layers are always in sync
       const idx = (localStore.users || []).findIndex(u => (u.email || '').toLowerCase().trim() === user.email);
       if (idx !== -1) localStore.users[idx] = res.rows[0];
@@ -590,7 +606,9 @@ async function createUser(data) {
       saveLocalStore(localStore);
       return res.rows[0];
     } catch (err) {
-      console.warn('[PostgreSQL] createUser insert failed, falling back to local store:', err.message);
+      if (err.code === '23505') throw err;
+      console.error('[PostgreSQL] createUser insert failed:', err.message);
+      throw err;
     }
   }
 
