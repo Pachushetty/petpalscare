@@ -21,15 +21,34 @@ app.use(cookieParser());
 app.use(express.json({ limit: '15mb' }));
 app.use(express.urlencoded({ extended: true, limit: '15mb' }));
 
-// Helper to extract authenticated user from session token (Cookie, Bearer header, or X-Session-Token)
+// Helper to set cookie properly for both standard and iframe/HTTPS contexts
+function setSessionCookie(req, res, token) {
+  const isHttps = req.secure || req.headers['x-forwarded-proto'] === 'https';
+  res.cookie('petpals_session', token, {
+    httpOnly: false,
+    secure: isHttps,
+    sameSite: isHttps ? 'none' : 'lax',
+    path: '/',
+    maxAge: 7 * 24 * 60 * 60 * 1000
+  });
+}
+
+// Helper to extract authenticated user from session token (Cookie, Bearer header, X-Session-Token, or query)
 async function getAuthUser(req) {
   const token = req.cookies?.petpals_session ||
     (req.headers.authorization && req.headers.authorization.startsWith('Bearer ') ? req.headers.authorization.slice(7) : null) ||
-    req.headers['x-session-token'];
+    req.headers['x-session-token'] ||
+    req.query?.session_token ||
+    req.query?.token;
 
   if (!token) return null;
   const sessionData = await db.getSession(token);
   return sessionData?.user || null;
+}
+
+async function getAuthUserId(req) {
+  const user = await getAuthUser(req);
+  return user?.id || null;
 }
 
 // -------------------------------------------------------------
@@ -66,28 +85,21 @@ app.post('/api/auth/register', async (req, res) => {
 
     const existing = await db.findUserByEmail(trimmedEmail);
     if (existing) {
-      return res.status(409).json({ error: 'An account with this email already exists' });
+      return res.status(409).json({ error: 'An account with this email already exists. Please sign in instead.' });
     }
 
     const newUser = await db.createUser({
       name: (name || '').trim() || 'Pet Parent',
       email: trimmedEmail,
       password,
-      phone: (phone || '').trim() || '+91 98765 43210',
-      location: (location || '').trim() || 'Mangalore, Karnataka'
+      phone: (phone || '').trim(),
+      location: (location || '').trim()
     });
 
     const session = await db.createSession(newUser.id);
     const { password_hash, ...safeUser } = newUser;
 
-    // Set secure HTTP cookie
-    res.cookie('petpals_session', session.token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
-      path: '/',
-      maxAge: 7 * 24 * 60 * 60 * 1000
-    });
+    setSessionCookie(req, res, session.token);
 
     res.status(201).json({
       success: true,
@@ -110,25 +122,30 @@ app.post('/api/auth/login', async (req, res) => {
     const trimmedEmail = email.trim().toLowerCase();
     const user = await db.findUserByEmail(trimmedEmail);
     if (!user) {
-      return res.status(401).json({ error: 'Invalid email or password' });
+      return res.status(401).json({ error: 'Invalid email or password. Please check your credentials.' });
     }
 
-    const isValid = bcrypt.compareSync(password, user.password_hash);
+    let isValid = false;
+    if (user.password_hash) {
+      if (typeof user.password_hash === 'string' && /^\$2[aby]?\$\d{2}\$[./A-Za-z0-9]{53}$/.test(user.password_hash)) {
+        try {
+          isValid = bcrypt.compareSync(password, user.password_hash);
+        } catch (e) {
+          isValid = false;
+        }
+      } else {
+        isValid = user.password_hash === password;
+      }
+    }
+
     if (!isValid) {
-      return res.status(401).json({ error: 'Invalid email or password' });
+      return res.status(401).json({ error: 'Invalid email or password. Please check your credentials.' });
     }
 
     const session = await db.createSession(user.id);
     const { password_hash, ...safeUser } = user;
 
-    // Set secure HTTP cookie
-    res.cookie('petpals_session', session.token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
-      path: '/',
-      maxAge: 7 * 24 * 60 * 60 * 1000
-    });
+    setSessionCookie(req, res, session.token);
 
     res.json({
       success: true,
@@ -399,7 +416,7 @@ app.get('/api/reviews', async (req, res) => {
 
 app.post('/api/reviews', async (req, res) => {
   try {
-    const userId = getAuthUserId(req);
+    const userId = await getAuthUserId(req);
     if (!req.body.comment) {
       return res.status(400).json({ error: 'Comment is required' });
     }
@@ -445,7 +462,7 @@ app.get('/api/messages', async (req, res) => {
 
 app.post('/api/messages', async (req, res) => {
   try {
-    const userId = getAuthUserId(req);
+    const userId = await getAuthUserId(req);
     if (!req.body.message || !req.body.name) {
       return res.status(400).json({ error: 'Name and message are required' });
     }
@@ -577,6 +594,11 @@ const PROTECTED_HTML_FILES = new Set([
 // Route specific page mappings with session protection
 Object.keys(PAGE_ROUTES).forEach(route => {
   app.get(route, async (req, res) => {
+    const qToken = req.query.session_token || req.query.token;
+    if (qToken) {
+      setSessionCookie(req, res, qToken);
+    }
+
     if (PROTECTED_ROUTES.has(route)) {
       const user = await getAuthUser(req);
       if (!user) {
@@ -596,6 +618,10 @@ Object.keys(PAGE_ROUTES).forEach(route => {
 app.use(async (req, res, next) => {
   const cleanPath = req.path.replace(/^\/+/, '');
   if (PROTECTED_HTML_FILES.has(cleanPath)) {
+    const qToken = req.query.session_token || req.query.token;
+    if (qToken) {
+      setSessionCookie(req, res, qToken);
+    }
     const user = await getAuthUser(req);
     if (!user) {
       return res.redirect('/login');
@@ -615,6 +641,10 @@ app.use(async (req, res) => {
   const candidate = path.join(PUBLIC_DIR, cleanPath + '.html');
   if (fs.existsSync(candidate)) {
     if (PROTECTED_HTML_FILES.has(cleanPath + '.html')) {
+      const qToken = req.query.session_token || req.query.token;
+      if (qToken) {
+        setSessionCookie(req, res, qToken);
+      }
       const user = await getAuthUser(req);
       if (!user) return res.redirect('/login');
     }

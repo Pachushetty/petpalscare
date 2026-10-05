@@ -231,7 +231,7 @@
 (function() {
   function renderDashboard() {
     if (!window.PetPalsStore) return;
-    const user = PetPalsStore.getUser();
+    const user = PetPalsStore.getUser() || {};
     const pets = PetPalsStore.getPets();
     const bookings = PetPalsStore.getBookings();
 
@@ -239,6 +239,16 @@
     const greetingEl = document.getElementById('dash-greeting-name');
     if (greetingEl) {
       greetingEl.textContent = user.firstName || (user.name ? user.name.split(' ')[0] : 'Pet Parent');
+    }
+
+    // Header profile user name & avatar
+    const headerNameEl = document.querySelector('header span.font-label-lg');
+    if (headerNameEl && (user.firstName || user.name)) {
+      headerNameEl.textContent = user.firstName || (user.name ? user.name.split(' ')[0] : 'Profile');
+    }
+    const headerAvatarEl = document.querySelector('header img[alt="Profile"]');
+    if (headerAvatarEl && user.avatar) {
+      headerAvatarEl.src = user.avatar;
     }
 
     // KPIs
@@ -282,29 +292,40 @@
     // My Pets Grid
     const petsGrid = document.getElementById('dash-pets-grid');
     if (petsGrid) {
-      petsGrid.innerHTML = pets.slice(0, 4).map(pet => `
-        <div class="bg-surface-container-lowest rounded-2xl p-5 shadow-[0_8px_30px_-4px_rgba(44,36,32,0.04)] hover:shadow-md transition-all flex flex-col justify-between">
-          <div class="flex items-center gap-3.5 mb-3">
-            <img src="${pet.avatar}" class="w-14 h-14 rounded-full object-cover shadow-sm bg-surface-container shrink-0" alt="${pet.name}">
-            <div class="min-w-0">
-              <div class="flex items-center gap-2">
-                <h3 class="font-title-md font-bold text-on-surface truncate">${pet.name}</h3>
-                <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-semibold shrink-0">${pet.status || 'Active'}</span>
+      if (pets.length === 0) {
+        petsGrid.innerHTML = `
+          <div class="col-span-full bg-surface-container-lowest rounded-2xl p-6 text-center shadow-[0_8px_30px_-4px_rgba(44,36,32,0.04)] border border-dashed border-outline-variant/60">
+            <span class="material-symbols-outlined text-primary text-4xl mb-2">pets</span>
+            <h3 class="font-title-md font-bold text-on-surface">No Pets Registered Yet</h3>
+            <p class="text-xs text-on-surface-variant mt-1 mb-4">Add your beloved dog, cat, or companion to book health checks, grooming, and luxury boarding.</p>
+            <button onclick="window.location.href='/my-pets'" class="py-2 px-5 rounded-full bg-primary text-white text-xs font-semibold hover:bg-on-primary-fixed-variant transition-colors" type="button">Add Your First Pet</button>
+          </div>
+        `;
+      } else {
+        petsGrid.innerHTML = pets.slice(0, 4).map(pet => `
+          <div class="bg-surface-container-lowest rounded-2xl p-5 shadow-[0_8px_30px_-4px_rgba(44,36,32,0.04)] hover:shadow-md transition-all flex flex-col justify-between">
+            <div class="flex items-center gap-3.5 mb-3">
+              <img src="${pet.avatar}" class="w-14 h-14 rounded-full object-cover shadow-sm bg-surface-container shrink-0" alt="${pet.name}">
+              <div class="min-w-0">
+                <div class="flex items-center gap-2">
+                  <h3 class="font-title-md font-bold text-on-surface truncate">${pet.name}</h3>
+                  <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-semibold shrink-0">${pet.status || 'Active'}</span>
+                </div>
+                <p class="text-xs text-on-surface-variant truncate">${pet.species} • ${pet.breed || pet.age}</p>
+                <p class="text-[11px] text-outline mt-0.5">${pet.age || ''} ${pet.weight ? '• ' + pet.weight : ''}</p>
               </div>
-              <p class="text-xs text-on-surface-variant truncate">${pet.species} • ${pet.breed || pet.age}</p>
-              <p class="text-[11px] text-outline mt-0.5">${pet.age || ''} ${pet.weight ? '• ' + pet.weight : ''}</p>
+            </div>
+            <div class="flex items-center gap-2 pt-2 border-t border-outline-variant/30">
+              <button onclick="window.location.href='/my-pets'" class="flex-1 py-1.5 px-3 rounded-full bg-surface-container hover:bg-surface-container-high text-xs font-semibold text-on-surface transition-colors text-center" type="button">
+                View Profile
+              </button>
+              <button onclick="bookPet('${pet.id}')" class="flex-1 py-1.5 px-3 rounded-full bg-primary text-white hover:bg-on-primary-fixed-variant text-xs font-semibold transition-all text-center shadow-xs" type="button">
+                Book Care
+              </button>
             </div>
           </div>
-          <div class="flex items-center gap-2 pt-2 border-t border-outline-variant/30">
-            <button onclick="window.location.href='/my-pets'" class="flex-1 py-1.5 px-3 rounded-full bg-surface-container hover:bg-surface-container-high text-xs font-semibold text-on-surface transition-colors text-center" type="button">
-              View Profile
-            </button>
-            <button onclick="bookPet('${pet.id}')" class="flex-1 py-1.5 px-3 rounded-full bg-primary text-white hover:bg-on-primary-fixed-variant text-xs font-semibold transition-all text-center shadow-xs" type="button">
-              Book Care
-            </button>
-          </div>
-        </div>
-      `).join('');
+        `).join('');
+      }
     }
 
     // Recent Bookings Table
@@ -468,6 +489,7 @@
   });
 
   document.addEventListener('DOMContentLoaded', renderDashboard);
+  window.addEventListener('petpals:user-updated', renderDashboard);
   window.addEventListener('petpals:bookings-updated', renderDashboard);
   window.addEventListener('petpals:pets-updated', renderDashboard);
   renderDashboard();

@@ -10,14 +10,18 @@ const connectionString = process.env.DATABASE_URL;
 let pool = null;
 let isPostgres = false;
 
-// Initialize PostgreSQL Pool if a remote/Cloud SQL DATABASE_URL is available
-const isLocalhost = connectionString && (connectionString.includes('localhost') || connectionString.includes('127.0.0.1'));
-if (connectionString && !connectionString.includes('your_postgresql_connection_string') && !isLocalhost) {
+function isBcryptHash(str) {
+  return typeof str === 'string' && /^\$2[aby]?\$\d{2}\$[./A-Za-z0-9]{53}$/.test(str);
+}
+
+// Initialize PostgreSQL Pool if a DATABASE_URL is available
+if (connectionString && !connectionString.includes('your_postgresql_connection_string')) {
   try {
+    const isLocal = connectionString.includes('localhost') || connectionString.includes('127.0.0.1') || connectionString.includes('sslmode=disable');
     pool = new Pool({
       connectionString,
-      ssl: { rejectUnauthorized: false },
-      connectionTimeoutMillis: 2000,
+      ssl: isLocal ? false : { rejectUnauthorized: false },
+      connectionTimeoutMillis: 3000,
       idleTimeoutMillis: 30000,
       max: 10
     });
@@ -524,50 +528,75 @@ async function findUserByEmail(email) {
   if (!email) return null;
   const normalized = email.toLowerCase().trim();
   if (isPostgres && pool) {
-    const res = await pool.query('SELECT * FROM users WHERE LOWER(email) = $1 LIMIT 1', [normalized]);
-    return res.rows[0] || null;
+    try {
+      const res = await pool.query('SELECT * FROM users WHERE LOWER(email) = $1 LIMIT 1', [normalized]);
+      if (res.rows[0]) return res.rows[0];
+    } catch (err) {
+      console.warn('[PostgreSQL] findUserByEmail error, falling back to local store:', err.message);
+    }
   }
-  return localStore.users.find(u => u.email.toLowerCase() === normalized) || null;
+  return (localStore.users || []).find(u => (u.email || '').toLowerCase().trim() === normalized) || null;
 }
 
 async function findUserById(id) {
   if (!id) return null;
   if (isPostgres && pool) {
-    const res = await pool.query('SELECT * FROM users WHERE id = $1 LIMIT 1', [id]);
-    return res.rows[0] || null;
+    try {
+      const res = await pool.query('SELECT * FROM users WHERE id = $1 LIMIT 1', [id]);
+      if (res.rows[0]) return res.rows[0];
+    } catch (err) {
+      console.warn('[PostgreSQL] findUserById error, falling back to local store:', err.message);
+    }
   }
-  return localStore.users.find(u => u.id === id) || null;
+  return (localStore.users || []).find(u => u.id === id) || null;
 }
 
 async function createUser(data) {
   const id = data.id || 'usr-' + Date.now();
   const firstName = data.firstName || (data.name ? data.name.split(' ')[0] : 'Member');
-  const passwordHash = data.password ? (data.password.startsWith('$2') ? data.password : bcrypt.hashSync(data.password, 10)) : bcrypt.hashSync('petpals123', 10);
+  const passwordHash = data.password
+    ? (isBcryptHash(data.password) ? data.password : bcrypt.hashSync(String(data.password), 10))
+    : (data.password_hash || bcrypt.hashSync('petpals123', 10));
+
+  const defaultAvatar = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80';
+
   const user = {
     id,
-    name: data.name || 'Pet Parent',
+    name: (data.name || '').trim() || 'Pet Parent',
     first_name: firstName,
     email: data.email.toLowerCase().trim(),
     password_hash: passwordHash,
-    phone: data.phone || '+91 98765 43210',
-    location: data.location || 'Mangalore, Karnataka',
-    avatar: data.avatar || DEFAULT_USER.avatar,
+    phone: (data.phone || '').trim(),
+    location: (data.location || '').trim(),
+    avatar: data.avatar || defaultAvatar,
     role: data.role || 'user',
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
   };
 
   if (isPostgres && pool) {
-    const res = await pool.query(
-      `INSERT INTO users (id, name, first_name, email, password_hash, phone, location, avatar, role)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-       RETURNING *`,
-      [user.id, user.name, user.first_name, user.email, user.password_hash, user.phone, user.location, user.avatar, user.role]
-    );
-    return res.rows[0];
+    try {
+      const res = await pool.query(
+        `INSERT INTO users (id, name, first_name, email, password_hash, phone, location, avatar, role)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+         ON CONFLICT (email) DO UPDATE SET password_hash = $5, updated_at = CURRENT_TIMESTAMP
+         RETURNING *`,
+        [user.id, user.name, user.first_name, user.email, user.password_hash, user.phone, user.location, user.avatar, user.role]
+      );
+      // Synchronize in localStore as well so both layers are always in sync
+      const idx = (localStore.users || []).findIndex(u => (u.email || '').toLowerCase().trim() === user.email);
+      if (idx !== -1) localStore.users[idx] = res.rows[0];
+      else (localStore.users = localStore.users || []).push(res.rows[0]);
+      saveLocalStore(localStore);
+      return res.rows[0];
+    } catch (err) {
+      console.warn('[PostgreSQL] createUser insert failed, falling back to local store:', err.message);
+    }
   }
 
-  localStore.users.push(user);
+  const idx = (localStore.users || []).findIndex(u => (u.email || '').toLowerCase().trim() === user.email);
+  if (idx !== -1) localStore.users[idx] = user;
+  else (localStore.users = localStore.users || []).push(user);
   saveLocalStore(localStore);
   return user;
 }
@@ -582,20 +611,31 @@ async function updateUser(id, data) {
   const phone = data.phone !== undefined ? data.phone : existing.phone;
   const location = data.location !== undefined ? data.location : (data.address !== undefined ? data.address : existing.location);
   const avatar = data.avatar !== undefined ? data.avatar : existing.avatar;
-  const passwordHash = data.password ? (data.password.startsWith('$2') ? data.password : bcrypt.hashSync(data.password, 10)) : existing.password_hash;
+  const passwordHash = data.password
+    ? (isBcryptHash(data.password) ? data.password : bcrypt.hashSync(String(data.password), 10))
+    : (data.password_hash || existing.password_hash);
 
   if (isPostgres && pool) {
-    const res = await pool.query(
-      `UPDATE users
-       SET name = $1, first_name = $2, email = $3, phone = $4, location = $5, avatar = $6, password_hash = $7, updated_at = CURRENT_TIMESTAMP
-       WHERE id = $8
-       RETURNING *`,
-      [name, firstName, email, phone, location, avatar, passwordHash, id]
-    );
-    return res.rows[0];
+    try {
+      const res = await pool.query(
+        `UPDATE users
+         SET name = $1, first_name = $2, email = $3, phone = $4, location = $5, avatar = $6, password_hash = $7, updated_at = CURRENT_TIMESTAMP
+         WHERE id = $8
+         RETURNING *`,
+        [name, firstName, email, phone, location, avatar, passwordHash, id]
+      );
+      if (res.rows[0]) {
+        const idx = (localStore.users || []).findIndex(u => u.id === id);
+        if (idx !== -1) localStore.users[idx] = res.rows[0];
+        saveLocalStore(localStore);
+        return res.rows[0];
+      }
+    } catch (err) {
+      console.warn('[PostgreSQL] updateUser failed, updating local store:', err.message);
+    }
   }
 
-  const idx = localStore.users.findIndex(u => u.id === id);
+  const idx = (localStore.users || []).findIndex(u => u.id === id);
   if (idx !== -1) {
     localStore.users[idx] = {
       ...localStore.users[idx],
@@ -669,12 +709,15 @@ async function createSession(userId, durationDays = 7) {
   const expiresAt = new Date(Date.now() + durationDays * 24 * 60 * 60 * 1000);
 
   if (isPostgres && pool) {
-    await pool.query(
-      `INSERT INTO user_sessions (token, user_id, expires_at)
-       VALUES ($1, $2, $3)`,
-      [token, userId, expiresAt.toISOString()]
-    );
-    return { token, userId, expiresAt };
+    try {
+      await pool.query(
+        `INSERT INTO user_sessions (token, user_id, expires_at)
+         VALUES ($1, $2, $3)`,
+        [token, userId, expiresAt.toISOString()]
+      );
+    } catch (err) {
+      console.warn('[PostgreSQL] createSession failed, falling back to local store:', err.message);
+    }
   }
 
   localStore.sessions = localStore.sessions || [];
@@ -695,41 +738,47 @@ async function getSession(token) {
   if (!cleanToken) return null;
 
   if (isPostgres && pool) {
-    const res = await pool.query(
-      `SELECT s.token, s.user_id, s.expires_at,
-              u.id as uid, u.name, u.first_name, u.email, u.phone, u.location, u.avatar, u.role, u.created_at as user_created_at
-       FROM user_sessions s
-       JOIN users u ON u.id = s.user_id
-       WHERE s.token = $1 AND s.expires_at > CURRENT_TIMESTAMP
-       LIMIT 1`,
-      [cleanToken]
-    );
-    if (!res.rows[0]) return null;
-    const row = res.rows[0];
-    return {
-      session: {
-        token: row.token,
-        userId: row.user_id,
-        expiresAt: row.expires_at
-      },
-      user: {
-        id: row.uid,
-        name: row.name,
-        firstName: row.first_name,
-        email: row.email,
-        phone: row.phone,
-        location: row.location,
-        avatar: row.avatar,
-        role: row.role,
-        createdAt: row.user_created_at
+    try {
+      const res = await pool.query(
+        `SELECT s.token, s.user_id, s.expires_at,
+                u.id as uid, u.name, u.first_name, u.email, u.phone, u.location, u.avatar, u.role, u.created_at as user_created_at
+         FROM user_sessions s
+         JOIN users u ON u.id = s.user_id
+         WHERE s.token = $1 AND s.expires_at > CURRENT_TIMESTAMP
+         LIMIT 1`,
+        [cleanToken]
+      );
+      if (res.rows[0]) {
+        const row = res.rows[0];
+        return {
+          session: {
+            token: row.token,
+            userId: row.user_id,
+            expiresAt: row.expires_at
+          },
+          user: {
+            id: row.uid,
+            name: row.name,
+            firstName: row.first_name || (row.name ? row.name.split(' ')[0] : 'Member'),
+            first_name: row.first_name,
+            email: row.email,
+            phone: row.phone,
+            location: row.location,
+            avatar: row.avatar,
+            role: row.role,
+            createdAt: row.user_created_at
+          }
+        };
       }
-    };
+    } catch (err) {
+      console.warn('[PostgreSQL] getSession error, checking local store:', err.message);
+    }
   }
 
   localStore.sessions = localStore.sessions || [];
   const found = localStore.sessions.find(s => s.token === cleanToken && new Date(s.expires_at) > new Date());
   if (!found) return null;
-  const user = localStore.users.find(u => u.id === found.user_id);
+  const user = (localStore.users || []).find(u => u.id === found.user_id);
   if (!user) return null;
   const { password_hash, ...safeUser } = user;
   return {
@@ -738,7 +787,10 @@ async function getSession(token) {
       userId: found.user_id,
       expiresAt: found.expires_at
     },
-    user: safeUser
+    user: {
+      ...safeUser,
+      firstName: safeUser.firstName || safeUser.first_name || (safeUser.name ? safeUser.name.split(' ')[0] : 'Member')
+    }
   };
 }
 
@@ -780,11 +832,12 @@ async function findAdminByEmail(email) {
 
 // --- PET OPERATIONS ---
 async function getPetsByUserId(userId) {
+  if (!userId) return [];
   if (isPostgres && pool) {
     const res = await pool.query('SELECT * FROM pets WHERE user_id = $1 ORDER BY created_at ASC', [userId]);
     return res.rows.map(mapPetRow);
   }
-  return localStore.pets.filter(p => p.user_id === userId || !p.user_id).map(mapPetRow);
+  return (localStore.pets || []).filter(p => p.user_id === userId).map(mapPetRow);
 }
 
 async function getAllPets() {
@@ -797,19 +850,19 @@ async function getAllPets() {
     `);
     return res.rows.map(r => ({
       ...mapPetRow(r),
-      owner: r.owner_name || 'Prathiksha Shetty',
-      ownerPhone: r.owner_phone || '+91 98765 43210',
-      ownerEmail: r.owner_email || 'prathiksha@gmail.com'
+      owner: r.owner_name || 'Pet Parent',
+      ownerPhone: r.owner_phone || '',
+      ownerEmail: r.owner_email || ''
     }));
   }
 
-  return localStore.pets.map(p => {
-    const owner = localStore.users.find(u => u.id === p.user_id) || DEFAULT_USER;
+  return (localStore.pets || []).map(p => {
+    const owner = (localStore.users || []).find(u => u.id === p.user_id);
     return {
       ...mapPetRow(p),
-      owner: owner.name,
-      ownerPhone: owner.phone,
-      ownerEmail: owner.email
+      owner: owner ? owner.name : 'Pet Parent',
+      ownerPhone: owner ? owner.phone : '',
+      ownerEmail: owner ? owner.email : ''
     };
   });
 }
@@ -844,7 +897,11 @@ async function createPet(data, userId) {
   const photo = data.photo || data.avatar || defaultPhoto;
   const note = data.notes || data.note || 'Healthy and active companion.';
   const microchip = data.microchip || `${Math.floor(100 + Math.random()*899)} ${Math.floor(100 + Math.random()*899)} 002 ${Math.floor(100 + Math.random()*899)}`;
-  const finalUserId = userId || data.user_id || DEFAULT_USER_ID;
+  const finalUserId = userId || data.user_id;
+
+  if (!finalUserId) {
+    throw new Error('User ID is required to link pet to an account');
+  }
 
   if (isPostgres && pool) {
     const res = await pool.query(
@@ -874,6 +931,7 @@ async function createPet(data, userId) {
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
   };
+  localStore.pets = localStore.pets || [];
   localStore.pets.push(newPet);
   saveLocalStore(localStore);
   return mapPetRow(newPet);
@@ -1079,11 +1137,12 @@ async function deleteService(id) {
 
 // --- BOOKINGS OPERATIONS ---
 async function getBookingsByUserId(userId) {
+  if (!userId) return [];
   if (isPostgres && pool) {
     const res = await pool.query('SELECT * FROM bookings WHERE user_id = $1 ORDER BY created_at DESC', [userId]);
     return res.rows.map(mapBookingRow);
   }
-  return localStore.bookings.filter(b => b.user_id === userId || !b.user_id).map(mapBookingRow);
+  return (localStore.bookings || []).filter(b => b.user_id === userId).map(mapBookingRow);
 }
 
 async function getAllBookings() {
@@ -1091,29 +1150,29 @@ async function getAllBookings() {
     const res = await pool.query(`
       SELECT b.*, u.name as user_name, u.email as user_email, u.phone as user_phone,
              p.breed as pet_breed, p.photo as pet_photo
-      FROM bookings b
-      LEFT JOIN users u ON b.user_id = u.id
-      LEFT JOIN pets p ON b.pet_id = p.id
-      ORDER BY b.created_at DESC
+       FROM bookings b
+       LEFT JOIN users u ON b.user_id = u.id
+       LEFT JOIN pets p ON b.pet_id = p.id
+       ORDER BY b.created_at DESC
     `);
     return res.rows.map(r => ({
       ...mapBookingRow(r),
-      userName: r.user_name || 'Prathiksha Shetty',
-      userEmail: r.user_email || 'prathiksha@gmail.com',
-      userPhone: r.user_phone || '+91 98765 43210',
+      userName: r.user_name || 'Pet Parent',
+      userEmail: r.user_email || '',
+      userPhone: r.user_phone || '',
       petBreed: r.pet_breed || '',
       petPhoto: r.pet_photo || ''
     }));
   }
 
-  return localStore.bookings.map(b => {
-    const user = localStore.users.find(u => u.id === b.user_id) || DEFAULT_USER;
-    const pet = localStore.pets.find(p => p.id === b.pet_id);
+  return (localStore.bookings || []).map(b => {
+    const user = (localStore.users || []).find(u => u.id === b.user_id);
+    const pet = (localStore.pets || []).find(p => p.id === b.pet_id);
     return {
       ...mapBookingRow(b),
-      userName: user.name,
-      userEmail: user.email,
-      userPhone: user.phone,
+      userName: user ? user.name : 'Pet Parent',
+      userEmail: user ? user.email : '',
+      userPhone: user ? user.phone : '',
       petBreed: pet ? pet.breed : '',
       petPhoto: pet ? pet.photo : ''
     };
@@ -1141,7 +1200,7 @@ function mapBookingRow(b) {
     booking_date: b.booking_date,
     time: b.booking_time,
     booking_time: b.booking_time,
-    provider: b.provider || 'Dr. Aris Thorne',
+    provider: b.provider || 'Care Specialist',
     status: b.status || 'Confirmed',
     notes: b.notes || '',
     address: b.address || 'PetPals Flagship Spa & Sanctuary',
@@ -1151,12 +1210,17 @@ function mapBookingRow(b) {
 
 async function createBooking(data, userId) {
   const id = data.id || 'PP-' + Math.floor(10000 + Math.random() * 89999);
-  const finalUserId = userId || data.user_id || DEFAULT_USER_ID;
+  const finalUserId = userId || data.user_id;
+
+  if (!finalUserId) {
+    throw new Error('User ID is required to create a booking');
+  }
+
   const serviceName = data.service || data.serviceName || data.service_name || 'Grooming & Spa Experience';
   const serviceCategory = data.serviceCategory || data.service_category || 'grooming';
   const servicePrice = data.servicePrice || data.service_price || '$65.00';
   const duration = data.duration || '60 min';
-  const petName = data.petName || data.pet_name || 'Bruno';
+  const petName = data.petName || data.pet_name || 'Companion';
   const date = data.date || data.booking_date || 'Upcoming';
   const time = data.time || data.booking_time || '10:00 AM';
   const provider = data.provider || 'Care Specialist';
@@ -1193,6 +1257,7 @@ async function createBooking(data, userId) {
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
   };
+  localStore.bookings = localStore.bookings || [];
   localStore.bookings.unshift(b);
   saveLocalStore(localStore);
   return mapBookingRow(b);

@@ -266,7 +266,7 @@
                 email,
                 password,
                 phone,
-                location: 'Mangalore, Karnataka'
+                location: ''
               })
             });
 
@@ -278,12 +278,25 @@
               return;
             }
 
+            // Fresh account created: clear any prior user's cached storage
+            try {
+              localStorage.removeItem('petpals_pets');
+              localStorage.removeItem('petpals_bookings');
+              localStorage.removeItem('petpals_active_booking');
+              localStorage.removeItem('petpals_user');
+            } catch (e) {}
+
             // Successfully registered and authenticated with PostgreSQL session
-            if (window.PetPalsStore) {
-              window.PetPalsStore.saveUser(data.user);
-              window.PetPalsStore.setAuthenticated(true);
+            if (data.token) {
+              try {
+                localStorage.setItem('petpals_session_token', data.token);
+                document.cookie = 'petpals_session=' + encodeURIComponent(data.token) + '; path=/; max-age=604800; SameSite=Lax';
+              } catch (e) {}
             }
-            window.location.href = '/dashboard';
+            if (window.PetPalsStore) {
+              window.PetPalsStore.login(data.user, data.token);
+            }
+            window.location.href = '/dashboard?session_token=' + encodeURIComponent(data.token || '');
           } catch (err) {
             submitBtn.disabled = false;
             submitBtn.innerHTML = originalBtnHtml;

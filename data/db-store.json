@@ -25,6 +25,71 @@
       "role": "user",
       "created_at": "2026-10-05T09:13:28.387Z",
       "updated_at": "2026-10-05T09:13:28.387Z"
+    },
+    {
+      "id": "usr-1791194465564",
+      "name": "Test User",
+      "first_name": "Test",
+      "email": "testuser@example.com",
+      "password_hash": "$2b$10$CYxzGaxIPPa3fhfqT8om/exj6Mm6DFXUFHwk46q0VHbgWkHjB7XG.",
+      "phone": "+91 9999999999",
+      "location": "Bengaluru",
+      "avatar": "https://lh3.googleusercontent.com/aida/AEtjO1W2uQrDJs4Vq5TYFXxKRstMqlWwR7xI1Vd89lXd1ZvB7avK7gnREQ5WOfaUosw8l-wR8L7-eAfCJuvY7Cdxkt317Wkh_wn-EKHXll2I84VoOFaioaG2l8yZtkkQGVoXM8G4qG0iUi8m9vS2hjJib1qyvdhI6AzazhdyK9EGdq-j_RpdlDJb8JyxcEVyEU7peCGUk_svquzx-8jfE0aefqTpVg7JuQ55FJTJZ-LnWWoZI1waQwUpguaERD58ZXbKt52BFZtBOSmgo_4",
+      "role": "user",
+      "created_at": "2026-10-05T10:01:05.667Z",
+      "updated_at": "2026-10-05T10:01:05.667Z"
+    },
+    {
+      "id": "usr-1791194726338",
+      "name": "Sathish Shetty",
+      "first_name": "Sathish",
+      "email": "user_1791194726210@testcare.com",
+      "password_hash": "$2b$10$3sFPQNgg9nPXfqXwvnaUX.9OEz5/ZC44RoxmXNU3NMN9p6O4pJwmC",
+      "phone": "+91 98765 43210",
+      "location": "Mangalore",
+      "avatar": "https://lh3.googleusercontent.com/aida/AEtjO1W2uQrDJs4Vq5TYFXxKRstMqlWwR7xI1Vd89lXd1ZvB7avK7gnREQ5WOfaUosw8l-wR8L7-eAfCJuvY7Cdxkt317Wkh_wn-EKHXll2I84VoOFaioaG2l8yZtkkQGVoXM8G4qG0iUi8m9vS2hjJib1qyvdhI6AzazhdyK9EGdq-j_RpdlDJb8JyxcEVyEU7peCGUk_svquzx-8jfE0aefqTpVg7JuQ55FJTJZ-LnWWoZI1waQwUpguaERD58ZXbKt52BFZtBOSmgo_4",
+      "role": "user",
+      "created_at": "2026-10-05T10:05:26.440Z",
+      "updated_at": "2026-10-05T10:05:26.440Z"
+    },
+    {
+      "id": "usr-1791194749571",
+      "name": "Sathish Shetty",
+      "first_name": "Sathish",
+      "email": "user_1791194749378@testcare.com",
+      "password_hash": "$2b$10$.rTYrdodSDXBjlHnRtqr.eiPgcLQ1y1JqYaL9mKzDQeWeDiNqkGXq",
+      "phone": "+91 98765 43210",
+      "location": "Mangalore",
+      "avatar": "https://lh3.googleusercontent.com/aida/AEtjO1W2uQrDJs4Vq5TYFXxKRstMqlWwR7xI1Vd89lXd1ZvB7avK7gnREQ5WOfaUosw8l-wR8L7-eAfCJuvY7Cdxkt317Wkh_wn-EKHXll2I84VoOFaioaG2l8yZtkkQGVoXM8G4qG0iUi8m9vS2hjJib1qyvdhI6AzazhdyK9EGdq-j_RpdlDJb8JyxcEVyEU7peCGUk_svquzx-8jfE0aefqTpVg7JuQ55FJTJZ-LnWWoZI1waQwUpguaERD58ZXbKt52BFZtBOSmgo_4",
+      "role": "user",
+      "created_at": "2026-10-05T10:05:49.681Z",
+      "updated_at": "2026-10-05T10:05:49.681Z"
+    },
+    {
+      "id": "usr-1791195021145",
+      "name": "Prathiksha",
+      "first_name": "Prathiksha",
+      "email": "prathikshashetty6355@gmail.com",
+      "password_hash": "$2b$10$bo.Dxz9lGuKkQoESXZ81U.o5l4NE5aDxVWGWChI9JDlJMzsh9Kb9e",
+      "phone": "+91 98765 43210",
+      "location": "Mangalore, Karnataka",
+      "avatar": "https://lh3.googleusercontent.com/aida/AEtjO1W2uQrDJs4Vq5TYFXxKRstMqlWwR7xI1Vd89lXd1ZvB7avK7gnREQ5WOfaUosw8l-wR8L7-eAfCJuvY7Cdxkt317Wkh_wn-EKHXll2I84VoOFaioaG2l8yZtkkQGVoXM8G4qG0iUi8m9vS2hjJib1qyvdhI6AzazhdyK9EGdq-j_RpdlDJb8JyxcEVyEU7peCGUk_svquzx-8jfE0aefqTpVg7JuQ55FJTJZ-LnWWoZI1waQwUpguaERD58ZXbKt52BFZtBOSmgo_4",
+      "role": "user",
+      "created_at": "2026-10-05T10:10:21.253Z",
+      "updated_at": "2026-10-05T10:10:21.435Z"
+    },
+    {
+      "id": "usr-1791195201575",
+      "name": "Rohit Verma",
+      "first_name": "Rohit",
+      "email": "parent_1791195201309@example.com",
+      "password_hash": "$2b$10$zGstuhgUIlNKV.pAxCsKVea7UunjRfknCqkZdoWHtz.yBR1e/.d5K",
+      "phone": "+91 98451 22334",
+      "location": "Bengaluru, Karnataka",
+      "avatar": "https://lh3.googleusercontent.com/aida/AEtjO1W2uQrDJs4Vq5TYFXxKRstMqlWwR7xI1Vd89lXd1ZvB7avK7gnREQ5WOfaUosw8l-wR8L7-eAfCJuvY7Cdxkt317Wkh_wn-EKHXll2I84VoOFaioaG2l8yZtkkQGVoXM8G4qG0iUi8m9vS2hjJib1qyvdhI6AzazhdyK9EGdq-j_RpdlDJb8JyxcEVyEU7peCGUk_svquzx-8jfE0aefqTpVg7JuQ55FJTJZ-LnWWoZI1waQwUpguaERD58ZXbKt52BFZtBOSmgo_4",
+      "role": "user",
+      "created_at": "2026-10-05T10:13:21.744Z",
+      "updated_at": "2026-10-05T10:13:21.744Z"
     }
   ],
   "admin_users": [
@@ -391,6 +456,60 @@
       "user_id": "usr-1791191608279",
       "created_at": "2026-10-05T09:13:28.387Z",
       "expires_at": "2026-10-12T09:13:28.387Z"
+    },
+    {
+      "token": "9fa97d4f9083a059d485c0dab34ac77d4dd94c4d42e85487eb93ebefbfd60b76",
+      "user_id": "usr-1791194465564",
+      "created_at": "2026-10-05T10:01:05.669Z",
+      "expires_at": "2026-10-12T10:01:05.669Z"
+    },
+    {
+      "token": "232eacc7cc4442cf7188d662259de9b886796da0c48abb858c9cfe9ca4af31b5",
+      "user_id": "usr-1791194465564",
+      "created_at": "2026-10-05T10:01:05.801Z",
+      "expires_at": "2026-10-12T10:01:05.800Z"
+    },
+    {
+      "token": "f1b488a1c9adeb52d3276e7345446649b3ce04c2af29ca9b8751aecde81059cf",
+      "user_id": "usr-1791194726338",
+      "created_at": "2026-10-05T10:05:26.440Z",
+      "expires_at": "2026-10-12T10:05:26.440Z"
+    },
+    {
+      "token": "06b13e7d95f3089104ccafe44eaab2f8c83904a6cd1fe9d868d3dd68410adab3",
+      "user_id": "usr-1791194726338",
+      "created_at": "2026-10-05T10:05:26.552Z",
+      "expires_at": "2026-10-12T10:05:26.552Z"
+    },
+    {
+      "token": "a8fe0d6ad08371a659e79da48d86ffcba8e324a67ad4400d5cca1c3432083e5d",
+      "user_id": "usr-1791194749571",
+      "created_at": "2026-10-05T10:05:49.683Z",
+      "expires_at": "2026-10-12T10:05:49.683Z"
+    },
+    {
+      "token": "982c4897f9251e03c995157f85b216ce7eece372293d531d42f7754371dccd49",
+      "user_id": "usr-1791194749571",
+      "created_at": "2026-10-05T10:05:49.828Z",
+      "expires_at": "2026-10-12T10:05:49.827Z"
+    },
+    {
+      "token": "0c74597f8805e10a9021a58ff4ddda6012f207aefd72a44bc4ac499243381b84",
+      "user_id": "usr-1791195021145",
+      "created_at": "2026-10-05T10:10:21.255Z",
+      "expires_at": "2026-10-12T10:10:21.254Z"
+    },
+    {
+      "token": "7318444e5157ede1eea902902770c411c901fa844c599990b7f8a6c293b29fa2",
+      "user_id": "usr-1791195201575",
+      "created_at": "2026-10-05T10:13:21.747Z",
+      "expires_at": "2026-10-12T10:13:21.747Z"
+    },
+    {
+      "token": "30cb1fb35ac70e76bbe9e9e6217ef610740d11522eebadb2f716f16f8a3621bd",
+      "user_id": "usr-1791195201575",
+      "created_at": "2026-10-05T10:13:22.227Z",
+      "expires_at": "2026-10-12T10:13:22.227Z"
     }
   ]
 }

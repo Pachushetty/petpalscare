@@ -6,7 +6,8 @@
     USER: 'petpals_user',
     PETS: 'petpals_pets',
     BOOKINGS: 'petpals_bookings',
-    AUTH: 'petpals_auth'
+    AUTH: 'petpals_auth',
+    CURRENT_UID: 'petpals_current_user_id'
   };
 
   const DEFAULT_USER = {
@@ -153,12 +154,36 @@
     notes: 'Warm botanical bubble bath and breed scissor trim'
   };
 
+  function getStoredToken() {
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const qToken = urlParams.get('session_token') || urlParams.get('token');
+      if (qToken) {
+        localStorage.setItem('petpals_session_token', qToken);
+        return qToken;
+      }
+      return localStorage.getItem('petpals_session_token') || '';
+    } catch (e) {
+      return '';
+    }
+  }
+
+  function attachAuthHeaders(headers = {}) {
+    const token = getStoredToken();
+    if (token) {
+      headers['Authorization'] = 'Bearer ' + token;
+      headers['X-Session-Token'] = token;
+    }
+    return headers;
+  }
+
   // Backend API Client
   const API = {
     async get(endpoint) {
       try {
         const res = await fetch(endpoint, {
-          credentials: 'include'
+          credentials: 'include',
+          headers: attachAuthHeaders()
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return await res.json();
@@ -172,9 +197,9 @@
         const res = await fetch(endpoint, {
           method: 'POST',
           credentials: 'include',
-          headers: {
+          headers: attachAuthHeaders({
             'Content-Type': 'application/json'
-          },
+          }),
           body: JSON.stringify(data)
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -189,9 +214,9 @@
         const res = await fetch(endpoint, {
           method: 'PUT',
           credentials: 'include',
-          headers: {
+          headers: attachAuthHeaders({
             'Content-Type': 'application/json'
-          },
+          }),
           body: JSON.stringify(data)
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -205,7 +230,8 @@
       try {
         const res = await fetch(endpoint, {
           method: 'DELETE',
-          credentials: 'include'
+          credentials: 'include',
+          headers: attachAuthHeaders()
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return await res.json();
@@ -219,6 +245,14 @@
   const PetPalsStore = {
     getUser() {
       try {
+        const currentUid = localStorage.getItem(STORAGE_KEYS.CURRENT_UID);
+        if (currentUid) {
+          const userSpecific = localStorage.getItem(`${STORAGE_KEYS.USER}_${currentUid}`);
+          if (userSpecific) {
+            const parsed = JSON.parse(userSpecific);
+            if (parsed && (parsed.id || parsed.email)) return parsed;
+          }
+        }
         const data = localStorage.getItem(STORAGE_KEYS.USER);
         if (data) {
           const parsed = JSON.parse(data);
@@ -232,13 +266,22 @@
 
     saveUser(userData) {
       try {
-        const current = this.getUser() || {};
-        const updated = { ...current, ...userData };
+        if (!userData || (!userData.id && !userData.email)) return userData;
+        const current = this.getUser();
+        const isSameUser = current && (
+          (userData.id && current.id && userData.id === current.id) ||
+          (userData.email && current.email && userData.email.toLowerCase() === current.email.toLowerCase())
+        );
+        const updated = isSameUser ? { ...current, ...userData } : { ...userData };
         if (updated.name) {
           updated.firstName = updated.name.trim().split(' ')[0] || updated.name;
         }
         localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(updated));
         localStorage.setItem(STORAGE_KEYS.AUTH, 'true');
+        if (updated.id) {
+          localStorage.setItem(STORAGE_KEYS.CURRENT_UID, updated.id);
+          localStorage.setItem(`${STORAGE_KEYS.USER}_${updated.id}`, JSON.stringify(updated));
+        }
         this.broadcast('user-updated', updated);
 
         // Sync with PostgreSQL backend API if authenticated
@@ -252,22 +295,35 @@
     },
 
     getPets() {
+      const user = this.getUser();
+      const userId = user?.id;
+      if (!userId) return [];
       try {
-        const data = localStorage.getItem(STORAGE_KEYS.PETS);
-        if (data) {
-          const parsed = JSON.parse(data);
-          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        const userPets = localStorage.getItem(`${STORAGE_KEYS.PETS}_${userId}`);
+        if (userPets) {
+          const parsed = JSON.parse(userPets);
+          if (Array.isArray(parsed)) return parsed;
         }
       } catch (e) {
         console.warn('Error reading pets from localStorage', e);
       }
-      return [...DEFAULT_PETS];
+      // ONLY if this is the seed demo user 'usr-prathiksha', return default demo pets
+      if (userId === 'usr-prathiksha') {
+        return [...DEFAULT_PETS];
+      }
+      // For all other users or new accounts, return empty list
+      return [];
     },
 
     savePets(pets) {
       try {
-        localStorage.setItem(STORAGE_KEYS.PETS, JSON.stringify(pets));
-        this.broadcast('pets-updated', pets);
+        const user = this.getUser();
+        const userId = user?.id;
+        const petsList = Array.isArray(pets) ? pets : [];
+        if (userId) {
+          localStorage.setItem(`${STORAGE_KEYS.PETS}_${userId}`, JSON.stringify(petsList));
+        }
+        this.broadcast('pets-updated', petsList);
       } catch (e) {
         console.error('Error saving pets to localStorage', e);
       }
@@ -280,8 +336,11 @@
       const avatar = petData.avatar || petData.photo || SPECIES_AVATARS[normalizedSpecies] || SPECIES_AVATARS['Dog'];
       const note = petData.note || petData.notes || 'Wellness check recommended';
       const microchip = petData.microchip || `${Math.floor(100 + Math.random()*899)} ${Math.floor(100 + Math.random()*899)} 002 ${Math.floor(100 + Math.random()*899)}`;
+      const user = this.getUser();
       const newPet = {
         id,
+        userId: user?.id || null,
+        user_id: user?.id || null,
         name: petData.name || 'Pet',
         species: normalizedSpecies,
         breed: petData.breed || (normalizedSpecies === 'Cat' ? 'Domestic Shorthair' : 'Golden Retriever'),
@@ -335,22 +394,35 @@
     },
 
     getBookings() {
+      const user = this.getUser();
+      const userId = user?.id;
+      if (!userId) return [];
       try {
-        const data = localStorage.getItem(STORAGE_KEYS.BOOKINGS);
-        if (data) {
-          const parsed = JSON.parse(data);
-          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        const userBookings = localStorage.getItem(`${STORAGE_KEYS.BOOKINGS}_${userId}`);
+        if (userBookings) {
+          const parsed = JSON.parse(userBookings);
+          if (Array.isArray(parsed)) return parsed;
         }
       } catch (e) {
         console.warn('Error reading bookings from localStorage', e);
       }
-      return [...DEFAULT_BOOKINGS];
+      // ONLY if this is the seed demo user 'usr-prathiksha', return default demo bookings
+      if (userId === 'usr-prathiksha') {
+        return [...DEFAULT_BOOKINGS];
+      }
+      // For all other users or new accounts, return empty list
+      return [];
     },
 
     saveBookings(bookings) {
       try {
-        localStorage.setItem(STORAGE_KEYS.BOOKINGS, JSON.stringify(bookings));
-        this.broadcast('bookings-updated', bookings);
+        const user = this.getUser();
+        const userId = user?.id;
+        const bookingsList = Array.isArray(bookings) ? bookings : [];
+        if (userId) {
+          localStorage.setItem(`${STORAGE_KEYS.BOOKINGS}_${userId}`, JSON.stringify(bookingsList));
+        }
+        this.broadcast('bookings-updated', bookingsList);
       } catch (e) {
         console.error('Error saving bookings to localStorage', e);
       }
@@ -359,17 +431,20 @@
     addBooking(bookingData) {
       const bookings = this.getBookings();
       const id = bookingData.id || ('PP-' + Math.floor(10000 + Math.random() * 90000));
+      const user = this.getUser();
       const newBooking = {
         id,
+        userId: user?.id || null,
+        user_id: user?.id || null,
         service: bookingData.service || 'Grooming & Spa Experience',
         serviceCategory: bookingData.serviceCategory || 'grooming',
         servicePrice: bookingData.servicePrice || '$65.00',
         duration: bookingData.duration || '75 min',
-        petId: bookingData.petId || 'pet-bruno',
-        petName: bookingData.petName || 'Bruno',
-        petBreed: bookingData.petBreed || 'Golden Retriever (2 years)',
+        petId: bookingData.petId || '',
+        petName: bookingData.petName || 'Companion',
+        petBreed: bookingData.petBreed || 'Companion',
         petAvatar: bookingData.petAvatar || SPECIES_AVATARS['Dog'],
-        date: bookingData.date || '10 Oct 2026',
+        date: bookingData.date || 'Upcoming',
         time: bookingData.time || '10:00 AM',
         specialist: bookingData.specialist || 'Sarah Jenkins',
         specialistRole: bookingData.specialistRole || 'Coat Specialist ★ 4.9',
@@ -451,6 +526,7 @@
 
         if (!user || !user.id) {
           localStorage.removeItem(STORAGE_KEYS.USER);
+          localStorage.removeItem(STORAGE_KEYS.CURRENT_UID);
           localStorage.setItem(STORAGE_KEYS.AUTH, 'false');
           if (isProtected) {
             window.location.href = '/login';
@@ -459,11 +535,18 @@
           return;
         }
 
-        const current = this.getUser() || {};
-        const merged = { ...current, ...user };
-        localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(merged));
+        const prevUid = localStorage.getItem(STORAGE_KEYS.CURRENT_UID);
+        if (prevUid && prevUid !== user.id) {
+          localStorage.removeItem(STORAGE_KEYS.PETS);
+          localStorage.removeItem(STORAGE_KEYS.BOOKINGS);
+          localStorage.removeItem('petpals_active_booking');
+        }
+
+        localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
+        localStorage.setItem(`${STORAGE_KEYS.USER}_${user.id}`, JSON.stringify(user));
         localStorage.setItem(STORAGE_KEYS.AUTH, 'true');
-        this.broadcast('user-updated', merged);
+        localStorage.setItem(STORAGE_KEYS.CURRENT_UID, user.id);
+        this.broadcast('user-updated', user);
 
         const [pets, bookings] = await Promise.all([
           API.get('/api/pets'),
@@ -471,13 +554,11 @@
         ]);
 
         if (Array.isArray(pets)) {
-          localStorage.setItem(STORAGE_KEYS.PETS, JSON.stringify(pets));
-          this.broadcast('pets-updated', pets);
+          this.savePets(pets);
         }
 
         if (Array.isArray(bookings)) {
-          localStorage.setItem(STORAGE_KEYS.BOOKINGS, JSON.stringify(bookings));
-          this.broadcast('bookings-updated', bookings);
+          this.saveBookings(bookings);
         }
       } catch (err) {
         console.warn('Backend sync error:', err);
@@ -485,18 +566,52 @@
     },
 
     getActiveBooking() {
+      const user = this.getUser();
+      const userId = user?.id;
+      if (!userId) {
+        return {
+          service: 'Grooming & Spa Experience',
+          serviceCategory: 'grooming',
+          servicePrice: '$65.00',
+          duration: '75 min',
+          petId: '',
+          petName: '',
+          petBreed: '',
+          date: '',
+          time: '',
+          status: 'Upcoming'
+        };
+      }
       try {
-        const data = localStorage.getItem('petpals_active_booking');
-        if (data) return JSON.parse(data);
+        const userActive = localStorage.getItem(`petpals_active_booking_${userId}`);
+        if (userActive) return JSON.parse(userActive);
       } catch (e) {}
-      return { ...DEFAULT_ACTIVE_BOOKING };
+      if (userId === 'usr-prathiksha') {
+        return { ...DEFAULT_ACTIVE_BOOKING };
+      }
+      return {
+        service: 'Grooming & Spa Experience',
+        serviceCategory: 'grooming',
+        servicePrice: '$65.00',
+        duration: '75 min',
+        petId: '',
+        petName: '',
+        petBreed: '',
+        date: '',
+        time: '',
+        status: 'Upcoming'
+      };
     },
 
     saveActiveBooking(bookingData) {
       try {
+        const user = this.getUser();
+        const userId = user?.id;
         const current = this.getActiveBooking();
         const updated = { ...current, ...bookingData };
-        localStorage.setItem('petpals_active_booking', JSON.stringify(updated));
+        if (userId) {
+          localStorage.setItem(`petpals_active_booking_${userId}`, JSON.stringify(updated));
+        }
         return updated;
       } catch (e) {
         console.error('Error saving active booking', e);
@@ -519,6 +634,7 @@
         localStorage.setItem(STORAGE_KEYS.AUTH, status ? 'true' : 'false');
         if (!status) {
           localStorage.removeItem(STORAGE_KEYS.USER);
+          localStorage.removeItem(STORAGE_KEYS.CURRENT_UID);
         }
         this.broadcast('auth-changed', { authenticated: Boolean(status) });
       } catch (e) {
@@ -526,13 +642,34 @@
       }
     },
 
-    login(userData) {
+    login(userData, token) {
       try {
-        localStorage.setItem(STORAGE_KEYS.AUTH, 'true');
-        if (userData) {
-          this.saveUser(userData);
+        const prevUid = localStorage.getItem(STORAGE_KEYS.CURRENT_UID);
+        const newUid = userData?.id;
+
+        if (prevUid && newUid && prevUid !== newUid) {
+          localStorage.removeItem(STORAGE_KEYS.PETS);
+          localStorage.removeItem(STORAGE_KEYS.BOOKINGS);
+          localStorage.removeItem('petpals_active_booking');
+          localStorage.removeItem(STORAGE_KEYS.USER);
         }
-        this.broadcast('auth-changed', { authenticated: true, user: this.getUser() });
+
+        localStorage.setItem(STORAGE_KEYS.AUTH, 'true');
+        if (token) {
+          localStorage.setItem('petpals_session_token', token);
+          try {
+            document.cookie = 'petpals_session=' + encodeURIComponent(token) + '; path=/; max-age=604800; SameSite=Lax';
+          } catch (e) {}
+        }
+        if (userData) {
+          if (newUid) {
+            localStorage.setItem(STORAGE_KEYS.CURRENT_UID, newUid);
+            localStorage.setItem(`${STORAGE_KEYS.USER}_${newUid}`, JSON.stringify(userData));
+          }
+          localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(userData));
+        }
+        this.broadcast('auth-changed', { authenticated: true, user: userData });
+        this.broadcast('user-updated', userData);
       } catch (e) {
         console.error('Error during login', e);
       }
@@ -544,11 +681,21 @@
         await API.post('/api/auth/logout', {});
       } catch (e) {}
       try {
+        const currentUid = localStorage.getItem(STORAGE_KEYS.CURRENT_UID);
+        if (currentUid) {
+          localStorage.removeItem(`${STORAGE_KEYS.USER}_${currentUid}`);
+          localStorage.removeItem(`${STORAGE_KEYS.PETS}_${currentUid}`);
+          localStorage.removeItem(`${STORAGE_KEYS.BOOKINGS}_${currentUid}`);
+          localStorage.removeItem(`petpals_active_booking_${currentUid}`);
+        }
         localStorage.removeItem(STORAGE_KEYS.AUTH);
         localStorage.removeItem(STORAGE_KEYS.USER);
         localStorage.removeItem(STORAGE_KEYS.PETS);
         localStorage.removeItem(STORAGE_KEYS.BOOKINGS);
+        localStorage.removeItem(STORAGE_KEYS.CURRENT_UID);
         localStorage.removeItem('petpals_active_booking');
+        localStorage.removeItem('petpals_session_token');
+        document.cookie = 'petpals_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
       } catch (e) {}
       showToast('Signed out successfully.', 'logout');
       setTimeout(() => {
