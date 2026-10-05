@@ -19,6 +19,18 @@
     avatar: 'https://lh3.googleusercontent.com/aida/AEtjO1W2uQrDJs4Vq5TYFXxKRstMqlWwR7xI1Vd89lXd1ZvB7avK7gnREQ5WOfaUosw8l-wR8L7-eAfCJuvY7Cdxkt317Wkh_wn-EKHXll2I84VoOFaioaG2l8yZtkkQGVoXM8G4qG0iUi8m9vS2hjJib1qyvdhI6AzazhdyK9EGdq-j_RpdlDJb8JyxcEVyEU7peCGUk_svquzx-8jfE0aefqTpVg7JuQ55FJTJZ-LnWWoZI1waQwUpguaERD58ZXbKt52BFZtBOSmgo_4'
   };
 
+  const PROFILE_AVATAR_PLACEHOLDER = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="32" fill="#8c6246"/><circle cx="32" cy="23" r="11" fill="#fcf9f4"/><path d="M10 60c1-15 10-23 22-23s21 8 22 23" fill="#fcf9f4"/></svg>'
+  );
+
+  function getDisplayAvatar(user) {
+    const avatar = typeof user?.avatar === 'string' ? user.avatar.trim() : '';
+    const isAutoAssignedAvatar =
+      avatar.includes('photo-1535713875002-d1d0cf377fde') ||
+      (user?.id !== 'usr-prathiksha' && avatar.includes('aida/AEtjO1W2uQrDJs4Vq5TYFXxKRstMqlWw'));
+    return avatar && !isAutoAssignedAvatar ? avatar : PROFILE_AVATAR_PLACEHOLDER;
+  }
+
   const DEFAULT_PETS = [
     {
       id: 'pet-bruno',
@@ -243,6 +255,10 @@
   };
 
   const PetPalsStore = {
+    getDisplayAvatar(user = this.getUser()) {
+      return getDisplayAvatar(user);
+    },
+
     getUser() {
       try {
         const currentUid = localStorage.getItem(STORAGE_KEYS.CURRENT_UID);
@@ -804,7 +820,7 @@
     userPills.forEach(pill => {
       // Update avatar image if present
       const img = pill.querySelector('img');
-      if (img && user.avatar) img.src = user.avatar;
+      if (img) img.src = PetPalsStore.getDisplayAvatar(user);
       
       // Update name text
       const nameSpan = pill.querySelector('span:not(.material-symbols-outlined)');
@@ -821,7 +837,7 @@
         menu.className = 'absolute right-0 top-14 w-60 bg-surface-container-lowest rounded-2xl shadow-xl border border-outline-variant/40 py-2 hidden z-50 transition-all transform origin-top-right';
         menu.innerHTML = `
           <div class="px-4 py-3 border-b border-outline-variant/30 flex items-center gap-3">
-            <img id="dropdown-user-avatar" src="${user.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'}" class="w-10 h-10 rounded-full object-cover shadow-sm bg-surface-container" alt="User">
+            <img id="dropdown-user-avatar" src="${PetPalsStore.getDisplayAvatar(user)}" class="w-10 h-10 rounded-full object-cover shadow-sm bg-surface-container" alt="User">
             <div class="flex flex-col min-w-0">
               <span id="dropdown-user-name" class="font-label-lg text-label-lg font-semibold text-on-surface truncate">${user.name || 'Pet Parent'}</span>
               <span id="dropdown-user-email" class="font-body-sm text-body-sm text-on-surface-variant truncate">${user.email || 'Signed in'}</span>
@@ -1142,8 +1158,9 @@
     const u = e.detail;
     document.querySelectorAll('#dropdown-user-name').forEach(el => el.textContent = u.name);
     document.querySelectorAll('#dropdown-user-email').forEach(el => el.textContent = u.email);
-    document.querySelectorAll('#dropdown-user-avatar').forEach(img => img.src = u.avatar);
-    document.querySelectorAll('header img').forEach(img => { if (img.alt === 'Profile') img.src = u.avatar; });
+    const avatarSrc = PetPalsStore.getDisplayAvatar(u);
+    document.querySelectorAll('#dropdown-user-avatar').forEach(img => img.src = avatarSrc);
+    document.querySelectorAll('header img').forEach(img => { if (img.alt === 'Profile') img.src = avatarSrc; });
     document.querySelectorAll('header .font-label-lg.text-on-surface').forEach(span => {
       if (span.textContent !== 'Book New Service') span.textContent = u.firstName || u.name;
     });

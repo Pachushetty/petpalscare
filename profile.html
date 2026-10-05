@@ -576,12 +576,11 @@
         document.getElementById('profile-display-email').textContent = user.email || 'user@example.com';
         document.getElementById('profile-display-phone').textContent = user.phone || '+91 98765 43210';
         document.getElementById('profile-display-location').textContent = user.location || user.address || 'Mangalore, Karnataka';
-        if (user.avatar) {
-          const avatarEl = document.getElementById('profile-avatar-img');
-          const headerAvatar = document.getElementById('header-user-avatar');
-          if (avatarEl) avatarEl.src = user.avatar;
-          if (headerAvatar) headerAvatar.src = user.avatar;
-        }
+        const avatarSrc = PetPalsStore.getDisplayAvatar(user);
+        const avatarEl = document.getElementById('profile-avatar-img');
+        const headerAvatar = document.getElementById('header-user-avatar');
+        if (avatarEl) avatarEl.src = avatarSrc;
+        if (headerAvatar) headerAvatar.src = avatarSrc;
         const firstName = user.firstName || (user.name ? user.name.split(' ')[0] : 'Member');
         const headerName = document.getElementById('header-user-firstname');
         if (headerName) headerName.textContent = firstName;

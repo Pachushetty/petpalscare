@@ -90,6 +90,19 @@
       "role": "user",
       "created_at": "2026-10-05T10:13:21.744Z",
       "updated_at": "2026-10-05T10:13:21.744Z"
+    },
+    {
+      "id": "usr-1791215061571",
+      "name": "Prathiksha",
+      "first_name": "Prathiksha",
+      "email": "prathikshashetty050@gmail.com",
+      "password_hash": "$2b$10$T0hPYv7prforo4KyWbxZg.uSBWmT2nPZ54vL2h.KJfgTdgFt1KpAm",
+      "phone": "",
+      "location": "",
+      "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80",
+      "role": "user",
+      "created_at": "2026-10-05T15:44:21.649Z",
+      "updated_at": "2026-10-05T15:44:21.649Z"
     }
   ],
   "admin_users": [
@@ -510,6 +523,12 @@
       "user_id": "usr-1791195201575",
       "created_at": "2026-10-05T10:13:22.227Z",
       "expires_at": "2026-10-12T10:13:22.227Z"
+    },
+    {
+      "token": "02adc0bd4cb214d2e1c5572a989b7c5b9b50044467fab5679958c19f077298e0",
+      "user_id": "usr-1791215061571",
+      "created_at": "2026-10-05T15:44:41.986Z",
+      "expires_at": "2026-10-12T15:44:41.979Z"
     }
   ]
 }

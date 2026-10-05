@@ -581,7 +581,9 @@
     const featuredCard = document.getElementById('featured-booking-card');
     if (featuredCard) {
       const featuredBooking = allBookings.find(b => getStatusType(b.status) === 'upcoming') || allBookings[0];
+      featuredCard.hidden = !featuredBooking;
       if (featuredBooking) {
+        featuredCard.innerHTML = '';
         const isUpcoming = getStatusType(featuredBooking.status) === 'upcoming';
         const isCancelled = getStatusType(featuredBooking.status) === 'cancelled';
         const badgeColor = isCancelled ? 'bg-error-container text-on-error-container' : (isUpcoming ? 'bg-[#EBF3ED] text-[#2D5A3A]' : 'bg-surface-container text-on-surface-variant');

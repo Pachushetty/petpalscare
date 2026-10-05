@@ -569,8 +569,6 @@ async function createUser(data) {
     ? (isBcryptHash(data.password) ? data.password : bcrypt.hashSync(String(data.password), 10))
     : (data.password_hash || bcrypt.hashSync('petpals123', 10));
 
-  const defaultAvatar = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80';
-
   const user = {
     id,
     name: (data.name || '').trim() || 'Pet Parent',
@@ -579,7 +577,7 @@ async function createUser(data) {
     password_hash: passwordHash,
     phone: (data.phone || '').trim(),
     location: (data.location || '').trim(),
-    avatar: data.avatar || defaultAvatar,
+    avatar: data.avatar || null,
     role: data.role || 'user',
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
