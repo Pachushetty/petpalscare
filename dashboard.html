@@ -480,11 +480,7 @@
     }
   });
 
-  // Profile avatar link
-  document.querySelectorAll('header .cursor-pointer').forEach(el => {
-    el.style.cursor = 'pointer';
-    el.addEventListener('click', () => { window.location.href = '/profile'; });
-  });
+
 
   document.addEventListener('DOMContentLoaded', renderDashboard);
   window.addEventListener('petpals:user-updated', renderDashboard);

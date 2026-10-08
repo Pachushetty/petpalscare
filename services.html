@@ -530,12 +530,6 @@
     });
   });
 
-  // Profile avatar link
-  document.querySelectorAll('header .cursor-pointer').forEach(el => {
-    el.style.cursor = 'pointer';
-    el.addEventListener('click', () => { window.location.href = '/profile'; });
-  });
-
   document.addEventListener('DOMContentLoaded', initServiceBooking);
   initServiceBooking();
 })();

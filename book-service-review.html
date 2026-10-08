@@ -386,11 +386,6 @@ Due Today • <span class="font-headline-sm text-headline-sm text-primary font-b
       }
     }
   });
-  // Profile avatar link -> /profile
-  document.querySelectorAll('header .cursor-pointer').forEach(el => {
-    el.style.cursor = 'pointer';
-    el.addEventListener('click', () => { window.location.href = '/profile'; });
-  });
 
   // Payment radio option highlight
   const paymentRadios = document.querySelectorAll('input[name="payment_choice"]');

@@ -694,92 +694,110 @@
   // Create & mount User Dropdown Menu in header
   function initHeaderUserMenu() {
     const user = PetPalsStore.getUser() || { name: 'Pet Parent', firstName: 'Pet Parent', email: '', avatar: '' };
-    const userPills = document.querySelectorAll('header .cursor-pointer, header .rounded-full.bg-surface-container-lowest');
 
-    userPills.forEach(pill => {
-      // Update avatar image if present
-      const img = pill.querySelector('img');
-      if (img) img.src = PetPalsStore.getDisplayAvatar(user);
-      
-      // Update name text
-      const nameSpan = pill.querySelector('span:not(.material-symbols-outlined)');
-      if (nameSpan) nameSpan.textContent = user.firstName || 'Pet Parent';
+    const header = document.querySelector('header');
+    if (!header) return;
 
-      // Attach dropdown wrapper
-      pill.style.position = 'relative';
+    // Find the profile pill in header (avoiding inputs and non-profile buttons)
+    const pill = header.querySelector('img[alt="Profile"]')?.closest('.cursor-pointer, .rounded-full')
+      || Array.from(header.querySelectorAll('div.cursor-pointer, div.rounded-full')).find(el => {
+        return el.querySelector('img') && !el.closest('input') && !el.closest('form');
+      });
 
-      // Avoid duplicate menus
-      let existingMenu = document.getElementById('petpals-user-dropdown');
-      if (!existingMenu) {
-        const menu = document.createElement('div');
-        menu.id = 'petpals-user-dropdown';
-        menu.className = 'absolute right-0 top-14 w-60 bg-surface-container-lowest rounded-2xl shadow-xl border border-outline-variant/40 py-2 hidden z-50 transition-all transform origin-top-right';
-        menu.innerHTML = `
-          <div class="px-4 py-3 border-b border-outline-variant/30 flex items-center gap-3">
-            <img id="dropdown-user-avatar" src="${PetPalsStore.getDisplayAvatar(user)}" class="w-10 h-10 rounded-full object-cover shadow-sm bg-surface-container" alt="User">
-            <div class="flex flex-col min-w-0">
-              <span id="dropdown-user-name" class="font-label-lg text-label-lg font-semibold text-on-surface truncate">${user.name || 'Pet Parent'}</span>
-              <span id="dropdown-user-email" class="font-body-sm text-body-sm text-on-surface-variant truncate">${user.email || 'Signed in'}</span>
-            </div>
-          </div>
-          <div class="py-1">
-            <a href="/profile" class="flex items-center gap-3 px-4 py-2.5 text-on-surface hover:bg-surface-container text-body-sm font-medium transition-colors">
-              <span class="material-symbols-outlined text-[19px] text-primary">person</span>
-              <span>My Profile</span>
-            </a>
-            <a href="/my-bookings" class="flex items-center gap-3 px-4 py-2.5 text-on-surface hover:bg-surface-container text-body-sm font-medium transition-colors">
-              <span class="material-symbols-outlined text-[19px] text-primary">calendar_today</span>
-              <span>My Bookings</span>
-            </a>
-            <a href="/my-pets" class="flex items-center gap-3 px-4 py-2.5 text-on-surface hover:bg-surface-container text-body-sm font-medium transition-colors">
-              <span class="material-symbols-outlined text-[19px] text-primary">pets</span>
-              <span>My Pets</span>
-            </a>
-            <a href="/services" class="flex items-center gap-3 px-4 py-2.5 text-on-surface hover:bg-surface-container text-body-sm font-medium transition-colors">
-              <span class="material-symbols-outlined text-[19px] text-primary">auto_awesome</span>
-              <span>Services</span>
-            </a>
-          </div>
-          <div class="border-t border-outline-variant/30 pt-1">
-            <a href="/login?switch=true" id="dropdown-logout-btn" class="flex items-center gap-3 px-4 py-2.5 text-error hover:bg-error-container/30 text-body-sm font-medium transition-colors cursor-pointer">
-              <span class="material-symbols-outlined text-[19px]">logout</span>
-              <span>Sign Out</span>
-            </a>
-          </div>
-        `;
-        document.body.appendChild(menu);
+    if (!pill) return;
 
-        menu.querySelector('#dropdown-logout-btn')?.addEventListener('click', (e) => {
-          e.preventDefault();
-          PetPalsStore.logout();
-        });
+    // Ensure parent container is positioned relatively so the dropdown aligns perfectly
+    const parent = pill.parentElement;
+    if (parent) {
+      parent.style.position = 'relative';
+    }
 
-        function positionDropdown() {
-          const rect = pill.getBoundingClientRect();
-          menu.style.top = (rect.bottom + 8) + 'px';
-          menu.style.right = (window.innerWidth - rect.right) + 'px';
-        }
+    // Update avatar image if present
+    const img = pill.querySelector('img');
+    if (img) {
+      img.alt = 'Profile';
+      img.src = PetPalsStore.getDisplayAvatar(user);
+    }
+    
+    // Update name text
+    const nameSpan = pill.querySelector('span:not(.material-symbols-outlined)');
+    if (nameSpan) {
+      nameSpan.textContent = user.firstName || user.name || 'Pet Parent';
+    }
 
-        pill.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const isHidden = menu.classList.contains('hidden');
-          if (isHidden) {
-            positionDropdown();
-            menu.classList.remove('hidden');
-          } else {
-            menu.classList.add('hidden');
-          }
-        });
+    // Avoid duplicate menus
+    const existingMenu = document.getElementById('petpals-user-dropdown');
+    if (existingMenu) existingMenu.remove();
 
-        document.addEventListener('click', (e) => {
-          if (!menu.contains(e.target) && !pill.contains(e.target)) {
-            menu.classList.add('hidden');
-          }
-        });
+    const menu = document.createElement('div');
+    menu.id = 'petpals-user-dropdown';
+    menu.className = 'hidden absolute right-0 top-full mt-2 w-64 bg-surface-container-lowest rounded-2xl shadow-xl border border-outline-variant/40 py-2 z-[999] transition-all origin-top-right overflow-hidden';
+    menu.innerHTML = `
+      <div class="px-4 py-3.5 border-b border-outline-variant/30 flex items-center gap-3 bg-surface-container-low/40">
+        <img id="dropdown-user-avatar" src="${PetPalsStore.getDisplayAvatar(user)}" class="w-10 h-10 rounded-full object-cover shadow-xs border border-outline-variant/40 bg-surface-container shrink-0" alt="User">
+        <div class="flex flex-col min-w-0">
+          <span id="dropdown-user-name" class="font-label-lg text-label-lg font-semibold text-on-surface truncate leading-tight">${escapeHtml(user.name || user.firstName || 'Pet Parent')}</span>
+          <span id="dropdown-user-email" class="font-body-sm text-body-sm text-on-surface-variant truncate mt-0.5">${escapeHtml(user.email || 'Signed in')}</span>
+        </div>
+      </div>
+      <div class="py-1.5 px-1.5">
+        <a href="/profile" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-on-surface hover:bg-surface-container font-label-md text-label-md transition-all duration-150 group">
+          <span class="material-symbols-outlined text-[20px] text-primary group-hover:scale-105 transition-transform" style="font-variation-settings: 'FILL' 1;">person</span>
+          <span class="font-medium">Profile</span>
+        </a>
+      </div>
+      <div class="border-t border-outline-variant/30 pt-1.5 pb-0.5 px-1.5">
+        <button type="button" id="dropdown-logout-btn" class="w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-error hover:bg-error-container/30 font-label-md text-label-md transition-all duration-150 group cursor-pointer">
+          <span class="material-symbols-outlined text-[20px] text-error group-hover:translate-x-0.5 transition-transform">logout</span>
+          <span class="font-semibold">Logout</span>
+        </button>
+      </div>
+    `;
 
-        window.addEventListener('resize', () => {
-          if (!menu.classList.contains('hidden')) positionDropdown();
-        });
+    (parent || pill).appendChild(menu);
+
+    const chevron = pill.querySelector('.material-symbols-outlined');
+
+    function toggleMenu(forceOpen) {
+      const willOpen = typeof forceOpen === 'boolean' ? forceOpen : menu.classList.contains('hidden');
+      if (willOpen) {
+        menu.classList.remove('hidden');
+        pill.setAttribute('aria-expanded', 'true');
+        if (chevron) chevron.style.transform = 'rotate(180deg)';
+      } else {
+        menu.classList.add('hidden');
+        pill.setAttribute('aria-expanded', 'false');
+        if (chevron) chevron.style.transform = '';
+      }
+    }
+
+    pill.setAttribute('role', 'button');
+    pill.setAttribute('aria-haspopup', 'true');
+    pill.setAttribute('aria-expanded', 'false');
+    pill.style.cursor = 'pointer';
+
+    pill.onclick = (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      toggleMenu();
+    };
+
+    menu.querySelector('#dropdown-logout-btn')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      toggleMenu(false);
+      PetPalsStore.logout();
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!menu.contains(e.target) && !pill.contains(e.target)) {
+        toggleMenu(false);
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !menu.classList.contains('hidden')) {
+        toggleMenu(false);
       }
     });
   }
