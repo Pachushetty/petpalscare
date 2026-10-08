@@ -97,20 +97,20 @@
 </div>
 <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm shadow-sm">
 <span class="w-2 h-2 rounded-full bg-primary"></span>
-<span class="font-semibold text-on-surface" id="sched-service-info">Grooming &amp; Spa ($65)</span>
+<span class="font-semibold text-on-surface" id="sched-service-info">Select a service</span>
 <span class="text-outline">•</span>
-<span class="italic text-on-surface" id="sched-pet-info">Milo (Golden Retriever)</span>
+<span class="italic text-on-surface" id="sched-pet-info">No companion selected</span>
 </div>
 </div>
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 <div class="lg:col-span-5 bg-surface-container-low p-6 rounded-xl flex flex-col gap-5">
 <div class="flex items-center justify-between">
-<h3 class="font-title-md text-title-md text-on-surface">November 2025</h3>
+<h3 id="calendar-month-label" class="font-title-md text-title-md text-on-surface"></h3>
 <div class="flex items-center gap-1">
-<button aria-label="Previous month" class="w-8 h-8 rounded-full bg-surface-container-lowest hover:bg-surface text-on-surface flex items-center justify-center transition-colors shadow-sm" type="button">
+<button id="calendar-prev-month" aria-label="Previous month" class="w-8 h-8 rounded-full bg-surface-container-lowest hover:bg-surface text-on-surface flex items-center justify-center transition-colors shadow-sm" type="button">
 <span class="material-symbols-outlined text-base">chevron_left</span>
 </button>
-<button aria-label="Next month" class="w-8 h-8 rounded-full bg-surface-container-lowest hover:bg-surface text-on-surface flex items-center justify-center transition-colors shadow-sm" type="button">
+<button id="calendar-next-month" aria-label="Next month" class="w-8 h-8 rounded-full bg-surface-container-lowest hover:bg-surface text-on-surface flex items-center justify-center transition-colors shadow-sm" type="button">
 <span class="material-symbols-outlined text-base">chevron_right</span>
 </button>
 </div>
@@ -124,97 +124,7 @@
 <div>Sa</div>
 <div>Su</div>
 </div>
-<div class="grid grid-cols-7 gap-1.5 text-center font-label-md text-label-md">
-<div class="h-10 flex items-center justify-center text-outline/40">27</div>
-<div class="h-10 flex items-center justify-center text-outline/40">28</div>
-<div class="h-10 flex items-center justify-center text-outline/40">29</div>
-<div class="h-10 flex items-center justify-center text-outline/40">30</div>
-<div class="h-10 flex items-center justify-center text-outline/40">31</div>
-<div class="h-10 flex items-center justify-center text-outline/50">1</div>
-<div class="h-10 flex items-center justify-center text-outline/50">2</div>
-<div class="h-10 flex items-center justify-center text-outline/50">3</div>
-<div class="h-10 flex items-center justify-center text-outline/50">4</div>
-<div class="h-10 flex items-center justify-center text-outline/50">5</div>
-<div class="h-10 flex items-center justify-center text-outline/50">6</div>
-<div class="h-10 flex items-center justify-center text-outline/50">7</div>
-<div class="h-10 flex items-center justify-center text-outline/50">8</div>
-<div class="h-10 flex items-center justify-center text-outline/50">9</div>
-<div class="h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors">
-<span>10</span>
-<span class="w-1 h-1 rounded-full bg-secondary"></span>
-</div>
-<div class="h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors">
-<span>11</span>
-<span class="w-1 h-1 rounded-full bg-secondary"></span>
-</div>
-<div class="h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors">
-<span>12</span>
-<span class="w-1 h-1 rounded-full bg-secondary"></span>
-</div>
-<div class="h-10 flex flex-col items-center justify-center rounded-full bg-primary-container text-on-primary font-bold shadow-md cursor-pointer">
-<span>13</span>
-<span class="w-1 h-1 rounded-full bg-on-primary"></span>
-</div>
-<div class="h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors">
-<span>14</span>
-<span class="w-1 h-1 rounded-full bg-secondary"></span>
-</div>
-<div class="h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors">
-<span>15</span>
-<span class="w-1 h-1 rounded-full bg-secondary"></span>
-</div>
-<div class="h-10 flex items-center justify-center text-outline/50">16</div>
-<div class="h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors">
-<span>17</span>
-<span class="w-1 h-1 rounded-full bg-secondary"></span>
-</div>
-<div class="h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors">
-<span>18</span>
-<span class="w-1 h-1 rounded-full bg-secondary"></span>
-</div>
-<div class="h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors">
-<span>19</span>
-<span class="w-1 h-1 rounded-full bg-secondary"></span>
-</div>
-<div class="h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors">
-<span>20</span>
-<span class="w-1 h-1 rounded-full bg-secondary"></span>
-</div>
-<div class="h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors">
-<span>21</span>
-<span class="w-1 h-1 rounded-full bg-secondary"></span>
-</div>
-<div class="h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors">
-<span>22</span>
-<span class="w-1 h-1 rounded-full bg-secondary"></span>
-</div>
-<div class="h-10 flex items-center justify-center text-outline/50">23</div>
-<div class="h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors">
-<span>24</span>
-<span class="w-1 h-1 rounded-full bg-secondary"></span>
-</div>
-<div class="h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors">
-<span>25</span>
-<span class="w-1 h-1 rounded-full bg-secondary"></span>
-</div>
-<div class="h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors">
-<span>26</span>
-<span class="w-1 h-1 rounded-full bg-secondary"></span>
-</div>
-<div class="h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors">
-<span>27</span>
-<span class="w-1 h-1 rounded-full bg-secondary"></span>
-</div>
-<div class="h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors">
-<span>28</span>
-<span class="w-1 h-1 rounded-full bg-secondary"></span>
-</div>
-<div class="h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors">
-<span>29</span>
-<span class="w-1 h-1 rounded-full bg-secondary"></span>
-</div>
-<div class="h-10 flex items-center justify-center text-outline/50">30</div>
-</div>
+<div id="calendar-days" class="grid grid-cols-7 gap-1.5 text-center font-label-md text-label-md"></div>
 <div class="flex items-center justify-between pt-3 text-label-sm font-label-sm text-on-surface-variant">
 <span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-secondary"></span> Available</span>
 <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-primary-container"></span> Selected</span>
@@ -223,8 +133,8 @@
 <div class="p-3.5 rounded-xl bg-surface-container-lowest flex items-center gap-3">
 <span class="material-symbols-outlined text-primary text-xl">event_available</span>
 <div class="flex flex-col">
-<span class="font-label-md text-label-md text-on-surface font-semibold">Thursday, Nov 13, 2025</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant">4 open arrival windows available</span>
+<span id="selected-date-label" class="font-label-md text-label-md text-on-surface font-semibold">Select a date</span>
+<span id="available-slots-label" class="font-body-sm text-body-sm text-on-surface-variant">Select a date to view availability</span>
 </div>
 </div>
 </div>
@@ -237,94 +147,28 @@
               </h3>
 <span class="font-body-sm text-body-sm text-outline">San Francisco (PST)</span>
 </div>
-<div class="flex flex-col gap-3.5">
-<div class="flex flex-col gap-2">
-<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Morning (09:00 AM – 12:00 PM)</span>
-<div class="flex flex-wrap gap-2.5">
-<button class="px-4 py-2 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md transition-all shadow-sm" type="button">
-                    09:30 AM
-                  </button>
-<button class="px-4 py-2 rounded-full bg-primary-container text-on-primary font-label-md text-label-md flex items-center gap-1.5 shadow-md" type="button">
-<span class="material-symbols-outlined text-sm">check</span>
-                    10:30 AM
-                  </button>
-<button class="px-4 py-2 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md transition-all shadow-sm" type="button">
-                    11:15 AM
-                  </button>
-</div>
-</div>
-<div class="flex flex-col gap-2">
-<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Afternoon (01:00 PM – 04:00 PM)</span>
-<div class="flex flex-wrap gap-2.5">
-<button class="px-4 py-2 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md transition-all shadow-sm" type="button">
-                    01:30 PM
-                  </button>
-<button class="px-4 py-2 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md transition-all shadow-sm" type="button">
-                    02:45 PM
-                  </button>
-<button class="px-4 py-2 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md transition-all shadow-sm" type="button">
-                    03:30 PM
-                  </button>
-</div>
-</div>
-<div class="flex flex-col gap-2">
-<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Late Afternoon (04:00 PM – 06:00 PM)</span>
-<div class="flex flex-wrap items-center gap-2.5">
-<button class="px-4 py-2 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md flex items-center gap-2 transition-all shadow-sm" type="button">
-<span>04:30 PM</span>
-<span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm text-[10px]">1 spot left</span>
-</button>
-</div>
-</div>
-</div>
+<div id="time-slot-groups" class="flex flex-col gap-3.5"></div>
 </div>
 <div class="flex flex-col gap-3">
 <h3 class="font-title-md text-title-md text-on-surface flex items-center gap-2">
 <span class="material-symbols-outlined text-primary text-xl">badge</span>
               Preferred Care Specialist / Groomer <span class="font-body-sm text-body-sm text-outline font-normal">(Optional)</span>
 </h3>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-2.5">
+<div class="flex flex-col sm:flex-row gap-2 sm:items-center sm:justify-between">
+<label class="relative block w-full sm:max-w-xs">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span>
+<input id="specialist-search" type="search" autocomplete="off" placeholder="Search groomers…" class="w-full rounded-xl border border-outline-variant/60 bg-surface-container-lowest py-2.5 pl-10 pr-3 font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary-container/30"/>
+</label>
+<span id="specialist-results-count" class="font-body-sm text-body-sm text-outline" aria-live="polite"></span>
+</div>
+<div id="specialist-options" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[26rem] overflow-y-auto overscroll-contain pr-1">
 <label class="relative flex flex-col p-3 rounded-xl bg-surface-container text-on-surface cursor-pointer shadow-sm transition-all">
 <div class="flex items-center justify-between mb-1.5">
 <span class="font-label-md text-label-md font-bold">Any Master Groomer</span>
-<input checked="" class="accent-primary-container h-4 w-4" name="specialist" type="radio"/>
+<input class="accent-primary-container h-4 w-4" name="specialist" type="radio" value="" data-specialist="any"/>
 </div>
 <span class="font-body-sm text-body-sm text-primary font-medium">Fastest booking</span>
 <span class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Assigned to next available certified stylist</span>
-</label>
-<label class="relative flex flex-col p-3 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface cursor-pointer transition-all">
-<div class="flex items-start justify-between gap-2 mb-1.5">
-<div class="flex items-center gap-2">
-<img class="w-8 h-8 rounded-full object-cover" data-alt="Warm portrait of Sarah Jenkins, certified pet groomer with gentle smile, wearing a sand beige grooming apron in a brightly lit modern pet salon." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAg86trt7Q8PcVxpjydwp95dnTPKXf8JLSxsd9315YKyTe8lEqDJk36O_Zo9kCc6_VE6B9PZ9DKECEFHR8Fa8gvKwZjIKl0-Qu3nLxmpPPqF8xZyawdDqpjuji8wzloWsT4Wt0tBo1ai1vifwq_LsGyybM8wDBPUYcy_KzDnvZnMh88pLDdX4WyxqQRog2GGbSDjfsgrmD4z-6MW0aid4IBNjqR3EnSLM-enWBMjEBNdpNh0Mud0kuoMg"/>
-<div class="flex flex-col">
-<span class="font-label-md text-label-md font-semibold leading-tight">Sarah Jenkins</span>
-<span class="font-body-sm text-body-sm text-secondary leading-tight">Coat &amp; Spa</span>
-</div>
-</div>
-<input class="accent-primary-container h-4 w-4 mt-1" name="specialist" type="radio"/>
-</div>
-<div class="flex items-center gap-1 font-label-sm text-label-sm text-on-surface-variant mt-1">
-<span class="material-symbols-outlined text-amber-500 text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
-<span class="font-bold text-on-surface">4.9</span>
-<span class="text-outline">• 320+ sessions</span>
-</div>
-</label>
-<label class="relative flex flex-col p-3 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface cursor-pointer transition-all">
-<div class="flex items-start justify-between gap-2 mb-1.5">
-<div class="flex items-center gap-2">
-<img class="w-8 h-8 rounded-full object-cover" data-alt="Portrait of David Miller, calm senior canine handling specialist wearing cocoa colored polo in a warm sunlit veterinary spa clinic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4VkFKgNeN-FbOdvUcAi6mi3v-RAItkYFs9zr2QijdVLj2PqPECXG6FbsxEKDY6jI0vvU84iQnyaUmFhN6aK43-M-nzGgwrOtbDfqv_rEfHDjwNxEXYpBoVIejEVx2QEAqzcU0SDni3v1wNHcuvgODjtQagPIWCYCclwscobmwkwZjO6NeExehXEELaZQ96mON_YAtiVauxYRHshe_-76n1gaxttr5I9m251IbaEFG_6Al70m_iMO1kA"/>
-<div class="flex flex-col">
-<span class="font-label-md text-label-md font-semibold leading-tight">David Miller</span>
-<span class="font-body-sm text-body-sm text-secondary leading-tight">Senior Handling</span>
-</div>
-</div>
-<input class="accent-primary-container h-4 w-4 mt-1" name="specialist" type="radio"/>
-</div>
-<div class="flex items-center gap-1 font-label-sm text-label-sm text-on-surface-variant mt-1">
-<span class="material-symbols-outlined text-amber-500 text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
-<span class="font-bold text-on-surface">5.0</span>
-<span class="text-outline">• 410+ sessions</span>
-</div>
 </label>
 </div>
 </div>
@@ -342,17 +186,17 @@
 <span class="font-body-sm text-body-sm text-on-surface-variant">124 Blossom Lane, Suite 200</span>
 </div>
 </div>
-<input checked="" class="accent-primary-container h-4 w-4" name="location_type" type="radio"/>
+<input class="accent-primary-container h-4 w-4" name="location_type" type="radio" value="clinic"/>
 </label>
 <label class="flex items-center justify-between p-3.5 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface cursor-pointer transition-all">
 <div class="flex items-center gap-3">
 <span class="material-symbols-outlined text-secondary">local_shipping</span>
 <div class="flex flex-col">
 <span class="font-label-md text-label-md font-semibold">In-Home Concierge Van</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant">Mobile luxury spa at doorstep (+$15)</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Mobile luxury spa at your doorstep • travel fee based on distance</span>
 </div>
 </div>
-<input class="accent-primary-container h-4 w-4" name="location_type" type="radio"/>
+<input class="accent-primary-container h-4 w-4" name="location_type" type="radio" value="mobile"/>
 </label>
 </div>
 </div>
@@ -367,10 +211,10 @@
 </div>
 <div>
 <div class="flex items-center gap-2">
-<span class="font-title-md text-title-md text-on-surface font-bold" id="sched-footer-datetime">Thursday, Nov 13 at 10:30 AM</span>
+<span class="font-title-md text-title-md text-on-surface font-bold" id="sched-footer-datetime">Select a date and time</span>
 </div>
 <p class="font-body-sm text-body-sm text-on-surface-variant">
-Est. Duration: 75 min • <span class="font-semibold text-primary" id="sched-footer-service">Grooming &amp; Spa ($65.00)</span>
+Est. Duration: Service • <span class="font-semibold text-primary" id="sched-footer-service">Select a service</span>
 </p>
 </div>
 </div>
@@ -455,125 +299,253 @@ Est. Duration: 75 min • <span class="font-semibold text-primary" id="sched-foo
 
 <script>
 (function() {
-  let selectedDate = '13 Nov 2026';
-  let selectedTime = '10:30 AM';
-  let selectedSpecialist = 'Sarah Jenkins';
-  let selectedSpecialistRole = 'Coat Specialist ★ 4.9';
-
-  function initSchedule() {
-    if (!window.PetPalsStore) return;
-    const active = PetPalsStore.getActiveBooking();
-
-    // 1. Update subheader
-    const serviceEl = document.getElementById('sched-service-info');
-    const petEl = document.getElementById('sched-pet-info');
-    if (serviceEl && active.service) {
-      serviceEl.textContent = `${active.service} (${active.servicePrice || '$65'})`;
-    }
-    if (petEl && active.petName) {
-      petEl.textContent = `${active.petName} (${active.petBreed || 'Companion'})`;
-    }
-
-    if (active.date) selectedDate = active.date;
-    if (active.time) selectedTime = active.time;
-
-    const updateFooterDateTime = () => {
-      const footerDt = document.getElementById('sched-footer-datetime');
-      if (footerDt) footerDt.textContent = `${selectedDate} at ${selectedTime}`;
-      const footerSvc = document.getElementById('sched-footer-service');
-      if (footerSvc && active.service) {
-        footerSvc.textContent = `${active.service} (${active.servicePrice || '$65.00'})`;
-      }
-    };
-    updateFooterDateTime();
-
-    // 2. Interactive Calendar Days
-    const dayCells = document.querySelectorAll('.grid-cols-7 .cursor-pointer');
-    dayCells.forEach(cell => {
-      cell.addEventListener('click', () => {
-        dayCells.forEach(c => {
-          c.className = 'h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors';
-          const dot = c.querySelector('span:last-child');
-          if (dot) dot.className = 'w-1 h-1 rounded-full bg-secondary';
-        });
-        cell.className = 'h-10 flex flex-col items-center justify-center rounded-full bg-primary-container text-on-primary font-bold shadow-md cursor-pointer';
-        const dot = cell.querySelector('span:last-child');
-        if (dot) dot.className = 'w-1 h-1 rounded-full bg-on-primary';
-
-        const dayNum = cell.querySelector('span:first-child')?.textContent.trim() || '13';
-        selectedDate = `${dayNum} Nov 2026`;
-        updateFooterDateTime();
-      });
-    });
-
-    // 3. Interactive Time Slots
-    const timeButtons = document.querySelectorAll('.lg\\:col-span-7 button');
-    timeButtons.forEach(btn => {
-      const text = btn.textContent.trim();
-      if (text.includes('AM') || text.includes('PM')) {
-        btn.addEventListener('click', () => {
-          timeButtons.forEach(b => {
-            if (b.textContent.includes('AM') || b.textContent.includes('PM')) {
-              b.className = 'px-4 py-2 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md transition-all shadow-sm';
-            }
-          });
-          btn.className = 'px-4 py-2 rounded-full bg-primary-container text-on-primary font-label-md text-label-md flex items-center gap-1.5 shadow-md';
-          const match = text.match(/\d{2}:\d{2}\s*(?:AM|PM)/i);
-          if (match) selectedTime = match[0];
-          updateFooterDateTime();
-        });
-      }
-    });
-
-    // 4. Specialist Cards
-    document.querySelectorAll('.lg\\:col-span-7 .cursor-pointer').forEach(card => {
-      card.addEventListener('click', () => {
-        const name = card.querySelector('h4, p.font-semibold, .font-bold')?.textContent.trim();
-        if (name && !name.includes('AM') && !name.includes('PM')) {
-          selectedSpecialist = name;
-        }
-      });
-    });
-  }
-
-  // Continue to Summary / Review
-  const handleContinue = () => {
-    if (window.PetPalsStore) {
-      PetPalsStore.saveActiveBooking({
-        date: selectedDate,
-        time: selectedTime,
-        specialist: selectedSpecialist,
-        specialistRole: selectedSpecialistRole
-      });
-    }
-    window.location.href = '/book-service-review';
+  let selectedDate = '';
+  let selectedTime = '';
+  let selectedSpecialistId = null;
+  let selectedSpecialist = 'Any available groomer';
+  let selectedSpecialistRole = 'Any available specialist';
+  let selectedSpecialistPhoto = null;
+  let selectedSpecialistRating = null;
+  let selectedSpecialistSessions = null;
+  let selectedSpecialistAvailability = '';
+  let scheduleInitialized = false;
+  let viewedMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+  const slots = ['09:30','10:30','11:15','13:30','14:45','15:30','16:30'];
+  const slotLabel = value => {
+    const [hour, minute] = value.split(':').map(Number);
+    return `${String((hour % 12) || 12).padStart(2,'0')}:${String(minute).padStart(2,'0')} ${hour >= 12 ? 'PM' : 'AM'}`;
   };
+  const parseDate = value => /^\d{4}-\d{2}-\d{2}$/.test(value || '') ? new Date(Number(value.slice(0,4)), Number(value.slice(5,7))-1, Number(value.slice(8,10))) : null;
+  const isoDate = date => `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+  const displayDate = value => {
+    const date = parseDate(value);
+    return date ? new Intl.DateTimeFormat(undefined,{weekday:'long',month:'short',day:'numeric',year:'numeric'}).format(date) : 'Select a date';
+  };
+  const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+  const anyOptionHtml = () => `<label class="group relative flex min-h-[112px] flex-col justify-center rounded-2xl border border-primary/30 bg-secondary-container/20 p-4 pr-12 text-on-surface shadow-sm transition hover:bg-secondary-container/35 has-[:checked]:ring-2 has-[:checked]:ring-primary/30 cursor-pointer sm:col-span-2"><input class="absolute right-4 top-4 h-4 w-4 accent-primary" name="specialist" type="radio" value="" data-specialist="any"/><span class="font-label-lg text-label-lg font-bold">Any available groomer</span><span class="mt-1 font-body-sm text-body-sm font-medium text-primary">Fastest booking</span><span class="mt-1 font-body-sm text-body-sm text-on-surface-variant">We’ll match you with the next available certified specialist.</span></label>`;
 
-  const schedContinueBtn = document.getElementById('schedContinueBtn');
-  if (schedContinueBtn) {
-    schedContinueBtn.addEventListener('click', handleContinue);
+  function setContinueEnabled() {
+    const button = document.getElementById('schedContinueBtn');
+    const ready = Boolean(selectedDate && selectedTime && document.querySelector('input[name="location_type"]:checked'));
+    if (button) {
+      button.disabled = !ready;
+      button.classList.toggle('opacity-50', !ready);
+      button.classList.toggle('cursor-not-allowed', !ready);
+    }
   }
 
-  document.querySelectorAll('button, a').forEach(el => {
-    const text = (el.textContent || '').trim().toLowerCase();
-    if (text.includes('continue to summary') || text.includes('continue to review')) {
-      el.addEventListener('click', handleContinue);
-    } else if (text.includes('back to pet detail')) {
-      el.addEventListener('click', () => { window.location.href = '/book-service-pet'; });
-    } else if (text.includes('back to service') || text === 'cancel') {
-      el.addEventListener('click', () => { window.location.href = '/services'; });
+  function updateFooterDateTime() {
+    const label = document.getElementById('selected-date-label');
+    if (label) label.textContent = displayDate(selectedDate);
+    const footer = document.getElementById('sched-footer-datetime');
+    if (footer) footer.textContent = selectedDate && selectedTime ? `${displayDate(selectedDate)} at ${slotLabel(selectedTime)}` : 'Select a date and time';
+    const count = document.getElementById('available-slots-label');
+    if (count) count.textContent = selectedDate ? 'Available arrival windows shown' : 'Select a date to view availability';
+    setContinueEnabled();
+  }
+
+  function renderCalendar() {
+    const label = document.getElementById('calendar-month-label');
+    const grid = document.getElementById('calendar-days');
+    if (!label || !grid) return;
+    label.textContent = new Intl.DateTimeFormat(undefined,{month:'long',year:'numeric'}).format(viewedMonth);
+    const today = new Date(); today.setHours(0,0,0,0);
+    const firstDay = new Date(viewedMonth.getFullYear(), viewedMonth.getMonth(), 1);
+    const offset = (firstDay.getDay() + 6) % 7;
+    const daysInMonth = new Date(viewedMonth.getFullYear(), viewedMonth.getMonth()+1, 0).getDate();
+    const totalCells = Math.ceil((offset + daysInMonth)/7)*7;
+    grid.innerHTML = Array.from({length:totalCells}, (_, index) => {
+      const day = index - offset + 1;
+      if (day < 1 || day > daysInMonth) return '<div class="h-10"></div>';
+      const date = new Date(viewedMonth.getFullYear(), viewedMonth.getMonth(), day);
+      date.setHours(0,0,0,0);
+      const value = isoDate(date);
+      const disabled = date < today;
+      const selected = value === selectedDate;
+      const classes = selected
+        ? 'h-10 flex flex-col items-center justify-center rounded-full bg-primary-container text-on-primary font-bold shadow-md'
+        : disabled
+          ? 'h-10 flex flex-col items-center justify-center rounded-full text-outline/40 cursor-not-allowed'
+          : 'h-10 flex flex-col items-center justify-center rounded-full hover:bg-surface-container cursor-pointer transition-colors';
+      return `<button type="button" data-date="${value}" ${disabled ? 'disabled' : ''} aria-pressed="${selected}" class="${classes}"><span>${day}</span></button>`;
+    }).join('');
+    const prev = document.getElementById('calendar-prev-month');
+    if (prev) prev.disabled = viewedMonth.getFullYear() === today.getFullYear() && viewedMonth.getMonth() === today.getMonth();
+    grid.querySelectorAll('[data-date]:not(:disabled)').forEach(button => button.addEventListener('click', () => {
+      selectedDate = button.dataset.date;
+      selectedTime = '';
+      window.PetPalsStore?.saveActiveBooking({date:selectedDate,time:selectedTime});
+      renderCalendar();
+      updateFooterDateTime();
+      loadAvailability();
+    }));
+  }
+
+  async function loadAvailability() {
+    const container = document.getElementById('time-slot-groups');
+    if (!container) return;
+    if (!selectedDate) {
+      container.innerHTML = '<p class="font-body-sm text-body-sm text-outline">Select a date to view available times.</p>';
+      updateFooterDateTime();
+      return;
     }
-  });
+    container.innerHTML = '<p class="font-body-sm text-body-sm text-outline">Checking availability…</p>';
+    try {
+      const params = new URLSearchParams({date:selectedDate});
+      if (selectedSpecialistId) params.set('specialistId', selectedSpecialistId);
+      const response = await fetch(`/api/bookings/availability?${params}`, {credentials:'same-origin',cache:'no-store'});
+      if (!response.ok) throw new Error('Availability is temporarily unavailable');
+      const data = await response.json();
+      const unavailable = new Set(data.unavailable || []);
+      const today = new Date(); today.setHours(0,0,0,0);
+      const pickedDate = parseDate(selectedDate);
+      const nowMinutes = new Date().getHours()*60 + new Date().getMinutes();
+      const groups = [['Morning',slots.slice(0,3)],['Afternoon',slots.slice(3,6)],['Late Afternoon',slots.slice(6)]];
+      container.innerHTML = groups.map(([title, groupSlots]) => `<div class="flex flex-col gap-2"><span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">${title}</span><div class="flex flex-wrap gap-2.5">${groupSlots.map(slot => {
+        const [hour,minute] = slot.split(':').map(Number);
+        const past = pickedDate.getTime() === today.getTime() && hour*60+minute <= nowMinutes;
+        const unavailableSlot = unavailable.has(slot) || past;
+        const selected = slot === selectedTime && !unavailableSlot;
+        const base = selected ? 'px-4 py-2 rounded-full bg-primary-container text-on-primary font-label-md text-label-md flex items-center gap-1.5 shadow-md' : unavailableSlot ? 'px-4 py-2 rounded-full bg-surface-container text-outline font-label-md text-label-md opacity-50 cursor-not-allowed' : 'px-4 py-2 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md transition-all shadow-sm';
+        return `<button type="button" data-time="${slot}" ${unavailableSlot?'disabled':''} aria-pressed="${selected}" class="${base}">${selected?'<span class="material-symbols-outlined text-sm">check</span>':''}${slotLabel(slot)}${unavailable.has(slot)?'<span class="text-[10px]">Fully booked</span>':''}</button>`;
+      }).join('')}</div></div>`).join('');
+      container.querySelectorAll('[data-time]:not(:disabled)').forEach(button => button.addEventListener('click', () => {
+        selectedTime = button.dataset.time;
+        window.PetPalsStore?.saveActiveBooking({date:selectedDate,time:selectedTime});
+        loadAvailability();
+        updateFooterDateTime();
+      }));
+      const visibleCount = slots.filter(slot => {
+        const [hour,minute] = slot.split(':').map(Number);
+        return !unavailable.has(slot) && !(pickedDate.getTime() === today.getTime() && hour*60+minute <= nowMinutes);
+      }).length;
+      const count = document.getElementById('available-slots-label');
+      if (count) count.textContent = `${visibleCount} open arrival windows available`;
+      const [selectedHour, selectedMinute] = (selectedTime || '00:00').split(':').map(Number);
+      const selectedIsPast = pickedDate.getTime() === today.getTime() && selectedHour * 60 + selectedMinute <= nowMinutes;
+      if (selectedTime && (unavailable.has(selectedTime) || !slots.includes(selectedTime) || selectedIsPast)) {
+        selectedTime = '';
+        window.PetPalsStore?.saveActiveBooking({time:''});
+      }
+    } catch (error) {
+      container.innerHTML = '<p class="font-body-sm text-body-sm text-outline">Availability could not be checked. Please try again.</p>';
+      selectedTime = '';
+      window.PetPalsStore?.saveActiveBooking({time:''});
+    }
+    updateFooterDateTime();
+  }
 
-  // Close/X button
-  document.querySelectorAll('button[aria-label*="Close"], button[aria-label*="close"]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      if (window.history.length > 1) history.back();
-      else window.location.href = '/services';
+  async function loadSpecialists() {
+    const container = document.getElementById('specialist-options');
+    if (!container) return;
+    try {
+      const response = await fetch('/api/specialists', {credentials:'same-origin',cache:'no-store'});
+      if (!response.ok) throw new Error('Could not load specialists');
+      const specialists = (await response.json()).filter(person => person.active !== false).sort((a,b)=>String(a.name||'').localeCompare(String(b.name||'')));
+      const active = window.PetPalsStore?.getActiveBooking() || {};
+      const selected = specialists.find(person => person.id === active.specialistId);
+      const search = document.getElementById('specialist-search');
+      const count = document.getElementById('specialist-results-count');
+      const render = query => {
+        const normalized = String(query||'').trim().toLocaleLowerCase();
+        const visible = specialists.filter(person => `${person.name||''} ${person.specialization||''}`.toLocaleLowerCase().includes(normalized));
+        if (count) count.textContent = normalized ? `${visible.length} of ${specialists.length} groomers` : `${specialists.length} groomer${specialists.length===1?'':'s'}`;
+        container.innerHTML = anyOptionHtml() + (visible.length ? visible.map(person => `<label class="group relative flex min-h-[144px] flex-col rounded-2xl border border-outline-variant/40 bg-surface-container-low p-4 pr-12 text-on-surface shadow-sm transition hover:border-primary/50 hover:bg-surface-container has-[:checked]:border-primary has-[:checked]:bg-secondary-container/30 has-[:checked]:ring-2 has-[:checked]:ring-primary/30 cursor-pointer"><input class="absolute right-4 top-4 h-4 w-4 accent-primary" name="specialist" type="radio" value="${escapeHtml(person.id)}" data-specialist-id="${escapeHtml(person.id)}"/><div class="flex min-w-0 items-center gap-3">${person.photo?`<img class="h-11 w-11 shrink-0 rounded-full object-cover ring-2 ring-surface-container-lowest" alt="${escapeHtml(person.name)}" src="${escapeHtml(person.photo)}"/>`:'<span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-secondary-container text-lg font-bold text-on-secondary-container">✦</span>'}<div class="min-w-0"><span class="block break-words font-label-lg text-label-lg font-semibold leading-snug">${escapeHtml(person.name)}</span><span class="mt-0.5 block break-words font-body-sm text-body-sm leading-snug text-secondary">${escapeHtml(person.specialization||'Pet care specialist')}</span></div></div><div class="mt-auto pt-3"><span class="inline-flex items-center rounded-full bg-surface-container-lowest/80 px-2.5 py-1 font-label-sm text-label-sm text-on-surface-variant">★ ${Number(person.rating||0).toFixed(1)} <span class="mx-1 text-outline">·</span> ${Number(person.sessions||0).toLocaleString('en-IN')} sessions</span><span class="mt-2 block break-words font-body-sm text-body-sm leading-snug text-on-surface-variant">${escapeHtml(person.availability||'Availability to be confirmed')}</span></div></label>`).join('') : '<p class="sm:col-span-2 rounded-xl bg-surface-container-low p-4 font-body-sm text-body-sm text-on-surface-variant">No groomers match that search. Try a name or specialty.</p>');
+        const selectedRadio = selected ? container.querySelector(`[data-specialist-id="${CSS.escape(selected.id)}"]`) : container.querySelector('[data-specialist="any"]');
+        if (selectedRadio) selectedRadio.checked = true;
+        container.querySelectorAll('input[name="specialist"]').forEach(input => input.addEventListener('change',()=>setSpecialist(input)));
+      };
+      const setSpecialist = input => {
+        const person = specialists.find(item => item.id === input.dataset.specialistId) || null;
+        selectedSpecialistId = person?.id || null;
+        selectedSpecialist = person?.name || 'Any available groomer';
+        selectedSpecialistRole = person?.specialization || 'Any available specialist';
+        selectedSpecialistPhoto = person?.photo || null;
+        selectedSpecialistRating = person?.rating ?? null;
+        selectedSpecialistSessions = person?.sessions ?? null;
+        selectedSpecialistAvailability = person?.availability || '';
+        window.PetPalsStore?.saveActiveBooking({specialistId:selectedSpecialistId,specialist:selectedSpecialist,specialistRole:selectedSpecialistRole,specialistPhoto:selectedSpecialistPhoto,specialistRating:selectedSpecialistRating,specialistSessions:selectedSpecialistSessions,specialistAvailability:selectedSpecialistAvailability});
+        loadAvailability();
+      };
+      search?.addEventListener('input',()=>render(search.value));
+      render(search?.value||'');
+      if (selected) {
+        const selectedRadio = container.querySelector(`[data-specialist-id="${CSS.escape(selected.id)}"]`);
+        if (selectedRadio) setSpecialist(selectedRadio);
+      }
+    } catch (error) {
+      container.innerHTML = anyOptionHtml();
+      container.querySelector('[data-specialist="any"]')?.addEventListener('change', () => {
+        selectedSpecialistId=null; selectedSpecialist='Any available groomer';
+        window.PetPalsStore?.saveActiveBooking({specialistId:null,specialist:selectedSpecialist});
+      });
+    }
+  }
+
+  async function initSchedule() {
+    if (scheduleInitialized) return;
+    scheduleInitialized = true;
+    const active = window.PetPalsStore?.getActiveBooking();
+    if (!active?.serviceId || !active?.service || !active?.servicePrice) {
+      window.location.replace('/book-service');
+      return;
+    }
+    const pets = window.PetPalsStore?.getPets() || [];
+    if (!active.petId || !pets.some(pet => String(pet.id) === String(active.petId))) {
+      window.location.replace('/book-service-pet');
+      return;
+    }
+    const serviceEl=document.getElementById('sched-service-info');
+    const petEl=document.getElementById('sched-pet-info');
+    if(serviceEl)serviceEl.textContent=`${active.service} (₹${Number(active.servicePriceNum||0).toLocaleString('en-IN')})`;
+    if(petEl)petEl.textContent=active.petId?`${active.petName} (${active.petBreed||'Companion'})`:'No companion selected';
+    const today=new Date();today.setHours(0,0,0,0);
+    const storedDate=parseDate(active.date);
+    if(storedDate&&storedDate>=today){selectedDate=active.date;viewedMonth=new Date(storedDate.getFullYear(),storedDate.getMonth(),1);selectedTime=active.time||'';}
+    document.getElementById('calendar-prev-month')?.addEventListener('click',()=>{const now=new Date();const first=new Date(now.getFullYear(),now.getMonth(),1);if(viewedMonth>first){viewedMonth=new Date(viewedMonth.getFullYear(),viewedMonth.getMonth()-1,1);renderCalendar();}});
+    document.getElementById('calendar-next-month')?.addEventListener('click',()=>{viewedMonth=new Date(viewedMonth.getFullYear(),viewedMonth.getMonth()+1,1);renderCalendar();});
+    renderCalendar();
+    const activeLocation=active.locationType||'';
+    document.querySelectorAll('input[name="location_type"]').forEach(input=>{
+      input.checked=input.value===activeLocation;
+      input.addEventListener('change',()=>{
+        if(!input.checked)return;
+        const location=input.value==='mobile'?'In-Home Concierge Van':'PetPals Flagship Spa & Wellness Lounge • Suite 4';
+        window.PetPalsStore?.saveActiveBooking({locationType:input.value,location});
+        setContinueEnabled();
+      });
     });
-  });
+    const anyRadio=document.querySelector('[data-specialist="any"]');
+    if(anyRadio)anyRadio.checked=true;
+    const updateService = () => {
+      const footerSvc=document.getElementById('sched-footer-service');
+      if(footerSvc)footerSvc.textContent=`${active.service} (₹${Number(active.servicePriceNum||0).toLocaleString('en-IN')})`;
+    };
+    updateService();
+    await loadSpecialists();
+    if(selectedDate)await loadAvailability(); else {
+      const slotsContainer=document.getElementById('time-slot-groups');
+      if(slotsContainer)slotsContainer.innerHTML='<p class="font-body-sm text-body-sm text-outline">Select a date to view available times.</p>';
+      updateFooterDateTime();
+    }
+    setContinueEnabled();
+  }
 
-  document.addEventListener('DOMContentLoaded', initSchedule);
+  async function handleContinue(event) {
+    if(!selectedDate||!selectedTime||!document.querySelector('input[name="location_type"]:checked')){
+      event?.preventDefault();return;
+    }
+    window.PetPalsStore?.saveActiveBooking({date:selectedDate,time:selectedTime,specialistId:selectedSpecialistId,specialist:selectedSpecialist,specialistRole:selectedSpecialistRole,specialistPhoto:selectedSpecialistPhoto,specialistRating:selectedSpecialistRating,specialistSessions:selectedSpecialistSessions,specialistAvailability:selectedSpecialistAvailability});
+    window.location.href='/book-service-review';
+  }
+  document.getElementById('schedContinueBtn')?.addEventListener('click',handleContinue);
+  document.querySelectorAll('button, a').forEach(el=>{
+    const text=(el.textContent||'').trim().toLowerCase();
+    if(text.includes('continue to summary')||text.includes('continue to review'))el.addEventListener('click',handleContinue);
+    else if(text.includes('back to pet detail'))el.addEventListener('click',()=>{window.location.href='/book-service-pet';});
+    else if(text.includes('back to service')||text==='cancel')el.addEventListener('click',()=>{window.location.href='/services';});
+  });
+  document.addEventListener('DOMContentLoaded',initSchedule);
   initSchedule();
 })();
 </script>

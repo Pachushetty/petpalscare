@@ -117,18 +117,29 @@
     </a>
 
     <!-- Admin Profile Dropdown Button -->
-    <div class="flex items-center gap-3 pl-2 border-l border-brand-border">
-      <div class="w-9 h-9 rounded-full bg-brand-brown/20 text-brand-brown flex items-center justify-center font-bold text-sm">
+    <div id="admin-profile-control" class="relative flex items-center gap-3 pl-2 border-l border-brand-border">
+      <button id="admin-profile-toggle" type="button" aria-label="Admin account menu" aria-expanded="false" class="flex items-center gap-3 rounded-full hover:bg-brand-sidebar/70 p-1.5 transition-colors">
+      <div class="w-9 h-9 rounded-full bg-brand-brown/20 text-brand-brown flex items-center justify-center font-bold text-sm overflow-hidden">
+        <img id="admin-header-avatar" alt="Admin" class="hidden w-full h-full object-cover" />
         <svg class="w-5 h-5 fill-brand-brown" viewBox="0 0 24 24">
           <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path>
         </svg>
       </div>
-      <a href="/admin/settings" data-admin-route="settings" class="hidden sm:flex items-center gap-1.5 cursor-pointer group">
-        <span class="text-sm font-semibold text-brand-dark group-hover:text-brand-brown transition-colors">Admin Portal</span>
+      <span class="hidden sm:flex items-center gap-1.5 cursor-pointer group">
+        <span id="admin-header-name" class="text-sm font-semibold text-brand-dark group-hover:text-brand-brown transition-colors">Admin</span>
         <svg class="w-4 h-4 text-brand-muted group-hover:text-brand-dark transition-transform group-hover:translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
         </svg>
-      </a>
+      </span>
+      </button>
+      <div id="admin-profile-menu" class="hidden absolute right-0 top-14 w-64 rounded-2xl bg-white border border-brand-border shadow-xl z-50 overflow-hidden">
+        <div class="px-4 py-3 border-b border-brand-border">
+          <div class="font-semibold text-sm text-brand-dark">Admin</div>
+          <div id="admin-header-email" class="text-xs text-brand-muted mt-1 truncate">admin@petpalscare.com</div>
+        </div>
+        <a href="/admin/settings" data-admin-route="settings" class="block px-4 py-3 text-sm text-brand-dark hover:bg-brand-sidebar">Settings</a>
+        <button id="admin-sign-out" type="button" class="w-full text-left px-4 py-3 text-sm text-brand-brown hover:bg-brand-sidebar border-t border-brand-border">Sign Out</button>
+      </div>
     </div>
   </div>
 </header>
@@ -216,6 +227,13 @@
           </div>
         </a>
 
+        <a data-admin-route="specialists" class="flex items-center justify-between px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="/admin/specialists">
+          <div class="flex items-center gap-3.5">
+            <svg class="w-5 h-5 fill-none stroke-current stroke-[2]" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"></circle><path d="M5 21v-2a7 7 0 0 1 14 0v2"></path><path d="m19 8 1.5 1.5L23 7"></path></svg>
+            <span class="text-sm">Specialists / Groomers</span>
+          </div>
+        </a>
+
         <!-- 6. Reviews -->
         <a data-admin-route="reviews" class="flex items-center justify-between px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="/admin/reviews">
           <div class="flex items-center gap-3.5">
@@ -292,7 +310,7 @@
         </div>
         <!-- Date Pill Badge -->
         <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-brand-surface border border-brand-border text-sm font-medium text-brand-dark shadow-soft self-start sm:self-auto">
-          <span id="dashboard-date-display">Oct 6, 2026</span>
+          <span id="dashboard-date-display"></span>
           <svg class="w-4 h-4 text-brand-muted stroke-[2] fill-none stroke-current" viewBox="0 0 24 24">
             <rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect>
             <line x1="16" x2="16" y1="2" y2="6"></line>
@@ -303,9 +321,9 @@
       </div>
 
       <!-- BEGIN: MetricCardsGrid -->
-      <div aria-label="Key Performance Indicators" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
+      <div aria-label="Key Performance Indicators" class="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-4 gap-4 md:gap-5">
         <!-- KPI 1: Total Bookings -->
-        <div class="bg-brand-surface p-5 rounded-2xl border border-brand-border shadow-soft flex items-center gap-4 cursor-pointer hover:border-brand-brown/40 transition-colors" onclick="AdminPortal.switchSection('bookings')">
+        <div class="bg-brand-surface p-5 rounded-2xl border border-brand-border shadow-soft flex items-center gap-4 min-w-0 cursor-pointer hover:border-brand-brown/40 transition-colors" onclick="AdminPortal.switchSection('bookings')">
           <div class="w-13 h-13 p-3.5 rounded-2xl bg-brand-cream border border-brand-borderLight text-brand-brown shrink-0 flex items-center justify-center">
             <svg class="w-6 h-6 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
               <rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect>
@@ -314,36 +332,34 @@
               <line x1="3" x2="21" y1="10" y2="10"></line>
             </svg>
           </div>
-          <div>
+          <div class="min-w-0">
             <p class="text-xs font-semibold text-brand-muted uppercase tracking-wider">Total Bookings</p>
             <h3 id="kpi-total-bookings" class="text-2xl font-bold text-brand-dark mt-0.5">4</h3>
-            <p class="text-xs font-medium text-status-green flex items-center gap-1 mt-1">
-              <span>↑ 12%</span>
-              <span class="text-brand-muted text-[11px] font-normal">active appointments</span>
+            <p class="text-xs font-medium text-status-green flex flex-wrap items-center gap-x-1 mt-1">
+              <span class="text-brand-muted text-[11px] font-normal">All appointments</span>
             </p>
           </div>
         </div>
 
         <!-- KPI 2: Total Users -->
-        <div class="bg-brand-surface p-5 rounded-2xl border border-brand-border shadow-soft flex items-center gap-4 cursor-pointer hover:border-brand-brown/40 transition-colors" onclick="AdminPortal.switchSection('users')">
+        <div class="bg-brand-surface p-5 rounded-2xl border border-brand-border shadow-soft flex items-center gap-4 min-w-0 cursor-pointer hover:border-brand-brown/40 transition-colors" onclick="AdminPortal.switchSection('users')">
           <div class="w-13 h-13 p-3.5 rounded-2xl bg-brand-cream border border-brand-borderLight text-brand-brown shrink-0 flex items-center justify-center">
             <svg class="w-6 h-6 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
               <circle cx="12" cy="7" r="4"></circle>
             </svg>
           </div>
-          <div>
+          <div class="min-w-0">
             <p class="text-xs font-semibold text-brand-muted uppercase tracking-wider">Registered Users</p>
             <h3 id="kpi-total-users" class="text-2xl font-bold text-brand-dark mt-0.5">4</h3>
-            <p class="text-xs font-medium text-status-green flex items-center gap-1 mt-1">
-              <span>↑ 8%</span>
-              <span class="text-brand-muted text-[11px] font-normal">pet parents</span>
+            <p class="text-xs font-medium text-status-green flex flex-wrap items-center gap-x-1 mt-1">
+              <span class="text-brand-muted text-[11px] font-normal">Pet parents</span>
             </p>
           </div>
         </div>
 
         <!-- KPI 3: Total Pets -->
-        <div class="bg-brand-surface p-5 rounded-2xl border border-brand-border shadow-soft flex items-center gap-4 cursor-pointer hover:border-brand-brown/40 transition-colors" onclick="AdminPortal.switchSection('pets')">
+        <div class="bg-brand-surface p-5 rounded-2xl border border-brand-border shadow-soft flex items-center gap-4 min-w-0 cursor-pointer hover:border-brand-brown/40 transition-colors" onclick="AdminPortal.switchSection('pets')">
           <div class="w-13 h-13 p-3.5 rounded-2xl bg-brand-cream border border-brand-borderLight text-brand-brown shrink-0 flex items-center justify-center">
             <svg class="w-6 h-6 fill-current text-brand-brown" viewBox="0 0 24 24">
               <circle cx="8" cy="6" r="2.2"></circle>
@@ -353,24 +369,23 @@
               <ellipse cx="12" cy="17" rx="5" ry="4"></ellipse>
             </svg>
           </div>
-          <div>
+          <div class="min-w-0">
             <p class="text-xs font-semibold text-brand-muted uppercase tracking-wider">Registered Pets</p>
             <h3 id="kpi-total-pets" class="text-2xl font-bold text-brand-dark mt-0.5">2</h3>
-            <p class="text-xs font-medium text-status-green flex items-center gap-1 mt-1">
-              <span>↑ 100%</span>
-              <span class="text-brand-muted text-[11px] font-normal">profiles verified</span>
+            <p class="text-xs font-medium text-status-green flex flex-wrap items-center gap-x-1 mt-1">
+              <span class="text-brand-muted text-[11px] font-normal">Profiles recorded</span>
             </p>
           </div>
         </div>
 
         <!-- KPI 4: Pending Inquiries/Submissions -->
-        <div class="bg-brand-surface p-5 rounded-2xl border border-brand-border shadow-soft flex items-center gap-4 cursor-pointer hover:border-brand-brown/40 transition-colors" onclick="AdminPortal.switchSection('messages')">
+        <div class="bg-brand-surface p-5 rounded-2xl border border-brand-border shadow-soft flex items-center gap-4 min-w-0 cursor-pointer hover:border-brand-brown/40 transition-colors" onclick="AdminPortal.switchSection('messages')">
           <div class="w-13 h-13 p-3.5 rounded-2xl bg-brand-cream border border-brand-borderLight text-brand-brown shrink-0 flex items-center justify-center">
             <svg class="w-6 h-6 fill-brand-brown stroke-brand-brown stroke-1" viewBox="0 0 24 24">
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
             </svg>
           </div>
-          <div>
+          <div class="min-w-0">
             <p class="text-xs font-semibold text-brand-muted uppercase tracking-wider">Pending Submissions</p>
             <h3 id="kpi-pending-count" class="text-2xl font-bold text-brand-dark mt-0.5">1</h3>
             <p class="text-xs font-medium text-brand-brown flex items-center gap-1 mt-1">
@@ -401,7 +416,7 @@
           </div>
           <!-- SVG Smooth Area Chart Display -->
           <div class="relative w-full h-64 pt-2">
-            <svg aria-label="Bookings chart from Monday to Sunday" class="w-full h-full overflow-visible font-sans text-[11px] text-brand-muted" viewBox="0 0 540 220">
+            <svg id="dashboard-bookings-chart" aria-label="Bookings chart from Monday to Sunday" class="w-full h-full overflow-visible font-sans text-[11px] text-brand-muted" viewBox="0 0 540 220">
               <defs>
                 <linearGradient id="areaGradient" x1="0" x2="0" y1="0" y2="1">
                   <stop offset="0%" stop-color="#8c6246" stop-opacity="0.30"></stop>
@@ -453,7 +468,7 @@
             </svg>
             <h3 class="font-serif font-bold text-lg text-brand-dark">Service Distribution</h3>
           </div>
-          <div class="flex flex-col sm:flex-row items-center justify-between gap-6 py-1">
+          <div class="flex flex-col 2xl:flex-row items-center justify-between gap-6 py-1 min-w-0">
             <!-- Donut Graphic -->
             <div class="relative w-44 h-44 shrink-0 flex items-center justify-center">
               <svg class="w-full h-full -rotate-90" viewBox="0 0 160 160">
@@ -464,35 +479,35 @@
                 <circle class="donut-segment" cx="80" cy="80" fill="transparent" r="58" stroke="#e8d8c8" stroke-dasharray="29.1 335.3" stroke-dashoffset="-316.9" stroke-width="22"></circle>
               </svg>
               <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center">
-                <span class="text-2xl font-bold font-serif text-brand-dark leading-none">100%</span>
+                <span id="dashboard-bookings-mix-total" class="text-2xl font-bold font-serif text-brand-dark leading-none">100%</span>
                 <span class="text-[10px] uppercase font-semibold tracking-wider text-brand-muted mt-1">Care Mix</span>
               </div>
             </div>
             <!-- Legend List -->
-            <div class="w-full space-y-2 text-xs">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
+            <div id="dashboard-service-legend" class="w-full min-w-0 space-y-2 text-xs">
+              <div class="flex items-start justify-between gap-2">
+                <div class="flex items-start gap-2 min-w-0">
                   <span class="w-3 h-3 rounded-full bg-[#5c3d28]"></span>
                   <span class="font-medium text-brand-dark">Grooming &amp; Spa</span>
                 </div>
                 <span class="font-semibold text-brand-muted">50%</span>
               </div>
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
+              <div class="flex items-start justify-between gap-2">
+                <div class="flex items-start gap-2 min-w-0">
                   <span class="w-3 h-3 rounded-full bg-[#8c6246]"></span>
                   <span class="font-medium text-brand-dark">Veterinary Care</span>
                 </div>
                 <span class="font-semibold text-brand-muted">25%</span>
               </div>
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
+              <div class="flex items-start justify-between gap-2">
+                <div class="flex items-start gap-2 min-w-0">
                   <span class="w-3 h-3 rounded-full bg-[#b68d6c]"></span>
                   <span class="font-medium text-brand-dark">Pet Boarding</span>
                 </div>
                 <span class="font-semibold text-brand-muted">15%</span>
               </div>
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
+              <div class="flex items-start justify-between gap-2">
+                <div class="flex items-start gap-2 min-w-0">
                   <span class="w-3 h-3 rounded-full bg-[#d4b89b]"></span>
                   <span class="font-medium text-brand-dark">Dog Walking</span>
                 </div>
@@ -544,6 +559,17 @@
         </div>
       </div>
       <!-- END: RecentBookingsTable -->
+    </section>
+
+    <section id="section-specialists" class="hidden space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl md:text-3xl font-serif font-bold text-brand-dark tracking-tight">Specialists / Groomers</h2>
+          <p class="text-sm text-brand-muted mt-0.5">Manage the care specialists available for new bookings.</p>
+        </div>
+        <button onclick="AdminPortal.openSpecialistModal()" class="px-4 py-2.5 rounded-xl bg-brand-brown hover:bg-brand-brownHover text-white font-semibold text-xs shadow-sm transition-colors flex items-center gap-2 self-start sm:self-auto">＋ Add Specialist</button>
+      </div>
+      <div id="specialists-grid-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
     </section>
 
     <!-- ========================================== -->
@@ -786,7 +812,7 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="bg-brand-surface p-5 rounded-2xl border border-brand-border shadow-soft">
           <p class="text-xs font-semibold text-brand-muted uppercase tracking-wider">Gross Booking Value</p>
-          <h3 id="report-stat-revenue" class="text-2xl font-serif font-bold text-brand-dark mt-1">$2,860</h3>
+          <h3 id="report-stat-revenue" class="text-2xl font-serif font-bold text-brand-dark mt-1">₹2,77,420</h3>
           <p class="text-xs font-medium text-status-green mt-1">↑ 18% vs last month</p>
         </div>
         <div class="bg-brand-surface p-5 rounded-2xl border border-brand-border shadow-soft">
@@ -975,8 +1001,8 @@
   </main>
   <!-- END: CentralContentArea -->
 
-  <!-- BEGIN: RightSidebarPanel (Dashboard only on xl screens) -->
-  <aside id="admin-right-sidebar" aria-label="Activity and Quick Actions" class="w-80 bg-brand-cream/60 shrink-0 border-l border-brand-border p-6 space-y-6 hidden xl:block">
+  <!-- BEGIN: RightSidebarPanel (Dashboard only on 2xl screens) -->
+  <aside id="admin-right-sidebar" aria-label="Activity and Quick Actions" class="w-80 bg-brand-cream/60 shrink-0 border-l border-brand-border p-6 space-y-6 hidden 2xl:block">
     <!-- Card: Recent Activity -->
     <div class="bg-brand-surface p-5 rounded-2xl border border-brand-border shadow-soft">
       <div class="flex items-center gap-2 mb-4">
@@ -985,67 +1011,7 @@
         </svg>
         <h3 class="font-serif font-bold text-base text-brand-dark">Recent Activity</h3>
       </div>
-      <div class="space-y-4 text-xs">
-        <!-- Item 1 -->
-        <div class="flex items-start gap-3">
-          <div class="w-8 h-8 rounded-full bg-status-greenBg text-status-green flex items-center justify-center shrink-0 mt-0.5">
-            <svg class="w-4 h-4 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
-              <rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect>
-              <line x1="16" x2="16" y1="2" y2="6"></line>
-              <line x1="8" x2="8" y1="2" y2="6"></line>
-            </svg>
-          </div>
-          <div class="flex-1 min-w-0">
-            <p class="font-semibold text-brand-dark">New booking received</p>
-            <p class="text-[11px] text-brand-muted truncate">Grooming &amp; Spa - Bruno</p>
-          </div>
-          <span class="text-[10px] text-brand-muted shrink-0">10:24 AM</span>
-        </div>
-        <!-- Item 2 -->
-        <div class="flex items-start gap-3">
-          <div class="w-8 h-8 rounded-full bg-brand-cream border border-brand-border text-brand-dark flex items-center justify-center shrink-0 mt-0.5">
-            <svg class="w-4 h-4 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-              <circle cx="12" cy="7" r="4"></circle>
-            </svg>
-          </div>
-          <div class="flex-1 min-w-0">
-            <p class="font-semibold text-brand-dark">User registered</p>
-            <p class="text-[11px] text-brand-muted truncate">Prathiksha S.</p>
-          </div>
-          <span class="text-[10px] text-brand-muted shrink-0">09:52 AM</span>
-        </div>
-        <!-- Item 3 -->
-        <div class="flex items-start gap-3">
-          <div class="w-8 h-8 rounded-full bg-status-amberBg text-status-amber flex items-center justify-center shrink-0 mt-0.5">
-            <svg class="w-4 h-4 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
-              <circle cx="8" cy="6" r="2.2"></circle>
-              <circle cx="16" cy="6" r="2.2"></circle>
-              <circle cx="4" cy="11.5" r="2"></circle>
-              <circle cx="20" cy="11.5" r="2"></circle>
-              <ellipse cx="12" cy="17" rx="5" ry="4"></ellipse>
-            </svg>
-          </div>
-          <div class="flex-1 min-w-0">
-            <p class="font-semibold text-brand-dark">Pet profile added</p>
-            <p class="text-[11px] text-brand-muted truncate">Milo (Tabby Cat)</p>
-          </div>
-          <span class="text-[10px] text-brand-muted shrink-0">09:30 AM</span>
-        </div>
-        <!-- Item 4 -->
-        <div class="flex items-start gap-3">
-          <div class="w-8 h-8 rounded-full bg-brand-cream border border-brand-border text-brand-brown flex items-center justify-center shrink-0 mt-0.5">
-            <svg class="w-4 h-4 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
-              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-            </svg>
-          </div>
-          <div class="flex-1 min-w-0">
-            <p class="font-semibold text-brand-dark">New review received</p>
-            <p class="text-[11px] text-brand-muted truncate">Veterinary Care - 5 stars</p>
-          </div>
-          <span class="text-[10px] text-brand-muted shrink-0">08:20 AM</span>
-        </div>
-      </div>
+      <div id="admin-recent-activity-list" class="space-y-4 text-xs"><p class="text-[11px] text-brand-muted">Loading recent activity…</p></div>
     </div>
 
     <!-- Card: Quick Actions -->

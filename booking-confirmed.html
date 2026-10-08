@@ -50,17 +50,17 @@
 </div>
 <!-- Serene Serif Heading -->
 <h1 class="font-headline-lg text-headline-lg md:text-[38px] text-on-surface mt-2 tracking-tight">
-          You're All Set for Milo's Spa Day!
+          You're All Set for Your Visit!
         </h1>
 <p class="font-body-md text-body-md text-on-surface-variant max-w-xl mx-auto mt-2 leading-relaxed">
-          We've sent a verified receipt and calendar invite to <span class="font-semibold text-on-surface">sarah.j@example.com</span>. Our dedicated staff is ready to pamper Milo.
+          We've sent a verified receipt and calendar invite to <span id="confirmedEmail" class="font-semibold text-on-surface">your account email</span>. Our dedicated staff is ready for your visit.
         </p>
 <!-- Booking ID Pill Strip -->
 <div class="flex flex-wrap items-center justify-center gap-3 mt-6">
 <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-surface-container-lowest text-on-surface shadow-sm">
 <span class="font-label-md text-label-md text-on-surface-variant">Booking ID:</span>
-<span class="font-title-md text-title-md font-semibold text-primary" id="bookingCode">#PP-84920</span>
-<button class="p-1 rounded-full text-outline hover:text-primary hover:bg-surface-container transition-colors ml-0.5" id="copyBtn" onclick="navigator.clipboard?.writeText('#PP-84920'); this.innerHTML='&lt;span class=\'material-symbols-outlined text-[16px] text-primary\'&gt;check&lt;/span&gt;'; setTimeout(() =&gt; this.innerHTML='&lt;span class=\'material-symbols-outlined text-[16px]\'&gt;content_copy&lt;/span&gt;', 2000)" title="Copy ID">
+<span class="font-title-md text-title-md font-semibold text-primary" id="bookingCode">Booking reference</span>
+<button class="p-1 rounded-full text-outline hover:text-primary hover:bg-surface-container transition-colors ml-0.5" id="copyBtn" title="Copy ID" type="button">
 <span class="material-symbols-outlined text-[16px]">content_copy</span>
 </button>
 </div>
@@ -87,18 +87,18 @@
 <!-- Pet Companion Spotlight -->
 <div class="flex items-center gap-4 bg-surface-container-lowest p-4 rounded-DEFAULT shadow-sm">
 <div class="relative w-16 h-16 rounded-full overflow-hidden shrink-0 bg-surface-container">
-<img class="w-full h-full object-cover object-center" data-alt="A joyful and handsome Golden Retriever named Milo sitting calmly with glossy coat, friendly brown eyes, and gentle posture on a warm neutral cream backdrop, studio portrait." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7nC3cd4iCmHhyJgAduF6ROJDp5ZA_vgoR8qEJYusvzccWVQtBsSSQ0frzrTRbS5I2f14Mdmt271G6a5iaN0LYywV_MfTqCbmPYOJrivx5YLBk-31I87RCLHPSED1t7ZW1uQ-VJurmald0uJv4w1ko8ZV0Yreb9zWFq9mwZOQfyH_BaH66pHJd_vB28ih4Y5oPOysIUYf9v_G2ADoqvMCPlyssr-UX3cIOPNZmSVF9jatWYLfoZm-b0w"/>
+<img id="confirmedPetPhoto" class="w-full h-full object-cover object-center hidden" data-alt="Selected companion" src=""/>
 </div>
 <div class="min-w-0 flex-1">
 <div class="flex items-center gap-2">
-<h3 class="font-headline-sm text-headline-sm text-on-surface truncate">Milo</h3>
+<h3 id="confirmedPetName" class="font-headline-sm text-headline-sm text-on-surface truncate">No companion</h3>
 <span class="px-2 py-0.5 rounded-full bg-secondary-container/40 text-on-secondary-container font-label-sm text-label-sm">Primary Guest</span>
 </div>
-<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Golden Retriever • 3 Years Old • Friendly &amp; Calm Disposition</p>
+<p id="confirmedPetDescription" class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">No pet selected</p>
 </div>
 <div class="hidden sm:flex flex-col items-end text-right">
 <span class="font-label-sm text-label-sm text-outline">Weight</span>
-<span class="font-title-md text-title-md font-semibold text-on-surface">68 lbs</span>
+<span id="confirmedPetWeight" class="font-title-md text-title-md font-semibold text-on-surface"></span>
 </div>
 </div>
 <!-- Service Breakdown Block -->
@@ -118,12 +118,12 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
 <div class="bg-surface-container-lowest p-3.5 rounded-DEFAULT flex items-center gap-3 shadow-sm">
 <div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-semibold font-title-md shrink-0">
-                      SJ
+                      <span id="confirmedSpecialistInitials">AM</span>
                     </div>
 <div class="min-w-0">
 <span class="font-label-sm text-label-sm text-outline block">Assigned Specialist</span>
-<span class="font-label-lg text-label-lg font-semibold text-on-surface truncate block">Sarah Jenkins</span>
-<span class="font-body-sm text-body-sm text-secondary flex items-center gap-1">
+<span id="confirmedSpecialistName" class="font-label-lg text-label-lg font-semibold text-on-surface truncate block">Any Master Groomer</span>
+<span id="confirmedSpecialistRole" class="font-body-sm text-body-sm text-secondary flex items-center gap-1">
 <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span> 4.9 (140+ reviews)
                       </span>
 </div>
@@ -134,8 +134,8 @@
 </div>
 <div>
 <span class="font-label-sm text-label-sm text-outline block">Schedule</span>
-<span class="font-label-lg text-label-lg font-semibold text-on-surface block">Thu, Nov 13, 2025</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant">10:30 AM – 11:45 AM PST</span>
+<span class="font-label-lg text-label-lg font-semibold text-on-surface block">Appointment date</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Appointment time</span>
 </div>
 </div>
 </div>
@@ -163,7 +163,7 @@
 </div>
 <div class="flex-1">
 <span class="font-label-md text-label-md font-semibold text-on-secondary-container block">Real-time SMS &amp; Photo Milestones Active</span>
-<p class="font-body-sm text-body-sm text-on-surface-variant">You'll receive live photo check-ins during Milo's bath, blow-out, and final bandana styling!</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">You'll receive live photo check-ins during the service.</p>
 </div>
 </div>
 </div>
@@ -172,16 +172,16 @@
 <div class="bg-surface-container-low rounded-lg p-6 shadow-[0_4px_20px_-4px_rgba(44,36,32,0.04)] space-y-4">
 <div class="flex items-center gap-2">
 <span class="material-symbols-outlined text-secondary text-[22px]">checklist</span>
-<h3 class="font-headline-sm text-headline-sm text-on-surface">Pre-Visit Checklist for Milo</h3>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Pre-Visit Checklist</h3>
 </div>
 <ul class="space-y-3 font-body-md text-body-md text-on-surface-variant">
 <li class="flex items-start gap-2.5">
 <span class="material-symbols-outlined text-primary text-[18px] shrink-0 mt-0.5" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-<span><strong>Arrival Window:</strong> Please arrive 5–10 minutes prior to 10:30 AM to allow Milo to sniff and acclimate gently to the room.</span>
+<span><strong>Arrival Window:</strong> Please arrive 5–10 minutes prior to your appointment time.</span>
 </li>
 <li class="flex items-start gap-2.5">
 <span class="material-symbols-outlined text-primary text-[18px] shrink-0 mt-0.5" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-<span><strong>Safety First:</strong> Milo must be secured with a standard, non-retractable leash in the reception lounge.</span>
+<span><strong>Safety First:</strong> Please follow the care team's arrival instructions for your selected service.</span>
 </li>
 <li class="flex items-start gap-2.5">
 <span class="material-symbols-outlined text-primary text-[18px] shrink-0 mt-0.5" style="font-variation-settings: 'FILL' 1;">check_circle</span>
@@ -214,7 +214,7 @@
 <div class="space-y-3 py-3 font-body-md text-body-md">
 <div class="flex items-center justify-between text-on-surface">
 <span class="text-on-surface font-medium">Base Grooming &amp; Spa (75 min)</span>
-<span class="font-semibold">$45.00</span>
+<span class="font-semibold">₹4,350</span>
 </div>
 <div class="flex items-center justify-between text-on-surface-variant text-body-sm font-body-sm pl-3">
 <span>↳ Warm herbal bath &amp; gentle blow-out</span>
@@ -222,30 +222,30 @@
 </div>
 <div class="flex items-center justify-between text-on-surface">
 <span class="text-on-surface font-medium">Blueberry Facial &amp; Paw Balm</span>
-<span class="font-semibold">$12.00</span>
+<span class="font-semibold">₹1,150</span>
 </div>
 <div class="flex items-center justify-between text-on-surface">
 <span class="text-on-surface font-medium">Organic De-shedding Treatment</span>
-<span class="font-semibold">$8.00</span>
+<span class="font-semibold">₹800</span>
 </div>
 <div class="flex items-center justify-between text-on-surface-variant text-body-sm font-body-sm">
 <span>Sanitary &amp; Wellness Care Fee</span>
-<span>$4.50</span>
+<span>₹450</span>
 </div>
 <div class="flex items-center justify-between text-on-surface-variant text-body-sm font-body-sm">
 <span>Local SF Municipality &amp; Green Surcharge</span>
-<span>$4.85</span>
+<span>₹450</span>
 </div>
 </div>
 <!-- Subtotal / Total Callout -->
 <div class="pt-4 mt-2 bg-surface-container-low p-4 rounded-DEFAULT space-y-2">
 <div class="flex items-baseline justify-between">
 <span class="font-title-md text-title-md font-semibold text-on-surface">Total Amount Paid</span>
-<span class="font-headline-md text-headline-md text-primary font-bold">$74.35</span>
+<span class="font-headline-md text-headline-md text-primary font-bold">₹7,200</span>
 </div>
 <p class="font-body-sm text-body-sm text-outline flex items-center justify-between">
 <span>Billing currency</span>
-<span>USD (United States Dollar)</span>
+<span>INR (Indian Rupee)</span>
 </p>
 </div>
 <!-- Payment Method Details -->
@@ -256,7 +256,7 @@
                   </div>
 <span>Mastercard ending in <strong>4821</strong></span>
 </div>
-<span class="text-outline">Nov 13, 2025</span>
+<span class="text-outline">Appointment date</span>
 </div>
 <!-- Security Assurance Note -->
 <div class="mt-4 flex items-center gap-2 text-outline font-body-sm text-body-sm bg-surface-container/50 px-3 py-2 rounded-full">
@@ -293,7 +293,7 @@
 <div class="space-y-1">
 <h5 class="font-label-md text-label-md font-semibold text-on-surface">PetPals Peace of Mind Guarantee</h5>
 <p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
-                  Complimentary cancellations or reschedules permitted up to 24 hours prior to appointment time. 100% satisfaction promised for Milo.
+Complimentary cancellations or reschedules are permitted up to 24 hours before your appointment. 100% satisfaction guaranteed.
                 </p>
 </div>
 </div>
@@ -304,7 +304,7 @@
 <div class="bg-surface-container px-6 md:px-12 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-on-surface-variant font-body-sm text-body-sm">
 <div class="flex items-center gap-2">
 <span class="material-symbols-outlined text-primary text-[18px]">support_agent</span>
-<span>Questions regarding Milo's visit? Call our 24/7 concierge at <strong>+1 (800) 555-PALS</strong></span>
+<span>Questions about your visit? Call our 24/7 concierge at <strong>+1 (800) 555-PALS</strong></span>
 </div>
 <div class="flex items-center gap-4">
 <a class="hover:text-primary transition-colors" href="#">Reschedule Policy</a>
@@ -369,26 +369,33 @@
   function initConfirmedPage() {
     if (!window.PetPalsStore) return;
     const active = PetPalsStore.getActiveBooking();
-    const bookings = PetPalsStore.getBookings();
-    const latest = (bookings && bookings.length > 0) ? bookings[0] : active;
+    const latest = active;
+    if (!latest?.id || !latest?.service || !latest?.date || !latest?.time) {
+      window.location.replace('/my-bookings');
+      return;
+    }
     const user = PetPalsStore.getUser();
 
-    const bookingId = latest.id || active.id || ('PP-' + Math.floor(10000 + Math.random() * 90000));
-    const petName = latest.petName || active.petName || 'Bruno';
-    const serviceName = latest.service || active.service || 'Grooming & Spa Experience';
-    const dateStr = latest.date || active.date || '13 Nov 2026';
-    const timeStr = latest.time || active.time || '10:30 AM';
-    const specialist = latest.specialist || active.specialist || 'Sarah Jenkins';
-    const priceStr = latest.servicePrice || active.servicePrice || '$74.35';
+    const bookingId = latest.id;
+    const hasPet = Boolean(latest.petId || active.petId) && (latest.petName || active.petName) !== 'No companion';
+    const petName = hasPet ? (latest.petName || active.petName) : 'No companion';
+    const serviceName = latest.service;
+    const dateStr = /^\d{4}-\d{2}-\d{2}$/.test(latest.date) ? new Date(`${latest.date}T00:00:00`).toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'}) : latest.date;
+    const timeStr = /^\d{2}:\d{2}$/.test(latest.time) ? (()=>{const [h,m]=latest.time.split(':').map(Number);return `${((h+11)%12)+1}:${String(m).padStart(2,'0')} ${h>=12?'PM':'AM'}`})() : latest.time;
+    const specialist = latest.specialist || active.specialist || 'Any Master Groomer';
+    const specialistRole = latest.specialistRole || active.specialistRole || 'Any available specialist';
+    const specialistRating = latest.specialistRating ?? active.specialistRating;
+    const specialistSessions = latest.specialistSessions ?? active.specialistSessions;
+    const priceStr = latest.totalAmount != null ? `₹${Number(latest.totalAmount).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})} INR` : (latest.servicePrice || '₹0 INR');
 
     // 1. Heading
     const heading = document.querySelector('h1.font-headline-lg');
     if (heading) {
-      heading.textContent = `You're All Set for ${petName}'s Visit!`;
+      heading.textContent = hasPet ? `You're All Set for ${petName}'s Visit!` : "You're All Set for Your Visit!";
     }
 
     // 2. Email confirmation notice
-    const emailSpan = document.querySelector('p.font-body-md span.font-semibold');
+    const emailSpan = document.getElementById('confirmedEmail');
     if (emailSpan && user && user.email) {
       emailSpan.textContent = user.email;
     }
@@ -407,15 +414,17 @@
     }
 
     // 4. Pet companion card
-    const petCardH3 = document.querySelector('.lg\\:col-span-7 h3.font-headline-sm');
+    const petCardH3 = document.getElementById('confirmedPetName');
     if (petCardH3) petCardH3.textContent = petName;
-    const petDesc = document.querySelector('.lg\\:col-span-7 p.font-body-sm');
-    if (petDesc && (latest.petBreed || active.petBreed)) {
-      petDesc.textContent = `${latest.petBreed || active.petBreed} • Friendly & Calm Disposition`;
-    }
-    const petImg = document.querySelector('.lg\\:col-span-7 .w-16.h-16 img');
-    if (petImg && (latest.petPhoto || active.petPhoto)) {
-      petImg.src = latest.petPhoto || active.petPhoto;
+    const petDesc = document.getElementById('confirmedPetDescription');
+    if (petDesc) petDesc.textContent = hasPet ? [latest.petBreed || active.petBreed, latest.petAge || active.petAge, latest.petNotes || active.notes].filter(Boolean).join(' • ') : 'No pet selected';
+    const petWeightEl = document.getElementById('confirmedPetWeight');
+    if (petWeightEl) petWeightEl.textContent = hasPet ? (latest.petWeight || active.petWeight || '') : '';
+    const petImg = document.getElementById('confirmedPetPhoto');
+    if (petImg) {
+      const photo = hasPet ? (latest.petPhoto || active.petPhoto || latest.petAvatar || active.petAvatar || '') : '';
+      petImg.src = photo;
+      petImg.classList.toggle('hidden', !photo);
     }
 
     // 5. Service title
@@ -423,8 +432,14 @@
     if (srvTitle) srvTitle.textContent = serviceName;
 
     // 6. Specialist & Schedule
-    const specEl = document.querySelector('.lg\\:col-span-7 .sm\\:grid-cols-2 .bg-surface-container-lowest:first-child .font-label-lg');
+    const specEl = document.getElementById('confirmedSpecialistName');
     if (specEl) specEl.textContent = specialist;
+    const initialsEl = document.getElementById('confirmedSpecialistInitials');
+    if (initialsEl) initialsEl.textContent = specialist.split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0].toUpperCase()).join('') || 'AM';
+    const roleEl = document.getElementById('confirmedSpecialistRole');
+    if (roleEl) roleEl.textContent = specialistRating != null
+      ? `${specialistRole} ★ ${Number(specialistRating).toFixed(1)}${specialistSessions != null ? ` · ${Number(specialistSessions).toLocaleString('en-IN')} sessions` : ''}`
+      : specialistRole;
 
     const schedDateEl = document.querySelector('.lg\\:col-span-7 .sm\\:grid-cols-2 .bg-surface-container-lowest:last-child .font-label-lg');
     if (schedDateEl) schedDateEl.textContent = dateStr;
@@ -453,7 +468,7 @@
           `Specialist        : ${specialist}\n` +
           `Location          : 124 Blossom Lane, Suite 200, San Francisco, CA\n` +
           `--------------------------------------------\n` +
-          `Total Amount Paid : ${priceStr} USD\n` +
+          `Total Amount Paid : ${priceStr} INR\n` +
           `Status            : Confirmed & Scheduled\n` +
           `============================================\n` +
           `Thank you for choosing PetPals!\n`

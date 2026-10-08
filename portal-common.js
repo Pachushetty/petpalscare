@@ -31,139 +31,12 @@
     return avatar && !isAutoAssignedAvatar ? avatar : PROFILE_AVATAR_PLACEHOLDER;
   }
 
-  const DEFAULT_PETS = [
-    {
-      id: 'pet-bruno',
-      name: 'Bruno',
-      species: 'Dog',
-      breed: 'Golden Retriever',
-      age: '2 years',
-      status: 'Active',
-      note: 'Last wellness check: 2 weeks ago',
-      notes: 'Salmon & sweet potato kibble twice daily. Sensitive to loud air blowers.',
-      weight: '31.0 kg',
-      gender: 'Male (Neutered)',
-      microchip: '985 141 002 381',
-      avatar: 'https://lh3.googleusercontent.com/aida/AEtjO1Uuc_lq8IwyBwbjSlNL1obmQxxUrnJznxdjFzSncsyQDO1-YLIUzfA26YIg8yEhskgu9bqGS8QeWYZPTGpIQD6FXUjqJOTEPL92yxV6_uo66Re6T62xuKeC1UJF5zhXDGpeUIx3UpOQOFfTvElfqK-3SvN_G681f6Is0T7pjxiMowIXYwAQiutnTNbf70J32lVHH31Pn4LZk54wkstesIfLUzUa5mtuN06jDWNkEWTtCVkamIVdAptB-t6J',
-      photo: 'https://lh3.googleusercontent.com/aida/AEtjO1Uuc_lq8IwyBwbjSlNL1obmQxxUrnJznxdjFzSncsyQDO1-YLIUzfA26YIg8yEhskgu9bqGS8QeWYZPTGpIQD6FXUjqJOTEPL92yxV6_uo66Re6T62xuKeC1UJF5zhXDGpeUIx3UpOQOFfTvElfqK-3SvN_G681f6Is0T7pjxiMowIXYwAQiutnTNbf70J32lVHH31Pn4LZk54wkstesIfLUzUa5mtuN06jDWNkEWTtCVkamIVdAptB-t6J'
-    },
-    {
-      id: 'pet-milo',
-      name: 'Milo',
-      species: 'Cat',
-      breed: 'Tabby Cat',
-      age: '1 year',
-      status: 'Active',
-      note: 'Vaccinations fully updated',
-      notes: 'Nutritious balanced formula twice daily.',
-      weight: '4.8 kg',
-      gender: 'Male (Neutered)',
-      microchip: '985 141 009 842',
-      avatar: 'https://lh3.googleusercontent.com/aida/AEtjO1WT6ANlajBfAFZfy7s2ZiqXTDUYaiJGV-Hu02OGU9PgovrJw8KPqccWgiG93n2PwTxchuFVJ3ASByB6dPS4dMyMzed6GF9xPYMGkUfOw9pVQY0mIH7U4hxSFJ3vXHqSyMhnnjpwmDSD8uEEh7mB5FeOP2gk61l4gyqODvdUhL5TDs1EOSm8R69PQ2QmROFVLmTomMBxfeSAD-EuGOnPSGeQE2uRBmqA8ealfCucmUXvwTJ2HOqlPVelelg',
-      photo: 'https://lh3.googleusercontent.com/aida/AEtjO1WT6ANlajBfAFZfy7s2ZiqXTDUYaiJGV-Hu02OGU9PgovrJw8KPqccWgiG93n2PwTxchuFVJ3ASByB6dPS4dMyMzed6GF9xPYMGkUfOw9pVQY0mIH7U4hxSFJ3vXHqSyMhnnjpwmDSD8uEEh7mB5FeOP2gk61l4gyqODvdUhL5TDs1EOSm8R69PQ2QmROFVLmTomMBxfeSAD-EuGOnPSGeQE2uRBmqA8ealfCucmUXvwTJ2HOqlPVelelg'
-    }
-  ];
-
   const SPECIES_AVATARS = {
     'Dog': 'https://lh3.googleusercontent.com/aida/AEtjO1Uuc_lq8IwyBwbjSlNL1obmQxxUrnJznxdjFzSncsyQDO1-YLIUzfA26YIg8yEhskgu9bqGS8QeWYZPTGpIQD6FXUjqJOTEPL92yxV6_uo66Re6T62xuKeC1UJF5zhXDGpeUIx3UpOQOFfTvElfqK-3SvN_G681f6Is0T7pjxiMowIXYwAQiutnTNbf70J32lVHH31Pn4LZk54wkstesIfLUzUa5mtuN06jDWNkEWTtCVkamIVdAptB-t6J',
     'Cat': 'https://lh3.googleusercontent.com/aida/AEtjO1WT6ANlajBfAFZfy7s2ZiqXTDUYaiJGV-Hu02OGU9PgovrJw8KPqccWgiG93n2PwTxchuFVJ3ASByB6dPS4dMyMzed6GF9xPYMGkUfOw9pVQY0mIH7U4hxSFJ3vXHqSyMhnnjpwmDSD8uEEh7mB5FeOP2gk61l4gyqODvdUhL5TDs1EOSm8R69PQ2QmROFVLmTomMBxfeSAD-EuGOnPSGeQE2uRBmqA8ealfCucmUXvwTJ2HOqlPVelelg',
     'Bird': 'https://images.unsplash.com/photo-1552728089-57bdde30beb3?auto=format&fit=crop&w=400&q=80',
     'Rabbit': 'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?auto=format&fit=crop&w=400&q=80',
     'Other': 'https://images.unsplash.com/photo-1425082661705-1834bfd09dca?auto=format&fit=crop&w=400&q=80'
-  };
-
-  const DEFAULT_BOOKINGS = [
-    {
-      id: 'PP-84920',
-      service: 'Grooming & Spa Experience',
-      serviceCategory: 'grooming',
-      servicePrice: '$65.00',
-      duration: '75 min',
-      petId: 'pet-bruno',
-      petName: 'Bruno',
-      petBreed: 'Golden Retriever (2 years)',
-      petAvatar: 'https://lh3.googleusercontent.com/aida/AEtjO1Uuc_lq8IwyBwbjSlNL1obmQxxUrnJznxdjFzSncsyQDO1-YLIUzfA26YIg8yEhskgu9bqGS8QeWYZPTGpIQD6FXUjqJOTEPL92yxV6_uo66Re6T62xuKeC1UJF5zhXDGpeUIx3UpOQOFfTvElfqK-3SvN_G681f6Is0T7pjxiMowIXYwAQiutnTNbf70J32lVHH31Pn4LZk54wkstesIfLUzUa5mtuN06jDWNkEWTtCVkamIVdAptB-t6J',
-      date: '10 Oct 2026',
-      time: '10:00 AM',
-      specialist: 'Sarah Jenkins',
-      specialistRole: 'Coat Specialist ★ 4.9',
-      location: 'PetPals Flagship Spa & Wellness Lounge • Suite 4',
-      status: 'Upcoming',
-      paid: true
-    },
-    {
-      id: 'PP-82410',
-      service: 'Veterinary Care & Health Check',
-      serviceCategory: 'medical',
-      servicePrice: '$85.00',
-      duration: '45 min',
-      petId: 'pet-bruno',
-      petName: 'Bruno',
-      petBreed: 'Golden Retriever (2 years)',
-      petAvatar: 'https://lh3.googleusercontent.com/aida/AEtjO1Uuc_lq8IwyBwbjSlNL1obmQxxUrnJznxdjFzSncsyQDO1-YLIUzfA26YIg8yEhskgu9bqGS8QeWYZPTGpIQD6FXUjqJOTEPL92yxV6_uo66Re6T62xuKeC1UJF5zhXDGpeUIx3UpOQOFfTvElfqK-3SvN_G681f6Is0T7pjxiMowIXYwAQiutnTNbf70J32lVHH31Pn4LZk54wkstesIfLUzUa5mtuN06jDWNkEWTtCVkamIVdAptB-t6J',
-      date: '05 Oct 2026',
-      time: '11:00 AM',
-      specialist: 'Dr. Emily Chen',
-      specialistRole: 'Licensed DVM',
-      location: 'PetPals Clinic Suite A',
-      status: 'Completed',
-      paid: true
-    },
-    {
-      id: 'PP-79104',
-      service: 'Dog Walking (60 mins)',
-      serviceCategory: 'training',
-      servicePrice: '$30.00',
-      duration: '60 min',
-      petId: 'pet-milo',
-      petName: 'Milo',
-      petBreed: 'Tabby Cat (1 year)',
-      petAvatar: 'https://lh3.googleusercontent.com/aida/AEtjO1WT6ANlajBfAFZfy7s2ZiqXTDUYaiJGV-Hu02OGU9PgovrJw8KPqccWgiG93n2PwTxchuFVJ3ASByB6dPS4dMyMzed6GF9xPYMGkUfOw9pVQY0mIH7U4hxSFJ3vXHqSyMhnnjpwmDSD8uEEh7mB5FeOP2gk61l4gyqODvdUhL5TDs1EOSm8R69PQ2QmROFVLmTomMBxfeSAD-EuGOnPSGeQE2uRBmqA8ealfCucmUXvwTJ2HOqlPVelelg',
-      date: '28 Sep 2026',
-      time: '04:00 PM',
-      specialist: 'Alex Rivera',
-      specialistRole: 'Certified Companion Walker',
-      location: 'Neighborhood Park Run',
-      status: 'Completed',
-      paid: true
-    },
-    {
-      id: 'PP-75320',
-      service: 'Grooming & Spa Refresh',
-      serviceCategory: 'grooming',
-      servicePrice: '$65.00',
-      duration: '60 min',
-      petId: 'pet-bruno',
-      petName: 'Bruno',
-      petBreed: 'Golden Retriever (2 years)',
-      petAvatar: 'https://lh3.googleusercontent.com/aida/AEtjO1Uuc_lq8IwyBwbjSlNL1obmQxxUrnJznxdjFzSncsyQDO1-YLIUzfA26YIg8yEhskgu9bqGS8QeWYZPTGpIQD6FXUjqJOTEPL92yxV6_uo66Re6T62xuKeC1UJF5zhXDGpeUIx3UpOQOFfTvElfqK-3SvN_G681f6Is0T7pjxiMowIXYwAQiutnTNbf70J32lVHH31Pn4LZk54wkstesIfLUzUa5mtuN06jDWNkEWTtCVkamIVdAptB-t6J',
-      date: '20 Sep 2026',
-      time: '10:00 AM',
-      specialist: 'Sarah Jenkins',
-      specialistRole: 'Coat Specialist',
-      location: 'PetPals Flagship Lounge',
-      status: 'Completed',
-      paid: true
-    }
-  ];
-
-  const DEFAULT_ACTIVE_BOOKING = {
-    service: 'Grooming & Spa Experience',
-    serviceCategory: 'grooming',
-    servicePrice: '$65.00',
-    duration: '75 min',
-    petId: 'pet-bruno',
-    petName: 'Bruno',
-    petBreed: 'Golden Retriever',
-    petAge: '2 years',
-    petWeight: '31.0 kg',
-    petAvatar: 'https://lh3.googleusercontent.com/aida/AEtjO1Uuc_lq8IwyBwbjSlNL1obmQxxUrnJznxdjFzSncsyQDO1-YLIUzfA26YIg8yEhskgu9bqGS8QeWYZPTGpIQD6FXUjqJOTEPL92yxV6_uo66Re6T62xuKeC1UJF5zhXDGpeUIx3UpOQOFfTvElfqK-3SvN_G681f6Is0T7pjxiMowIXYwAQiutnTNbf70J32lVHH31Pn4LZk54wkstesIfLUzUa5mtuN06jDWNkEWTtCVkamIVdAptB-t6J',
-    date: '10 Oct 2026',
-    time: '10:00 AM',
-    specialist: 'Sarah Jenkins',
-    specialistRole: 'Coat Specialist ★ 4.9',
-    location: 'PetPals Flagship Spa & Wellness Lounge • Suite 4',
-    notes: 'Warm botanical bubble bath and breed scissor trim'
   };
 
   function getStoredToken() {
@@ -341,11 +214,6 @@
       } catch (e) {
         console.warn('Error reading pets from localStorage', e);
       }
-      // ONLY if this is the seed demo user 'usr-prathiksha', return default demo pets
-      if (userId === 'usr-prathiksha') {
-        return [...DEFAULT_PETS];
-      }
-      // For all other users or new accounts, return empty list
       return [];
     },
 
@@ -392,12 +260,14 @@
       this.savePets(pets);
 
       // Persist to PostgreSQL backend API
-      API.post('/api/pets', newPet).then(saved => {
+      this.lastPetPersistence = API.post('/api/pets', newPet).then(saved => {
+        if (!saved) return null;
         if (saved && saved.id && saved.id !== id) {
           newPet.id = saved.id;
           this.savePets(pets);
         }
-      }).catch(err => console.warn('Failed to save pet to backend:', err));
+        return newPet;
+      });
 
       return newPet;
     },
@@ -417,13 +287,17 @@
       return null;
     },
 
-    deletePet(id) {
-      const pets = this.getPets().filter(p => p.id !== id);
+    async deletePet(id) {
+      if (!id || !this.getUser()?.id) throw new Error('Please sign in before removing a pet.');
+
+      // Confirm the PostgreSQL delete before removing the pet from the local view.
+      const result = await API.delete('/api/pets/' + encodeURIComponent(id));
+      if (!result?.success) {
+        throw new Error(result?.error || 'The pet could not be removed. Please try again.');
+      }
+
+      const pets = this.getPets().filter(p => String(p.id) !== String(id));
       this.savePets(pets);
-
-      // Persist to PostgreSQL backend API
-      API.delete('/api/pets/' + encodeURIComponent(id)).catch(err => console.warn('Failed to delete pet from backend:', err));
-
       return pets;
     },
 
@@ -440,11 +314,6 @@
       } catch (e) {
         console.warn('Error reading bookings from localStorage', e);
       }
-      // ONLY if this is the seed demo user 'usr-prathiksha', return default demo bookings
-      if (userId === 'usr-prathiksha') {
-        return [...DEFAULT_BOOKINGS];
-      }
-      // For all other users or new accounts, return empty list
       return [];
     },
 
@@ -463,6 +332,10 @@
     },
 
     addBooking(bookingData) {
+      if (!bookingData?.service || !bookingData?.servicePrice) {
+        console.warn('Booking requires a selected service and price.');
+        return null;
+      }
       const bookings = this.getBookings();
       const id = bookingData.id || ('PP-' + Math.floor(10000 + Math.random() * 90000));
       const user = this.getUser();
@@ -470,19 +343,28 @@
         id,
         userId: user?.id || null,
         user_id: user?.id || null,
-        service: bookingData.service || 'Grooming & Spa Experience',
-        serviceCategory: bookingData.serviceCategory || 'grooming',
-        servicePrice: bookingData.servicePrice || '$65.00',
-        duration: bookingData.duration || '75 min',
-        petId: bookingData.petId || '',
-        petName: bookingData.petName || 'Companion',
-        petBreed: bookingData.petBreed || 'Companion',
-        petAvatar: bookingData.petAvatar || SPECIES_AVATARS['Dog'],
+        service: bookingData.service || '',
+        serviceCategory: bookingData.serviceCategory || '',
+        servicePrice: bookingData.servicePrice || '',
+        duration: bookingData.duration || '',
+        petId: bookingData.petId || null,
+        companionChoice: bookingData.companionChoice || (bookingData.petId ? 'pet' : 'none'),
+        petName: bookingData.petName || 'No companion',
+        petBreed: bookingData.petBreed || '',
+        petAvatar: bookingData.petAvatar || '',
+        petPhoto: bookingData.petPhoto || '',
         date: bookingData.date || 'Upcoming',
         time: bookingData.time || '10:00 AM',
-        specialist: bookingData.specialist || 'Sarah Jenkins',
-        specialistRole: bookingData.specialistRole || 'Coat Specialist ★ 4.9',
+        specialistId: bookingData.specialistId || null,
+        specialist: bookingData.specialist || 'Any Master Groomer',
+        specialistRole: bookingData.specialistRole || 'Any available specialist',
+        specialistPhoto: bookingData.specialistPhoto || null,
+        specialistRating: bookingData.specialistRating ?? null,
+        specialistSessions: bookingData.specialistSessions ?? null,
+        specialistAvailability: bookingData.specialistAvailability || '',
         location: bookingData.location || 'PetPals Flagship Spa & Wellness Lounge • Suite 4',
+        locationType: bookingData.locationType || 'clinic',
+        selectedAddons: Array.isArray(bookingData.selectedAddons) ? bookingData.selectedAddons : [],
         status: bookingData.status || 'Upcoming',
         paid: true,
         notes: bookingData.notes || ''
@@ -545,7 +427,6 @@
       return null;
     },
 
-    // Asynchronously fetch latest data from PostgreSQL backend
     async syncFromBackend() {
       try {
         const user = await API.get('/api/auth/me');
@@ -556,14 +437,13 @@
           '/book-service-pet', '/book-service-schedule', '/book-service-review',
           '/booking-confirmed', '/bookings-pet-dashboard'
         ];
-        const isProtected = protectedPaths.some(p => currentPath === p || currentPath.startsWith(p + '/'));
+        const isProtected = protectedPaths.some(p => currentPath === p || currentPath.startsWith(p + '/') || currentPath === p + '.html');
 
         if (!user || !user.id) {
-          localStorage.removeItem(STORAGE_KEYS.USER);
-          localStorage.removeItem(STORAGE_KEYS.CURRENT_UID);
-          localStorage.setItem(STORAGE_KEYS.AUTH, 'false');
+          localStorage.clear();
+          document.cookie = 'petpals_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
           if (isProtected) {
-            window.location.href = '/login';
+            window.location.replace('/login');
             return;
           }
           return;
@@ -571,9 +451,7 @@
 
         const prevUid = localStorage.getItem(STORAGE_KEYS.CURRENT_UID);
         if (prevUid && prevUid !== user.id) {
-          localStorage.removeItem(STORAGE_KEYS.PETS);
-          localStorage.removeItem(STORAGE_KEYS.BOOKINGS);
-          localStorage.removeItem('petpals_active_booking');
+          localStorage.clear();
         }
 
         localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
@@ -587,54 +465,58 @@
           API.get('/api/bookings')
         ]);
 
-        if (Array.isArray(pets)) {
-          this.savePets(pets);
-        }
+        this.savePets(Array.isArray(pets) ? pets : []);
 
         if (Array.isArray(bookings)) {
           this.saveBookings(bookings);
+        } else {
+          this.saveBookings([]);
         }
       } catch (err) {
         console.warn('Backend sync error:', err);
+        if (window.location.pathname === '/my-pets' || window.location.pathname === '/my-pets.html') {
+          this.savePets([]);
+        }
       }
     },
 
     getActiveBooking() {
       const user = this.getUser();
       const userId = user?.id;
+      const emptyBooking = {
+        service: '', serviceCategory: '', servicePrice: '', duration: '', serviceId: '',
+        petId: '', petName: '', petBreed: '', date: '', time: '', status: 'Upcoming'
+      };
       if (!userId) {
-        return {
-          service: 'Grooming & Spa Experience',
-          serviceCategory: 'grooming',
-          servicePrice: '$65.00',
-          duration: '75 min',
-          petId: '',
-          petName: '',
-          petBreed: '',
-          date: '',
-          time: '',
-          status: 'Upcoming'
-        };
+        return emptyBooking;
       }
       try {
         const userActive = localStorage.getItem(`petpals_active_booking_${userId}`);
-        if (userActive) return JSON.parse(userActive);
+        if (userActive) {
+          const booking = JSON.parse(userActive);
+          if (typeof booking.servicePrice === 'string' && booking.servicePrice.trim().startsWith('$')) {
+            const amount = parseFloat(booking.servicePrice.replace(/[^0-9.]/g, '')) || 0;
+            booking.servicePrice = `₹${(Math.round(amount * 97 / 50) * 50).toLocaleString('en-IN')}`;
+            localStorage.setItem(`petpals_active_booking_${userId}`, JSON.stringify(booking));
+          }
+          return booking;
+        }
       } catch (e) {}
-      if (userId === 'usr-prathiksha') {
-        return { ...DEFAULT_ACTIVE_BOOKING };
-      }
-      return {
-        service: 'Grooming & Spa Experience',
-        serviceCategory: 'grooming',
-        servicePrice: '$65.00',
-        duration: '75 min',
-        petId: '',
-        petName: '',
-        petBreed: '',
-        date: '',
-        time: '',
-        status: 'Upcoming'
+      return emptyBooking;
+    },
+
+    resetActiveBooking() {
+      const userId = this.getUser()?.id;
+      const emptyBooking = {
+        service: '', serviceCategory: '', servicePrice: '', duration: '',
+        petId: null, petName: '', petBreed: '', petAge: '', petWeight: '',
+        petAvatar: '', petPhoto: '', companionChoice: 'none', date: '', time: '', location: '', locationType: '', selectedAddons: [], step1Addons: [], petStepAddons: [],
+        specialistId: null,
+        specialist: 'Any Master Groomer', specialistRole: 'Any available specialist', specialistPhoto: null,
+        specialistRating: null, specialistSessions: null, specialistAvailability: '', notes: '', status: 'Upcoming'
       };
+      if (userId) localStorage.setItem(`petpals_active_booking_${userId}`, JSON.stringify(emptyBooking));
+      return emptyBooking;
     },
 
     saveActiveBooking(bookingData) {
@@ -678,15 +560,8 @@
 
     login(userData, token) {
       try {
-        const prevUid = localStorage.getItem(STORAGE_KEYS.CURRENT_UID);
-        const newUid = userData?.id;
-
-        if (prevUid && newUid && prevUid !== newUid) {
-          localStorage.removeItem(STORAGE_KEYS.PETS);
-          localStorage.removeItem(STORAGE_KEYS.BOOKINGS);
-          localStorage.removeItem('petpals_active_booking');
-          localStorage.removeItem(STORAGE_KEYS.USER);
-        }
+        localStorage.clear();
+        sessionStorage.clear();
 
         localStorage.setItem(STORAGE_KEYS.AUTH, 'true');
         if (token) {
@@ -695,12 +570,10 @@
             document.cookie = 'petpals_session=' + encodeURIComponent(token) + '; path=/; max-age=604800; SameSite=Lax';
           } catch (e) {}
         }
-        if (userData) {
-          if (newUid) {
-            localStorage.setItem(STORAGE_KEYS.CURRENT_UID, newUid);
-            localStorage.setItem(`${STORAGE_KEYS.USER}_${newUid}`, JSON.stringify(userData));
-          }
+        if (userData && userData.id) {
+          localStorage.setItem(STORAGE_KEYS.CURRENT_UID, userData.id);
           localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(userData));
+          localStorage.setItem(`${STORAGE_KEYS.USER}_${userData.id}`, JSON.stringify(userData));
         }
         this.broadcast('auth-changed', { authenticated: true, user: userData });
         this.broadcast('user-updated', userData);
@@ -715,26 +588,14 @@
         await API.post('/api/auth/logout', {});
       } catch (e) {}
       try {
-        const currentUid = localStorage.getItem(STORAGE_KEYS.CURRENT_UID);
-        if (currentUid) {
-          localStorage.removeItem(`${STORAGE_KEYS.USER}_${currentUid}`);
-          localStorage.removeItem(`${STORAGE_KEYS.PETS}_${currentUid}`);
-          localStorage.removeItem(`${STORAGE_KEYS.BOOKINGS}_${currentUid}`);
-          localStorage.removeItem(`petpals_active_booking_${currentUid}`);
-        }
-        localStorage.removeItem(STORAGE_KEYS.AUTH);
-        localStorage.removeItem(STORAGE_KEYS.USER);
-        localStorage.removeItem(STORAGE_KEYS.PETS);
-        localStorage.removeItem(STORAGE_KEYS.BOOKINGS);
-        localStorage.removeItem(STORAGE_KEYS.CURRENT_UID);
-        localStorage.removeItem('petpals_active_booking');
-        localStorage.removeItem('petpals_session_token');
-        document.cookie = 'petpals_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+        localStorage.clear();
+        sessionStorage.clear();
+        document.cookie = 'petpals_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
       } catch (e) {}
       showToast('Signed out successfully.', 'logout');
       setTimeout(() => {
-        window.location.href = '/login?switch=true';
-      }, 300);
+        window.location.replace('/login?switch=true');
+      }, 200);
     },
 
     broadcast(event, detail) {
@@ -1173,6 +1034,7 @@
 
   // Global sync listeners
   window.addEventListener('petpals:user-updated', (e) => {
+    if (window.location.pathname.startsWith('/admin')) return;
     const u = e.detail;
     document.querySelectorAll('#dropdown-user-name').forEach(el => el.textContent = u.name);
     document.querySelectorAll('#dropdown-user-email').forEach(el => el.textContent = u.email);
@@ -1197,6 +1059,9 @@
 
   // Run on DOM ready
   document.addEventListener('DOMContentLoaded', () => {
+    // Admin pages have their own identity and session; never initialize the
+    // normal-user header or synchronize normal-user state there.
+    if (window.location.pathname.startsWith('/admin')) return;
     initHeaderUserMenu();
     initNeedAssistanceModal();
     initHeaderSearch();

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PetPals Admin Sign In</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: #fcf9f4; }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center px-5 py-8 text-[#1c1c19]">
+  <div class="fixed -top-20 -right-20 w-80 h-80 rounded-full pointer-events-none" style="background:rgba(253,206,174,.25);filter:blur(60px)"></div>
+  <span class="fixed top-6 right-14 pointer-events-none select-none" style="font-family:'Material Symbols Outlined';font-variation-settings:'FILL' 1;color:#714a30;opacity:.06;font-size:90px">pets</span>
+
+  <main class="relative z-10 w-full max-w-md">
+    <div class="flex items-center justify-between mb-4">
+      <a href="/" class="flex items-center gap-2 text-[#714a30] no-underline">
+        <span class="material-symbols-outlined" style="font-size:26px;font-variation-settings:'FILL' 1">pets</span>
+        <span class="font-bold text-lg" style="font-family:'Playfair Display',serif">PetPals <span class="font-sans text-[10px] uppercase tracking-wider rounded-full px-2 py-1 bg-[#714a30]/10">Admin</span></span>
+      </a>
+      <a href="/login" class="text-xs font-semibold text-[#714a30] hover:underline">User Sign In</a>
+    </div>
+
+    <section class="bg-white rounded-2xl shadow-xl px-7 py-7 border border-[#d5c3ba]/40">
+      <div class="text-center mb-6">
+        <div class="inline-flex items-center justify-center w-11 h-11 rounded-full bg-[#f6f3ee] text-[#714a30] mb-2">
+          <span class="material-symbols-outlined" style="font-size:22px;font-variation-settings:'FILL' 1">admin_panel_settings</span>
+        </div>
+        <h1 class="font-bold text-2xl" style="font-family:'Playfair Display',serif">Admin Sign In</h1>
+        <p class="text-[#50443d] text-xs mt-1">Sign in with your separate administrator account</p>
+      </div>
+
+      <div id="admin-login-error" class="hidden mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs" role="alert"></div>
+      <form id="admin-login-form" class="space-y-4">
+        <div>
+          <label for="admin-email" class="block text-[10px] font-bold tracking-wider uppercase text-[#50443d] mb-1">Admin Email</label>
+          <input id="admin-email" name="email" type="email" autocomplete="username" required class="w-full px-4 py-3 rounded-full bg-[#f6f3ee] text-sm border border-[#d5c3ba]/60 focus:outline-none focus:ring-2 focus:ring-[#714a30]/25" placeholder="admin@example.com"/>
+        </div>
+        <div>
+          <label for="admin-password" class="block text-[10px] font-bold tracking-wider uppercase text-[#50443d] mb-1">Password</label>
+          <input id="admin-password" name="password" type="password" autocomplete="current-password" required class="w-full px-4 py-3 rounded-full bg-[#f6f3ee] text-sm border border-[#d5c3ba]/60 focus:outline-none focus:ring-2 focus:ring-[#714a30]/25" placeholder="Enter your admin password"/>
+        </div>
+        <button id="admin-login-submit" type="submit" class="w-full py-3 rounded-full bg-[#714a30] hover:bg-[#633e25] text-white font-bold text-sm shadow-md transition-colors">Sign In to Admin</button>
+      </form>
+      <p class="text-center text-[10px] text-[#83746c] mt-5">Administrator access is separate from PetPals user accounts.</p>
+    </section>
+  </main>
+
+  <script>
+    (async function () {
+      try {
+        const current = await fetch('/api/admin/me', { credentials: 'same-origin', cache: 'no-store' });
+        if (current.ok) { window.location.replace('/admin/dashboard'); return; }
+      } catch (error) {}
+
+      const form = document.getElementById('admin-login-form');
+      const errorBox = document.getElementById('admin-login-error');
+      const submit = document.getElementById('admin-login-submit');
+      form.addEventListener('submit', async event => {
+        event.preventDefault();
+        errorBox.classList.add('hidden');
+        submit.disabled = true;
+        submit.textContent = 'Signing in…';
+        try {
+          const response = await fetch('/api/admin/login', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: document.getElementById('admin-email').value.trim(),
+              password: document.getElementById('admin-password').value
+            })
+          });
+          const result = await response.json().catch(() => ({}));
+          if (!response.ok || !result.success) throw new Error(result.error || 'Admin sign in failed. Check your credentials.');
+          window.location.replace('/admin/dashboard');
+        } catch (error) {
+          errorBox.textContent = error.message || 'Unable to sign in. Please try again.';
+          errorBox.classList.remove('hidden');
+          submit.disabled = false;
+          submit.textContent = 'Sign In to Admin';
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

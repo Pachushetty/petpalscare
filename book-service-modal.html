@@ -95,103 +95,7 @@
 <span class="font-body-sm text-body-sm text-on-surface-variant">Instant availability check</span>
 </div>
 <!-- Service Selection Cards Grid -->
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5" id="service-grid">
-<!-- Service 1: Veterinary Care -->
-<label class="cursor-pointer group relative bg-surface-container-low hover:bg-surface-container p-4 rounded-2xl flex flex-col justify-between transition-all duration-200">
-<input class="sr-only peer" name="service-option" type="radio" value="veterinary"/>
-<div class="flex items-start justify-between mb-3">
-<div class="w-10 h-10 rounded-xl bg-surface-container-lowest flex items-center justify-center text-primary group-hover:scale-105 transition-transform">
-<span class="material-symbols-outlined text-[22px]">medical_services</span>
-</div>
-<span class="font-label-sm text-label-sm font-semibold bg-surface-container-highest px-2 py-0.5 rounded-full text-on-surface-variant">From $65</span>
-</div>
-<div class="space-y-1">
-<h4 class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors">Veterinary Care</h4>
-<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Routine wellness checks, vaccines, certified diagnostics &amp; lab work.</p>
-</div>
-<div class="absolute inset-0 rounded-2xl pointer-events-none peer-checked:ring-2 peer-checked:ring-primary-container peer-checked:bg-primary-fixed/20 transition-all"></div>
-</label>
-<!-- Service 2: Grooming & Spa (Pre-Selected) -->
-<label class="cursor-pointer group relative bg-surface-container-low hover:bg-surface-container p-4 rounded-2xl flex flex-col justify-between transition-all duration-200">
-<input checked="" class="sr-only peer" name="service-option" type="radio" value="grooming"/>
-<div class="flex items-start justify-between mb-3">
-<div class="w-10 h-10 rounded-xl bg-primary-container text-on-primary flex items-center justify-center shadow-sm">
-<span class="material-symbols-outlined text-[22px]">spa</span>
-</div>
-<div class="flex items-center gap-1.5">
-<span class="font-label-sm text-label-sm font-semibold bg-primary-fixed text-on-primary-fixed-variant px-2 py-0.5 rounded-full">From $45</span>
-<span class="w-4 h-4 rounded-full bg-primary-container text-on-primary flex items-center justify-center">
-<span class="material-symbols-outlined text-[12px] font-bold">check</span>
-</span>
-</div>
-</div>
-<div class="space-y-1">
-<h4 class="font-title-md text-title-md text-primary font-bold">Grooming &amp; Spa</h4>
-<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Herbal foam bath, hypoallergenic rinse, styling &amp; organic paw balm.</p>
-</div>
-<div class="absolute inset-0 rounded-2xl pointer-events-none ring-2 ring-primary-container bg-primary-fixed/25 transition-all"></div>
-</label>
-<!-- Service 3: Dog Walking -->
-<label class="cursor-pointer group relative bg-surface-container-low hover:bg-surface-container p-4 rounded-2xl flex flex-col justify-between transition-all duration-200">
-<input class="sr-only peer" name="service-option" type="radio" value="walking"/>
-<div class="flex items-start justify-between mb-3">
-<div class="w-10 h-10 rounded-xl bg-surface-container-lowest flex items-center justify-center text-primary group-hover:scale-105 transition-transform">
-<span class="material-symbols-outlined text-[22px]">directions_walk</span>
-</div>
-<span class="font-label-sm text-label-sm font-semibold bg-surface-container-highest px-2 py-0.5 rounded-full text-on-surface-variant">From $25</span>
-</div>
-<div class="space-y-1">
-<h4 class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors">Dog Walking</h4>
-<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">30 or 60 min tracked GPS neighborhood strolls with hydration logs.</p>
-</div>
-<div class="absolute inset-0 rounded-2xl pointer-events-none peer-checked:ring-2 peer-checked:ring-primary-container peer-checked:bg-primary-fixed/20 transition-all"></div>
-</label>
-<!-- Service 4: Pet Boarding -->
-<label class="cursor-pointer group relative bg-surface-container-low hover:bg-surface-container p-4 rounded-2xl flex flex-col justify-between transition-all duration-200">
-<input class="sr-only peer" name="service-option" type="radio" value="boarding"/>
-<div class="flex items-start justify-between mb-3">
-<div class="w-10 h-10 rounded-xl bg-surface-container-lowest flex items-center justify-center text-primary group-hover:scale-105 transition-transform">
-<span class="material-symbols-outlined text-[22px]">night_shelter</span>
-</div>
-<span class="font-label-sm text-label-sm font-semibold bg-surface-container-highest px-2 py-0.5 rounded-full text-on-surface-variant">From $55/nt</span>
-</div>
-<div class="space-y-1">
-<h4 class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors">Pet Boarding</h4>
-<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Private air-conditioned suites with 24/7 webcams and playtime.</p>
-</div>
-<div class="absolute inset-0 rounded-2xl pointer-events-none peer-checked:ring-2 peer-checked:ring-primary-container peer-checked:bg-primary-fixed/20 transition-all"></div>
-</label>
-<!-- Service 5: Pet Sitting -->
-<label class="cursor-pointer group relative bg-surface-container-low hover:bg-surface-container p-4 rounded-2xl flex flex-col justify-between transition-all duration-200">
-<input class="sr-only peer" name="service-option" type="radio" value="sitting"/>
-<div class="flex items-start justify-between mb-3">
-<div class="w-10 h-10 rounded-xl bg-surface-container-lowest flex items-center justify-center text-primary group-hover:scale-105 transition-transform">
-<span class="material-symbols-outlined text-[22px]">volunteer_activism</span>
-</div>
-<span class="font-label-sm text-label-sm font-semibold bg-surface-container-highest px-2 py-0.5 rounded-full text-on-surface-variant">From $35</span>
-</div>
-<div class="space-y-1">
-<h4 class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors">Pet Sitting</h4>
-<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">In-home loving presence, nutrition pacing, plant care &amp; cuddles.</p>
-</div>
-<div class="absolute inset-0 rounded-2xl pointer-events-none peer-checked:ring-2 peer-checked:ring-primary-container peer-checked:bg-primary-fixed/20 transition-all"></div>
-</label>
-<!-- Service 6: Behavioral Training -->
-<label class="cursor-pointer group relative bg-surface-container-low hover:bg-surface-container p-4 rounded-2xl flex flex-col justify-between transition-all duration-200">
-<input class="sr-only peer" name="service-option" type="radio" value="training"/>
-<div class="flex items-start justify-between mb-3">
-<div class="w-10 h-10 rounded-xl bg-surface-container-lowest flex items-center justify-center text-primary group-hover:scale-105 transition-transform">
-<span class="material-symbols-outlined text-[22px]">school</span>
-</div>
-<span class="font-label-sm text-label-sm font-semibold bg-surface-container-highest px-2 py-0.5 rounded-full text-on-surface-variant">From $50</span>
-</div>
-<div class="space-y-1">
-<h4 class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors">Pet Training</h4>
-<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Positive reinforcement coaching, puppy socialization &amp; leash manners.</p>
-</div>
-<div class="absolute inset-0 rounded-2xl pointer-events-none peer-checked:ring-2 peer-checked:ring-primary-container peer-checked:bg-primary-fixed/20 transition-all"></div>
-</label>
-</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5" id="service-grid"></div>
 </div>
 <!-- Section: Select Pet Profile & Add-Ons -->
 <div class="grid grid-cols-1 md:grid-cols-12 gap-6 pt-2">
@@ -202,36 +106,16 @@
               Select Companion
             </h4>
 <div class="flex flex-wrap sm:flex-nowrap gap-3">
-<!-- Pet 1: Milo (Active) -->
-<button class="flex-1 p-3 rounded-2xl bg-secondary-container/30 ring-2 ring-primary-container flex items-center gap-3 text-left transition-all" type="button">
-<img alt="Milo, happy golden retriever" class="w-12 h-12 rounded-xl object-cover ring-2 ring-primary-fixed shrink-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDB60GhzaT4j8GgoZ5oMt27RdhRHPxnBhPGDK9N3w0AOayFDAEscymvsBg2JA3F4Y8a4wOLJjhDPu5fLySafRN29Qkz7Aytp8Gtx7CtxJq3KIPbPQOai25ANaT-ayP5MfHntz1Movwaa0RLr4a8s-Pq2Pkz98eB6-O5X_kCDmfjcShbrIWbDD36HS_nGMn5w8F0fMyN71Go-dXIFOlGvx0obaTiAEweQuIHn8QlPC4AfSv43eJEVmAy6cS-AKIzNj51Zo8"/>
-<div class="min-w-0">
-<div class="flex items-center gap-1.5">
-<p class="font-label-lg text-label-lg text-on-surface truncate">Milo</p>
-<span class="w-2 h-2 rounded-full bg-primary-container"></span>
-</div>
-<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Golden Retriever • 3 yrs</p>
-</div>
-</button>
-<!-- Pet 2: Oliver -->
-<button class="flex-1 p-3 rounded-2xl bg-surface-container-low hover:bg-surface-container flex items-center gap-3 text-left transition-all" type="button">
-<div class="w-12 h-12 rounded-xl bg-surface-container-highest text-secondary flex items-center justify-center shrink-0">
-<span class="material-symbols-outlined text-[24px]">pets</span>
-</div>
-<div class="min-w-0">
-<p class="font-label-lg text-label-lg text-on-surface truncate">Oliver</p>
-<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Domestic Cat • 5 yrs</p>
-</div>
-</button>
-<!-- Add New Pet Button -->
-<button class="px-4 py-3 rounded-2xl bg-surface-container-lowest hover:bg-surface-container-low text-on-surface-variant flex flex-col items-center justify-center gap-1 text-center shrink-0 shadow-sm transition-colors" type="button">
+<div id="companion-options" class="contents"></div>
+<!-- New Pet choice -->
+<button id="choose-new-pet" class="px-4 py-3 rounded-2xl bg-surface-container-lowest hover:bg-surface-container-low text-on-surface-variant flex flex-col items-center justify-center gap-1 text-center shrink-0 shadow-sm transition-colors" type="button">
 <span class="material-symbols-outlined text-primary text-[20px]">add_circle</span>
 <span class="font-label-sm text-label-sm whitespace-nowrap">New Pet</span>
 </button>
 </div>
 </div>
 <!-- Add-ons Selection (5 cols) -->
-<div class="md:col-span-5 space-y-3">
+<div class="md:col-span-5 space-y-3 hidden" id="spa-addons-panel">
 <h4 class="font-title-md text-title-md text-on-surface flex items-center gap-2">
 <span class="material-symbols-outlined text-primary text-[20px]">auto_awesome</span>
               Spa Add-ons
@@ -239,23 +123,23 @@
 <div class="space-y-2">
 <label class="flex items-center justify-between p-2.5 rounded-xl bg-surface-container-low hover:bg-surface-container cursor-pointer transition-colors">
 <div class="flex items-center gap-2.5">
-<input checked="" class="w-4 h-4 rounded text-primary-container accent-primary-container focus:ring-primary-container/20 cursor-pointer" type="checkbox"/>
+<input class="booking-addon w-4 h-4 rounded text-primary-container accent-primary-container focus:ring-primary-container/20 cursor-pointer" data-name="Paw Balm & Nail Trim" data-price="1450" type="checkbox"/>
 <span class="font-body-md text-body-md text-on-surface">Paw Balm &amp; Nail Trim</span>
 </div>
-<span class="font-label-sm text-label-sm font-semibold text-secondary">+$15</span>
+<span class="font-label-sm text-label-sm font-semibold text-secondary">+₹1,450</span>
 </label>
 <label class="flex items-center justify-between p-2.5 rounded-xl bg-surface-container-low hover:bg-surface-container cursor-pointer transition-colors">
 <div class="flex items-center gap-2.5">
-<input class="w-4 h-4 rounded text-primary-container accent-primary-container focus:ring-primary-container/20 cursor-pointer" type="checkbox"/>
+<input class="booking-addon w-4 h-4 rounded text-primary-container accent-primary-container focus:ring-primary-container/20 cursor-pointer" data-name="Organic Teeth Brushing" data-price="950" type="checkbox"/>
 <span class="font-body-md text-body-md text-on-surface">Organic Teeth Brushing</span>
 </div>
-<span class="font-label-sm text-label-sm font-semibold text-secondary">+$10</span>
+<span class="font-label-sm text-label-sm font-semibold text-secondary">+₹950</span>
 </label>
 </div>
 </div>
 </div>
-<!-- Section: Schedule & Location Selector -->
-<div class="p-5 rounded-2xl bg-surface-container-low/70 space-y-5">
+<!-- Schedule is selected on its own step. -->
+<div class="hidden" aria-hidden="true">
 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
 <div>
 <h4 class="font-title-md text-title-md text-on-surface flex items-center gap-2">
@@ -266,10 +150,10 @@
 </div>
 <!-- Service Mode Toggle (Salon vs At-Home) -->
 <div class="inline-flex p-1 bg-surface-container-lowest rounded-full shadow-sm self-start sm:self-auto">
-<button class="px-3.5 py-1.5 rounded-full font-label-md text-label-md bg-primary-container text-on-primary font-medium transition-all shadow-sm" type="button">
+<button data-location-type="clinic" class="px-3.5 py-1.5 rounded-full font-label-md text-label-md bg-primary-container text-on-primary font-medium transition-all shadow-sm" type="button">
                 In-Clinic Salon
               </button>
-<button class="px-3.5 py-1.5 rounded-full font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-all" type="button">
+<button data-location-type="mobile" class="px-3.5 py-1.5 rounded-full font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-all" type="button">
                 Mobile / At-Home
               </button>
 </div>
@@ -283,7 +167,7 @@
 </div>
 <div class="min-w-0">
 <p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Preferred Date</p>
-<p class="font-label-lg text-label-lg text-on-surface font-bold truncate">Tomorrow, Oct 18, 2026</p>
+<p id="preferred-booking-date" class="font-label-lg text-label-lg text-on-surface font-bold truncate">Choose on Schedule step</p>
 </div>
 </div>
 <!-- Time Slots Pills -->
@@ -314,11 +198,11 @@
 </div>
 <div>
 <div class="flex items-center gap-2">
-<span class="font-title-md text-title-md text-on-surface font-bold">Grooming &amp; Spa</span>
-<span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-surface-container-highest text-secondary font-medium">for Milo</span>
+<span id="selected-service-preview" class="font-title-md text-title-md text-on-surface font-bold">Select a service</span>
+<span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-surface-container-highest text-secondary font-medium">Service</span>
 </div>
 <p class="font-body-sm text-body-sm text-on-surface-variant">
-              Oct 18, 11:30 AM • Inc. Paw Balm • <span class="font-semibold text-primary">Est. Total: $60.00</span>
+              Select multiple services • <span id="selected-service-price" class="font-semibold text-primary">₹0</span>
 </p>
 </div>
 </div>
@@ -327,7 +211,7 @@
 <button onclick="window.location.href='/my-pets'" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors w-full sm:w-auto" type="button">
   Cancel
 </button>
-<button id="continueToPetBtn" onclick="handleContinueToPet()" class="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full font-label-lg text-label-lg bg-primary-container hover:bg-primary text-on-primary shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 w-full sm:w-auto" type="button">
+<button id="continueToPetBtn" onclick="handleContinueToPet()" disabled class="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full font-label-lg text-label-lg bg-primary-container hover:bg-primary text-on-primary shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 w-full sm:w-auto opacity-50 cursor-not-allowed" type="button">
 <span>Continue to Pet Details</span>
 <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
 </button>
@@ -350,25 +234,82 @@
 </div>
 </div>
 </div>
-<!-- Micro-interactions Script -->
 <script>
-    (function initBookingModalInteractions() {
-      const modalOverlay = document.getElementById('booking-modal-overlay');
-      const serviceOptions = document.querySelectorAll('input[name="service-option"]');
-
-      // Allow soft toggle of service cards
-      serviceOptions.forEach(radio => {
-        radio.addEventListener('change', () => {
-          // Micro visual feedback if needed
-          const parentLabel = radio.closest('label');
-          if (parentLabel) {
-            parentLabel.classList.add('scale-[0.99]');
-            setTimeout(() => parentLabel.classList.remove('scale-[0.99]'), 150);
-          }
-        });
-      });
-    })();
-  </script>
+(function() {
+  const grid=document.getElementById('service-grid');
+  const nameEl=document.getElementById('selected-service-preview');
+  const priceEl=document.getElementById('selected-service-price');
+  const continueBtn=document.getElementById('continueToPetBtn');
+  const companionContainer=document.getElementById('companion-options');
+  const newPetBtn=document.getElementById('choose-new-pet');
+  const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+  const formatPrice=value=>'₹'+Number(value||0).toLocaleString('en-IN');
+  const iconFor=category=>({medical:'medical_services',grooming:'spa',training:'directions_walk',boarding:'night_shelter',sitting:'volunteer_activism'})[String(category||'').toLowerCase()]||'pets';
+  let services=[];
+  let selectedCompanion='none';
+  let selectedPet=null;
+  function setContinue(enabled){if(!continueBtn)return;continueBtn.disabled=!enabled;continueBtn.setAttribute('aria-disabled',String(!enabled));continueBtn.classList.toggle('opacity-50',!enabled);continueBtn.classList.toggle('cursor-not-allowed',!enabled);}
+  function updateContinueState(){
+    const hasServices=Boolean(grid?.querySelector('input[name="service-option"]:checked'));
+    const hasCompanion=Boolean(selectedPet||selectedCompanion==='new');
+    setContinue(hasServices&&hasCompanion);
+  }
+  function renderCompanions(){
+    if(!companionContainer||!window.PetPalsStore)return;
+    const pets=PetPalsStore.getPets()||[];
+    const active=PetPalsStore.getActiveBooking()||{};
+    selectedCompanion=active.companionChoice||'none';
+    selectedPet=pets.find(p=>String(p.id)===String(active.petId))||(active.petName?pets.find(p=>String(p.name||'').trim().toLowerCase()===String(active.petName).trim().toLowerCase()):null)||null;
+    if(selectedPet)selectedCompanion='pet';
+    if(selectedCompanion==='pet'&&!selectedPet)selectedCompanion='none';
+    companionContainer.innerHTML=pets.map(pet=>`<button data-pet-id="${escapeHtml(pet.id)}" type="button" class="flex-1 p-3 rounded-2xl ${selectedPet?.id===pet.id?'bg-secondary-container/30 ring-2 ring-primary-container':'bg-surface-container-low hover:bg-surface-container'} flex items-center gap-3 text-left transition-all">${(pet.photo||pet.avatar)?`<img alt="${escapeHtml(pet.name)}" class="w-12 h-12 rounded-xl object-cover shrink-0" src="${escapeHtml(pet.photo||pet.avatar)}"/>`:'<span class="w-12 h-12 rounded-xl bg-surface-container-highest text-secondary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-[24px]">pets</span></span>'}<span class="min-w-0"><span class="font-label-lg text-label-lg text-on-surface block truncate">${escapeHtml(pet.name)}</span><span class="font-body-sm text-on-surface-variant block truncate">${escapeHtml(pet.breed||pet.species||'Companion')}</span></span></button>`).join('');
+    companionContainer.querySelectorAll('[data-pet-id]').forEach(button=>button.addEventListener('click',()=>{const pet=pets.find(p=>String(p.id)===String(button.dataset.petId));if(pet)selectCompanion('pet',pet);}));
+    updateContinueState();
+  }
+  function selectCompanion(choice,pet=null){
+    selectedCompanion=choice;selectedPet=pet;
+    PetPalsStore.saveActiveBooking({companionChoice:choice,petId:pet?.id||null,petName:pet?.name||'',petBreed:pet?(pet.breed||pet.species||''):'',petAge:pet?.age||'',petWeight:pet?.weight||'',petAvatar:pet?.avatar||pet?.photo||'',petPhoto:pet?.photo||pet?.avatar||''});
+    renderCompanions();
+    updateContinueState();
+  }
+  function selectServices(){
+    const selected=Array.from(grid.querySelectorAll('input[name="service-option"]:checked')).map(input=>services.find(item=>String(item.id)===input.value)).filter(Boolean);
+    grid.querySelectorAll('input[name="service-option"]').forEach(input=>input.closest('label')?.classList.toggle('ring-2',input.checked));
+    grid.querySelectorAll('input[name="service-option"]').forEach(input=>input.closest('label')?.classList.toggle('ring-primary-container',input.checked));
+    if(!selected.length){if(nameEl)nameEl.textContent='Select a service';if(priceEl)priceEl.textContent='₹0';setContinue(false);return;}
+    const total=selected.reduce((sum,item)=>sum+(Number(item.priceNum)||0),0);
+    if(nameEl)nameEl.textContent=selected.length===1?selected[0].name:`${selected.length} services selected`;
+    if(priceEl)priceEl.textContent=formatPrice(total);
+    const primary=selected[0];
+    PetPalsStore.saveActiveBooking({services:selected.map(item=>({id:item.id,name:item.name,category:item.category,priceNum:Number(item.priceNum),price:formatPrice(item.priceNum),duration:item.duration||''})),serviceId:primary.id,service:selected.map(item=>item.name).join(', '),serviceName:selected.map(item=>item.name).join(', '),serviceCategory:selected.length===1?primary.category:'multiple',servicePrice:formatPrice(total),servicePriceNum:total,duration:selected.map(item=>item.duration).filter(Boolean).join(', '),selectedAddons:[],step1Addons:[],petStepAddons:[]});
+    const showSpa=selected.length===1&&String(primary.category).toLowerCase()==='grooming';
+    const addons=document.getElementById('spa-addons-panel');if(addons)addons.classList.toggle('hidden',!showSpa);
+    document.querySelectorAll('.booking-addon').forEach(input=>{if(!showSpa)input.checked=false;});
+    if(!showSpa)PetPalsStore.saveActiveBooking({step1Addons:[],selectedAddons:[]});
+    updateContinueState();
+  }
+  async function loadServices(){
+    if(!grid)return;
+    grid.innerHTML='<p class="font-body-sm text-body-sm text-outline">Loading available services…</p>';
+    try{
+      const response=await fetch('/api/services',{credentials:'same-origin',cache:'no-store'});if(!response.ok)throw new Error('Service list unavailable');
+      services=(await response.json()).filter(service=>service.active!==false);
+      grid.innerHTML=services.map(service=>`<label class="cursor-pointer group relative bg-surface-container-low hover:bg-surface-container p-4 rounded-2xl flex flex-col justify-between transition-all duration-200"><input class="sr-only peer" name="service-option" type="checkbox" value="${escapeHtml(service.id)}"/><div class="flex items-start justify-between mb-3"><div class="w-10 h-10 rounded-xl bg-surface-container-lowest flex items-center justify-center text-primary group-hover:scale-105 transition-transform"><span class="material-symbols-outlined text-[22px]">${iconFor(service.category)}</span></div><div class="flex items-center gap-1.5"><span class="font-label-sm text-label-sm font-semibold bg-surface-container-highest px-2 py-0.5 rounded-full text-on-surface-variant">${formatPrice(service.priceNum)}</span><span class="service-selected-check hidden w-4 h-4 rounded-full bg-primary-container text-on-primary items-center justify-center"><span class="material-symbols-outlined text-[12px] font-bold">check</span></span></div></div><div class="space-y-1"><h4 class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors">${escapeHtml(service.name)}</h4><p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">${escapeHtml(service.description||service.duration||'Professional pet care service.')}</p></div><div class="absolute inset-0 rounded-2xl pointer-events-none peer-checked:ring-2 peer-checked:ring-primary-container peer-checked:bg-primary-fixed/20 transition-all"></div></label>`).join('');
+      grid.querySelectorAll('input[name="service-option"]').forEach(input=>input.addEventListener('change',selectServices));
+      setContinue(false);
+    }catch(error){grid.innerHTML='<p class="font-body-sm text-body-sm text-error">Services could not be loaded. Please refresh and try again.</p>';setContinue(false);}
+  }
+  window.handleContinueToPet=function(){const active=PetPalsStore.getActiveBooking();if(!active?.serviceId||!active?.servicePriceNum||(!selectedPet&&selectedCompanion!=='new')){updateContinueState();return;}window.location.href='/book-service-pet';};
+  window.PetPalsStore?.resetActiveBooking();
+  if(nameEl)nameEl.textContent='Select a service';if(priceEl)priceEl.textContent='₹0';setContinue(false);
+  document.querySelectorAll('.booking-addon').forEach(input=>input.checked=false);
+  document.querySelectorAll('[data-location-type]').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('[data-location-type]').forEach(item=>item.classList.remove('bg-primary-container','text-on-primary'));button.classList.add('bg-primary-container','text-on-primary');const type=button.dataset.locationType;PetPalsStore.saveActiveBooking({locationType:type,location:type==='mobile'?'In-Home Concierge Van':'PetPals Flagship Spa & Wellness Lounge • Suite 4'});}));
+  newPetBtn?.addEventListener('click',()=>selectCompanion('new'));
+  document.querySelectorAll('.booking-addon').forEach(input=>input.addEventListener('change',()=>{const addons=Array.from(document.querySelectorAll('.booking-addon:checked')).map(item=>({name:item.dataset.name,price:Number(item.dataset.price)||0}));PetPalsStore.saveActiveBooking({step1Addons:addons,selectedAddons:addons});}));
+  window.addEventListener('petpals:pets-updated',renderCompanions);
+  renderCompanions();loadServices();
+})();
+</script>
 </div></main><footer class="w-full bg-surface-container-low border-t border-outline-variant/60 pt-16 pb-12"><div class="max-w-[1200px] mx-auto px-gutter"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-10 mb-12"><div class="space-y-space-md"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[28px] text-primary" style="font-variation-settings: 'FILL' 1;">pets</span><span class="font-headline-sm text-headline-sm text-primary tracking-tight">PetPals</span></div><p class="font-headline-sm text-title-md text-secondary italic">Caring for Every Paw, Every Day</p><p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">Happy pets. Healthy lives. We're here for every paw, every day.</p><div class="flex items-center gap-space-xs pt-space-xs"><a aria-label="Facebook" class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-primary-container hover:text-on-primary transition-colors" href="#"><span class="material-symbols-outlined text-[18px]">public</span></a><a aria-label="Instagram" class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-primary-container hover:text-on-primary transition-colors" href="#"><span class="material-symbols-outlined text-[18px]">photo_camera</span></a><a aria-label="X Twitter" class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-primary-container hover:text-on-primary transition-colors" href="#"><span class="material-symbols-outlined text-[18px]">tag</span></a><a aria-label="YouTube" class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-primary-container hover:text-on-primary transition-colors" href="#"><span class="material-symbols-outlined text-[18px]">smart_display</span></a></div></div><div><h3 class="font-title-md text-title-md text-on-surface mb- space-md">Quick Links</h3><ul class="space-y-2.5 font-body-md text-body-md text-on-surface-variant"><li><a class="hover:text-primary transition-colors" data-path="home" href="#">Home</a></li><li><a class="hover:text-primary transition-colors" data-path="about-us" href="#">About Us</a></li><li><a class="hover:text-primary transition-colors" data-path="contact" href="#">Contact</a></li><li><a class="hover:text-primary transition-colors" data-path="faqs" href="#">FAQs</a></li><li><a class="hover:text-primary transition-colors" data-path="careers" href="#">Careers</a></li></ul></div><div><h3 class="font-title-md text-title-md text-on-surface mb-space-md">Pet Services</h3><ul class="space-y-2.5 font-body-md text-body-md text-on-surface-variant"><li><a class="hover:text-primary transition-colors" data-path="pet-medical" href="#">Veterinary Care</a></li><li><a class="hover:text-primary transition-colors" data-path="pet-care" href="#">Pet Boarding</a></li><li><a class="hover:text-primary transition-colors" data-path="pet-care" href="#">Dog Walking</a></li><li><a class="hover:text-primary transition-colors" data-path="pet-care" href="#">Grooming &amp; Spa</a></li><li><a class="hover:text-primary transition-colors" data-path="pet-care" href="#">Pet Training</a></li><li><a class="hover:text-primary transition-colors" data-path="pet-care" href="#">Pet Sitting</a></li></ul></div><div class="space-y-space-md"><h3 class="font-title-md text-title-md text-on-surface">Contact Us</h3><div class="space-y-3 font-body-md text-body-md text-on-surface-variant"><div class="flex items-start gap-space-xs"><span class="material-symbols-outlined text-primary text-[20px] mt-0.5">call</span><span>+1 (800) 555-PALS</span></div><div class="flex items-start gap-space-xs"><span class="material-symbols-outlined text-primary text-[20px] mt-0.5">mail</span><span>hello@petpals.com</span></div><div class="flex items-start gap-space-xs"><span class="material-symbols-outlined text-primary text-[20px] mt-0.5">location_on</span><span>124 Blossom Lane, Suite 200, San Francisco, CA</span></div></div></div></div><div class="pt-8 border-t border-outline-variant/40 flex flex-col md:flex-row items-center justify-between gap-4 font-body-sm text-body-sm text-on-surface-variant"><p>© 2025 PetPals Inc. All rights reserved. Caring for Every Paw, Every Day.</p><div class="flex items-center gap-space-md"><a class="hover:text-on-surface transition-colors" data-path="privacy-policy" href="#">Privacy Policy</a><span class="text-outline-variant">•</span><a class="hover:text-on-surface transition-colors" data-path="terms-of-service" href="#">Terms of Service</a></div></div></div></footer>
 <script>
 (function() {
@@ -419,45 +360,5 @@
 })();
 </script>
 
-<script>
-(function() {
-  const serviceDetails = {
-    'veterinary': { service: 'Veterinary Care & Health Check', serviceCategory: 'medical', servicePrice: '$65.00', duration: '45 min' },
-    'grooming': { service: 'Grooming & Spa Experience', serviceCategory: 'grooming', servicePrice: '$45.00', duration: '75 min' },
-    'walking': { service: 'Dog Walking (60 mins)', serviceCategory: 'training', servicePrice: '$25.00', duration: '60 min' },
-    'boarding': { service: 'Sanctuary Pet Boarding', serviceCategory: 'boarding', servicePrice: '$75.00', duration: 'Overnight' },
-    'training': { service: 'Puppy & Companion Training', serviceCategory: 'training', servicePrice: '$50.00', duration: '60 min' },
-    'dental': { service: 'Preventative Dental Scaling', serviceCategory: 'medical', servicePrice: '$40.00', duration: '30 min' }
-  };
 
-  window.handleContinueToPet = function() {
-    const checked = document.querySelector('input[name="service-option"]:checked')?.value || 'grooming';
-    if (window.PetPalsStore && serviceDetails[checked]) {
-      PetPalsStore.saveActiveBooking(serviceDetails[checked]);
-    }
-    window.location.href = '/book-service-pet';
-  };
-
-  // Booking flow navigation
-  document.querySelectorAll('button, a').forEach(el => {
-    const text = (el.textContent || '').trim().toLowerCase();
-    if (text.includes('continue to pet detail')) {
-      el.addEventListener('click', (e) => {
-        e.preventDefault();
-        window.handleContinueToPet();
-      });
-    } else if (text.includes('back to service') || text === 'cancel') {
-      el.addEventListener('click', () => { window.location.href = '/services'; });
-    }
-  });
-  
-  // Close/X buttons -> go back
-  document.querySelectorAll('button[aria-label*="Close"], button[aria-label*="close"]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      if (window.history.length > 1) history.back();
-      else window.location.href = '/services';
-    });
-  });
-})();
-</script>
 </body></html>

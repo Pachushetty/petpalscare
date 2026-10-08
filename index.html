@@ -77,6 +77,12 @@
       <!-- Form -->
       <form id="login-form" class="space-y-3">
 
+        <!-- Success alert -->
+        <div id="login-success-alert" class="hidden p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2">
+          <span class="material-symbols-outlined text-emerald-600 text-base shrink-0">check_circle</span>
+          <span id="login-success-text">Account created successfully! Please sign in.</span>
+        </div>
+
         <!-- Error alert -->
         <div id="login-error-alert" class="hidden p-2.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2">
           <span class="material-symbols-outlined text-red-600 text-base shrink-0">error</span>
@@ -137,6 +143,7 @@
         <span class="material-symbols-outlined" style="font-size:12px;">verified_user</span>
         Secure &amp; private veterinary access
       </span>
+      <p class="text-[10px] text-outline mt-2">Administrator? <a href="/admin/login" class="text-primary font-semibold hover:underline">Admin sign in</a></p>
     </div>
   </div>
 
@@ -169,6 +176,18 @@
         if (errorAlert) {
           errorAlert.classList.add('hidden');
         }
+      }
+
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('registered') === 'true') {
+        const successAlert = document.getElementById('login-success-alert');
+        if (successAlert) successAlert.classList.remove('hidden');
+      }
+      if (urlParams.get('switch') === 'true') {
+        try {
+          localStorage.clear();
+          sessionStorage.clear();
+        } catch (e) {}
       }
 
       if (form) {
@@ -213,14 +232,10 @@
               return;
             }
 
-            // Check if switching accounts and clear prior user cache
+            // Clean old cache before logging into this account
             try {
-              const currentSavedUser = JSON.parse(localStorage.getItem('petpals_user') || '{}');
-              if (currentSavedUser.id && data.user && currentSavedUser.id !== data.user.id) {
-                localStorage.removeItem('petpals_pets');
-                localStorage.removeItem('petpals_bookings');
-                localStorage.removeItem('petpals_active_booking');
-              }
+              localStorage.clear();
+              sessionStorage.clear();
             } catch (e) {}
 
             // Successfully authenticated with backend PostgreSQL session
@@ -233,7 +248,7 @@
             if (window.PetPalsStore) {
               window.PetPalsStore.login(data.user, data.token);
             }
-            window.location.href = '/dashboard?session_token=' + encodeURIComponent(data.token || '');
+            window.location.href = '/dashboard';
           } catch (err) {
             submitBtn.disabled = false;
             submitBtn.innerHTML = originalBtnHtml;

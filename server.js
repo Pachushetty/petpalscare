@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const path = require('path');
+const { spawn } = require('child_process');
 const fs = require('fs');
 const bcrypt = require('bcryptjs');
 require('dotenv').config();
@@ -31,6 +32,30 @@ function setSessionCookie(req, res, token) {
     path: '/',
     maxAge: 7 * 24 * 60 * 60 * 1000
   });
+}
+
+function clearSessionCookie(req, res) {
+  const isHttps = req.secure || req.headers['x-forwarded-proto'] === 'https';
+  res.clearCookie('petpals_session', { path: '/' });
+  res.clearCookie('petpals_session', { path: '/', secure: isHttps, sameSite: isHttps ? 'none' : 'lax' });
+  res.cookie('petpals_session', '', { path: '/', expires: new Date(0), maxAge: 0 });
+}
+
+function setAdminSessionCookie(req, res, token) {
+  const isHttps = req.secure || req.headers['x-forwarded-proto'] === 'https';
+  res.cookie('petpals_admin_session', token, {
+    httpOnly: true, secure: isHttps, sameSite: isHttps ? 'none' : 'lax',
+    path: '/', maxAge: 7 * 24 * 60 * 60 * 1000
+  });
+}
+
+function clearAdminSessionCookie(req, res) {
+  const isHttps = req.secure || req.headers['x-forwarded-proto'] === 'https';
+  res.clearCookie('petpals_admin_session', { path: '/', secure: isHttps, sameSite: isHttps ? 'none' : 'lax' });
+}
+
+async function getAuthAdmin(req) {
+  return db.getAdminSession(req.cookies?.petpals_admin_session);
 }
 
 // Helper to extract authenticated user from session token (Cookie, Bearer header, X-Session-Token, or query)
@@ -180,11 +205,17 @@ app.post('/api/auth/login', async (req, res) => {
 
 app.post('/api/auth/logout', async (req, res) => {
   try {
-    const token = req.cookies?.petpals_session || req.headers['x-session-token'];
-    if (token) {
+    const tokens = [
+      req.cookies?.petpals_session,
+      req.headers['x-session-token'],
+      req.headers.authorization?.startsWith('Bearer ') ? req.headers.authorization.slice(7) : null,
+      req.body?.token
+    ].filter(Boolean);
+
+    for (const token of tokens) {
       await db.deleteSession(token);
     }
-    res.clearCookie('petpals_session', { path: '/' });
+    clearSessionCookie(req, res);
     res.json({ success: true, message: 'Logged out successfully' });
   } catch (err) {
     console.error('Logout error:', err);
@@ -284,11 +315,38 @@ app.post('/api/admin/login', async (req, res) => {
       return res.status(401).json({ error: 'Invalid admin credentials' });
     }
 
+    const session = await db.createAdminSession(admin.id);
+    setAdminSessionCookie(req, res, session.token);
     const { password_hash, ...safeAdmin } = admin;
+    safeAdmin.name = 'Admin';
     res.json({ success: true, admin: safeAdmin });
   } catch (err) {
     console.error('Admin login error:', err);
     res.status(500).json({ error: 'Admin login failed' });
+  }
+});
+
+app.get('/api/admin/me', async (req, res) => {
+  try {
+    const admin = await getAuthAdmin(req);
+    if (!admin) return res.status(401).json({ error: 'Admin authentication required.' });
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    const settings = await db.getAdminSettings();
+    res.json({ id: admin.id, name: 'Admin', email: settings.adminEmail || admin.email, role: admin.role, avatar: admin.avatar || null });
+  } catch (err) {
+    console.error('Get admin identity error:', err);
+    res.status(500).json({ error: 'Failed to load Admin identity' });
+  }
+});
+
+app.post('/api/admin/logout', async (req, res) => {
+  try {
+    await db.deleteAdminSession(req.cookies?.petpals_admin_session);
+    clearAdminSessionCookie(req, res);
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Admin logout error:', err);
+    res.status(500).json({ error: 'Failed to sign out' });
   }
 });
 
@@ -297,6 +355,7 @@ app.get('/api/pets', async (req, res) => {
   try {
     const isAdmin = req.query.admin === 'true';
     if (isAdmin) {
+      if (!await getAuthAdmin(req)) return res.status(401).json({ error: 'Admin authentication required.' });
       const allPets = await db.getAllPets();
       return res.json(allPets);
     }
@@ -334,7 +393,9 @@ app.put('/api/pets/:id', async (req, res) => {
     const petId = req.params.id;
     const isAdmin = req.query.admin === 'true';
     let userId = null;
-    if (!isAdmin) {
+    if (isAdmin) {
+      if (!await getAuthAdmin(req)) return res.status(401).json({ error: 'Admin authentication required.' });
+    } else {
       const user = await getAuthUser(req);
       if (!user) {
         return res.status(401).json({ error: 'Authentication required. Please log in.' });
@@ -357,14 +418,17 @@ app.delete('/api/pets/:id', async (req, res) => {
     const petId = req.params.id;
     const isAdmin = req.query.admin === 'true';
     let userId = null;
-    if (!isAdmin) {
+    if (isAdmin) {
+      if (!await getAuthAdmin(req)) return res.status(401).json({ error: 'Admin authentication required.' });
+    } else {
       const user = await getAuthUser(req);
       if (!user) {
         return res.status(401).json({ error: 'Authentication required. Please log in.' });
       }
       userId = user.id;
     }
-    await db.deletePet(petId, userId);
+    const deleted = await db.deletePet(petId, userId);
+    if (!deleted) return res.status(404).json({ error: 'Pet not found or unauthorized' });
     res.json({ success: true, message: 'Pet removed' });
   } catch (err) {
     console.error('Delete pet error:', err);
@@ -375,7 +439,9 @@ app.delete('/api/pets/:id', async (req, res) => {
 // --- SERVICES APIS ---
 app.get('/api/services', async (req, res) => {
   try {
-    const onlyActive = req.query.all !== 'true';
+    const includeInactive = req.query.all === 'true';
+    if (includeInactive && !await getAuthAdmin(req)) return res.status(401).json({ error: 'Admin authentication required.' });
+    const onlyActive = !includeInactive;
     const services = await db.getAllServices(onlyActive);
     res.json(services);
   } catch (err) {
@@ -386,6 +452,7 @@ app.get('/api/services', async (req, res) => {
 
 app.post('/api/services', async (req, res) => {
   try {
+    if (!await getAuthAdmin(req)) return res.status(401).json({ error: 'Admin authentication required.' });
     if (!req.body.name) {
       return res.status(400).json({ error: 'Service name is required' });
     }
@@ -399,6 +466,7 @@ app.post('/api/services', async (req, res) => {
 
 app.put('/api/services/:id', async (req, res) => {
   try {
+    if (!await getAuthAdmin(req)) return res.status(401).json({ error: 'Admin authentication required.' });
     const updated = await db.updateService(req.params.id, req.body);
     if (!updated) return res.status(404).json({ error: 'Service not found' });
     res.json(updated);
@@ -410,6 +478,7 @@ app.put('/api/services/:id', async (req, res) => {
 
 app.delete('/api/services/:id', async (req, res) => {
   try {
+    if (!await getAuthAdmin(req)) return res.status(401).json({ error: 'Admin authentication required.' });
     await db.deleteService(req.params.id);
     res.json({ success: true, message: 'Service removed' });
   } catch (err) {
@@ -418,11 +487,83 @@ app.delete('/api/services/:id', async (req, res) => {
   }
 });
 
+// --- SPECIALISTS / GROOMERS APIS ---
+app.get('/api/specialists', async (req, res) => {
+  try {
+    if (req.query.all === 'true' && !await getAuthAdmin(req)) return res.status(401).json({ error: 'Admin authentication required.' });
+    res.json(await db.getSpecialists(req.query.all !== 'true'));
+  } catch (err) {
+    console.error('Get specialists error:', err);
+    res.status(500).json({ error: 'Failed to fetch specialists' });
+  }
+});
+
+app.post('/api/specialists', async (req, res) => {
+  try {
+    if (!await getAuthAdmin(req)) return res.status(401).json({ error: 'Admin authentication required.' });
+    const { name, specialization, rating, sessions, availability, photo, active } = req.body || {};
+    if (!String(name || '').trim() || !String(specialization || '').trim()) {
+      return res.status(400).json({ error: 'Name and specialization are required' });
+    }
+    if (photo && (!/^data:image\/(png|jpeg|webp|gif);base64,/i.test(photo) || photo.length > 7_000_000)) {
+      return res.status(400).json({ error: 'Photo must be an image smaller than 5 MB' });
+    }
+    const created = await db.createSpecialist({ name, specialization, rating, sessions, availability, photo, active });
+    res.status(201).json(created);
+  } catch (err) {
+    console.error('Create specialist error:', err);
+    res.status(500).json({ error: 'Failed to create specialist' });
+  }
+});
+
+app.put('/api/specialists/:id', async (req, res) => {
+  try {
+    if (!await getAuthAdmin(req)) return res.status(401).json({ error: 'Admin authentication required.' });
+    if (req.body?.photo && (!/^data:image\/(png|jpeg|webp|gif);base64,/i.test(req.body.photo) || req.body.photo.length > 7_000_000)) {
+      return res.status(400).json({ error: 'Photo must be an image smaller than 5 MB' });
+    }
+    const updated = await db.updateSpecialist(req.params.id, req.body || {});
+    if (!updated) return res.status(404).json({ error: 'Specialist not found' });
+    res.json(updated);
+  } catch (err) {
+    console.error('Update specialist error:', err);
+    res.status(500).json({ error: 'Failed to update specialist' });
+  }
+});
+
+app.delete('/api/specialists/:id', async (req, res) => {
+  try {
+    if (!await getAuthAdmin(req)) return res.status(401).json({ error: 'Admin authentication required.' });
+    await db.deleteSpecialist(req.params.id);
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Delete specialist error:', err);
+    res.status(500).json({ error: 'Failed to delete specialist' });
+  }
+});
+
 // --- BOOKINGS APIS ---
+app.get('/api/bookings/availability', async (req, res) => {
+  try {
+    const user = await getAuthUser(req);
+    if (!user) return res.status(401).json({ error: 'Authentication required. Please log in.' });
+    if (!db.isPostgresConnected()) return res.status(503).json({ error: 'Booking availability requires PostgreSQL.' });
+    const date = String(req.query.date || '');
+    const specialistId = req.query.specialistId ? String(req.query.specialistId) : null;
+    const unavailable = await db.getUnavailableBookingTimes(date, specialistId);
+    res.set('Cache-Control', 'no-store');
+    res.json({ date, unavailable });
+  } catch (err) {
+    res.status(err.statusCode || 400).json({ error: err.message || 'Failed to load availability' });
+  }
+});
+
 app.get('/api/bookings', async (req, res) => {
   try {
     const isAdmin = req.query.admin === 'true';
     if (isAdmin) {
+      if (!await getAuthAdmin(req)) return res.status(401).json({ error: 'Admin authentication required.' });
+      if (!db.isPostgresConnected()) return res.status(503).json({ error: 'Booking data requires PostgreSQL.' });
       const allBookings = await db.getAllBookings();
       return res.json(allBookings);
     }
@@ -430,6 +571,7 @@ app.get('/api/bookings', async (req, res) => {
     if (!user) {
       return res.status(401).json({ error: 'Authentication required. Please log in.' });
     }
+    if (!db.isPostgresConnected()) return res.status(503).json({ error: 'Booking data requires PostgreSQL.' });
     const bookings = await db.getBookingsByUserId(user.id);
     res.json(bookings);
   } catch (err) {
@@ -444,16 +586,26 @@ app.post('/api/bookings', async (req, res) => {
     if (!user) {
       return res.status(401).json({ error: 'Authentication required. Please log in.' });
     }
-    const booking = await db.createBooking(req.body, user.id);
+    if (!db.isPostgresConnected()) return res.status(503).json({ error: 'Booking creation requires PostgreSQL.' });
+    const serviceIds = Array.isArray(req.body.serviceIds) ? [...new Set(req.body.serviceIds.filter(Boolean))] : [];
+    if (serviceIds.length > 1) {
+      const bookings = [];
+      for (let index = 0; index < serviceIds.length; index += 1) {
+        bookings.push(await db.createBooking({ ...req.body, serviceId: serviceIds[index] }, user.id, { skipAvailabilityCheck: index > 0 }));
+      }
+      return res.status(201).json(bookings);
+    }
+    const booking = await db.createBooking({ ...req.body, serviceId: serviceIds[0] || req.body.serviceId }, user.id);
     res.status(201).json(booking);
   } catch (err) {
     console.error('Create booking error:', err);
-    res.status(500).json({ error: 'Failed to book service' });
+    res.status(err.statusCode || 500).json({ error: err.statusCode ? err.message : 'Failed to book service' });
   }
 });
 
 app.put('/api/bookings/:id/status', async (req, res) => {
   try {
+    if (!await getAuthAdmin(req)) return res.status(401).json({ error: 'Admin authentication required.' });
     const { status, notes } = req.body;
     if (!status) return res.status(400).json({ error: 'Status is required' });
     const updated = await db.updateBookingStatus(req.params.id, status, notes);
@@ -469,6 +621,7 @@ app.put('/api/bookings/:id/status', async (req, res) => {
 app.get('/api/reviews', async (req, res) => {
   try {
     const onlyApproved = req.query.admin !== 'true';
+    if (!onlyApproved && !await getAuthAdmin(req)) return res.status(401).json({ error: 'Admin authentication required.' });
     const reviews = await db.getAllReviews(onlyApproved);
     res.json(reviews);
   } catch (err) {
@@ -477,22 +630,32 @@ app.get('/api/reviews', async (req, res) => {
   }
 });
 
+app.get('/api/reviews/mine', async (req, res) => {
+  try {
+    const user = await getAuthUser(req);
+    if (!user) return res.status(401).json({ error: 'Authentication required.' });
+    res.set('Cache-Control', 'no-store');
+    res.json(await db.getReviewsByUserId(user.id));
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch your reviews.' });
+  }
+});
+
 app.post('/api/reviews', async (req, res) => {
   try {
-    const userId = await getAuthUserId(req);
-    if (!req.body.comment) {
-      return res.status(400).json({ error: 'Comment is required' });
-    }
-    const created = await db.createReview(req.body, userId);
+    const user = await getAuthUser(req);
+    if (!user) return res.status(401).json({ error: 'Authentication required.' });
+    const created = await db.createReview(req.body || {}, user.id, user);
     res.status(201).json(created);
   } catch (err) {
     console.error('Create review error:', err);
-    res.status(500).json({ error: 'Failed to save review' });
+    res.status(err.statusCode || 500).json({ error: err.statusCode ? err.message : 'Failed to save review' });
   }
 });
 
 app.put('/api/reviews/:id', async (req, res) => {
   try {
+    if (!await getAuthAdmin(req)) return res.status(401).json({ error: 'Admin authentication required.' });
     const updated = await db.updateReview(req.params.id, req.body);
     if (!updated) return res.status(404).json({ error: 'Review not found' });
     res.json(updated);
@@ -504,6 +667,7 @@ app.put('/api/reviews/:id', async (req, res) => {
 
 app.delete('/api/reviews/:id', async (req, res) => {
   try {
+    if (!await getAuthAdmin(req)) return res.status(401).json({ error: 'Admin authentication required.' });
     await db.deleteReview(req.params.id);
     res.json({ success: true, message: 'Review removed' });
   } catch (err) {
@@ -515,6 +679,7 @@ app.delete('/api/reviews/:id', async (req, res) => {
 // --- MESSAGES / INQUIRIES APIS ---
 app.get('/api/messages', async (req, res) => {
   try {
+    if (!await getAuthAdmin(req)) return res.status(401).json({ error: 'Admin authentication required.' });
     const messages = await db.getAllMessages();
     res.json(messages);
   } catch (err) {
@@ -539,6 +704,7 @@ app.post('/api/messages', async (req, res) => {
 
 app.post('/api/messages/:id/reply', async (req, res) => {
   try {
+    if (!await getAuthAdmin(req)) return res.status(401).json({ error: 'Admin authentication required.' });
     const { reply } = req.body;
     if (!reply) return res.status(400).json({ error: 'Reply text is required' });
     const updated = await db.replyMessage(req.params.id, reply);
@@ -553,6 +719,7 @@ app.post('/api/messages/:id/reply', async (req, res) => {
 // --- ADMIN STATS, USERS & SETTINGS ---
 app.get('/api/admin/stats', async (req, res) => {
   try {
+    if (!await getAuthAdmin(req)) return res.status(401).json({ error: 'Admin authentication required.' });
     const stats = await db.getAdminStats();
     res.json(stats);
   } catch (err) {
@@ -563,6 +730,7 @@ app.get('/api/admin/stats', async (req, res) => {
 
 app.get('/api/admin/users', async (req, res) => {
   try {
+    if (!await getAuthAdmin(req)) return res.status(401).json({ error: 'Admin authentication required.' });
     const users = await db.getAllUsers();
     res.json(users);
   } catch (err) {
@@ -573,6 +741,7 @@ app.get('/api/admin/users', async (req, res) => {
 
 app.get('/api/admin/settings', async (req, res) => {
   try {
+    if (!await getAuthAdmin(req)) return res.status(401).json({ error: 'Admin authentication required.' });
     const settings = await db.getAdminSettings();
     res.json(settings);
   } catch (err) {
@@ -583,6 +752,7 @@ app.get('/api/admin/settings', async (req, res) => {
 
 app.put('/api/admin/settings', async (req, res) => {
   try {
+    if (!await getAuthAdmin(req)) return res.status(401).json({ error: 'Admin authentication required.' });
     const saved = await db.saveAdminSettings(req.body);
     res.json(saved);
   } catch (err) {
@@ -613,6 +783,7 @@ const PAGE_ROUTES = {
   '/my-bookings': 'my-bookings.html',
   '/bookings-pet-dashboard': 'bookings-pet-dashboard.html',
   '/profile': 'profile.html',
+  '/admin/login': 'admin-login.html',
   '/admin': 'admin.html',
   '/admin/dashboard': 'admin.html',
   '/admin/bookings': 'admin.html',
@@ -642,6 +813,7 @@ const PROTECTED_ROUTES = new Set([
 ]);
 
 const PROTECTED_HTML_FILES = new Set([
+  'admin.html',
   'dashboard.html',
   'my-pets.html',
   'my-bookings.html',
@@ -662,11 +834,25 @@ Object.keys(PAGE_ROUTES).forEach(route => {
       setSessionCookie(req, res, qToken);
     }
 
+    if (route === '/admin/login') {
+      if (await getAuthAdmin(req)) return res.redirect('/admin/dashboard');
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+      return res.sendFile(path.join(PUBLIC_DIR, PAGE_ROUTES[route]));
+    }
+    if (route === '/admin') {
+      return res.redirect(await getAuthAdmin(req) ? '/admin/dashboard' : '/admin/login');
+    }
+    if (route.startsWith('/admin/')) {
+      if (!await getAuthAdmin(req)) return res.redirect('/admin/login');
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    }
+
     if (PROTECTED_ROUTES.has(route)) {
       const user = await getAuthUser(req);
       if (!user) {
         return res.redirect('/login');
       }
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     } else if ((route === '/login' || route === '/register') && req.query.switch !== 'true') {
       const user = await getAuthUser(req);
       if (user) {
@@ -681,6 +867,11 @@ Object.keys(PAGE_ROUTES).forEach(route => {
 app.use(async (req, res, next) => {
   const cleanPath = req.path.replace(/^\/+/, '');
   if (PROTECTED_HTML_FILES.has(cleanPath)) {
+    if (cleanPath === 'admin.html') {
+      if (!await getAuthAdmin(req)) return res.redirect('/admin/login');
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+      return next();
+    }
     const qToken = req.query.session_token || req.query.token;
     if (qToken) {
       setSessionCookie(req, res, qToken);
@@ -689,6 +880,7 @@ app.use(async (req, res, next) => {
     if (!user) {
       return res.redirect('/login');
     }
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
   }
   next();
 });
@@ -704,12 +896,18 @@ app.use(async (req, res) => {
   const candidate = path.join(PUBLIC_DIR, cleanPath + '.html');
   if (fs.existsSync(candidate)) {
     if (PROTECTED_HTML_FILES.has(cleanPath + '.html')) {
+      if (cleanPath + '.html' === 'admin.html') {
+        if (!await getAuthAdmin(req)) return res.redirect('/admin/login');
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+        return res.sendFile(candidate);
+      }
       const qToken = req.query.session_token || req.query.token;
       if (qToken) {
         setSessionCookie(req, res, qToken);
       }
       const user = await getAuthUser(req);
       if (!user) return res.redirect('/login');
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     }
     return res.sendFile(candidate);
   }
@@ -720,8 +918,23 @@ app.use(async (req, res) => {
 async function startServer() {
   await db.initDatabase();
   app.listen(PORT, '0.0.0.0', () => {
-    console.log(`PetPals Care Portal running at http://0.0.0.0:${PORT}`);
+    console.log(`PetPals Care Portal running at http://localhost:${PORT}`);
     console.log(`Database engine: ${db.isPostgresConnected() ? 'PostgreSQL (Cloud / Remote)' : 'Local persistence (awaiting DATABASE_URL)'}`);
+    if (process.env.npm_lifecycle_event === 'start') {
+      const url = `http://localhost:${PORT}/`;
+      const launchers = process.platform === 'win32'
+        ? ['cmd', ['/c', 'start', '', url]]
+        : process.platform === 'darwin'
+          ? ['open', [url]]
+          : ['xdg-open', [url]];
+      const browser = spawn(launchers[0], launchers[1], {
+        detached: true,
+        stdio: 'ignore',
+        windowsHide: true
+      });
+      browser.on('error', err => console.warn('Could not open the default browser:', err.message));
+      browser.unref();
+    }
   });
 }
 

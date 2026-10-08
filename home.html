@@ -404,83 +404,7 @@
 <h2 class="font-headline-lg text-headline-lg text-on-surface">What Our Customers Say</h2>
 <p class="font-body-md text-body-md text-on-surface-variant">Real stories from dedicated pet parents who trust PetPals every week.</p>
 </div>
-<!-- 3 Testimonial Cards -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-<!-- Review 1 -->
-<div class="bg-surface-container-lowest rounded-2xl p-7 shadow-sm flex flex-col justify-between space-y-4">
-<div class="space-y-3">
-<!-- 5 Amber Stars -->
-<div class="flex items-center gap-1 text-[#E09F3E]">
-<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">star</span>
-<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">star</span>
-<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">star</span>
-<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">star</span>
-<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">star</span>
-</div>
-<p class="font-body-md text-body-md text-on-surface leading-relaxed italic">
-              "Amazing service! My cat was treated like royalty and came back calm and content. The daily photo updates gave our family complete peace of mind while away."
-            </p>
-</div>
-<div class="flex items-center gap-3 pt-4 border-t border-outline-variant/30">
-<div class="w-11 h-11 rounded-full bg-secondary-fixed flex items-center justify-center font-bold text-primary text-title-md">
-              P
-            </div>
-<div>
-<h4 class="font-title-md text-title-md text-on-surface leading-snug">Priya S.</h4>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Cat Owner (Milo)</p>
-</div>
-</div>
-</div>
-<!-- Review 2 -->
-<div class="bg-surface-container-lowest rounded-2xl p-7 shadow-sm flex flex-col justify-between space-y-4">
-<div class="space-y-3">
-<div class="flex items-center gap-1 text-[#E09F3E]">
-<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">star</span>
-<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">star</span>
-<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">star</span>
-<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">star</span>
-<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">star</span>
-</div>
-<p class="font-body-md text-body-md text-on-surface leading-relaxed italic">
-              "The grooming service is phenomenal. My retriever looks radiant and his coat feels so silky! The staff handled him with such gentle patience."
-            </p>
-</div>
-<div class="flex items-center gap-3 pt-4 border-t border-outline-variant/30">
-<div class="w-11 h-11 rounded-full bg-secondary-fixed flex items-center justify-center font-bold text-primary text-title-md">
-              R
-            </div>
-<div>
-<h4 class="font-title-md text-title-md text-on-surface leading-snug">Rahul K.</h4>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Dog Owner (Leo)</p>
-</div>
-</div>
-</div>
-<!-- Review 3 -->
-<div class="bg-surface-container-lowest rounded-2xl p-7 shadow-sm flex flex-col justify-between space-y-4">
-<div class="space-y-3">
-<div class="flex items-center gap-1 text-[#E09F3E]">
-<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">star</span>
-<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">star</span>
-<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">star</span>
-<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">star</span>
-<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">star</span>
-</div>
-<p class="font-body-md text-body-md text-on-surface leading-relaxed italic">
-              "Extremely professional, communicative and loving team. Whenever I take work trips, I know PetPals is the only team I can wholeheartedly trust."
-            </p>
-</div>
-<div class="flex items-center gap-3 pt-4 border-t border-outline-variant/30">
-<div class="w-11 h-11 rounded-full bg-secondary-fixed flex items-center justify-center font-bold text-primary text-title-md">
-              S
-            </div>
-<div>
-<h4 class="font-title-md text-title-md text-on-surface leading-snug">Sneha M.</h4>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Dog Owner (Coco)</p>
-</div>
-</div>
-</div>
-</div>
-</div>
+<div id="customer-reviews-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
 </section>
 <!-- SECTION 7: CALL TO ACTION BANNER -->
 <section class="w-full pb-20 lg:pb-28 pt-6 bg-surface">
@@ -595,5 +519,8 @@
   document.addEventListener('DOMContentLoaded', initHomeNav);
   initHomeNav();
 })();
+</script>
+<script>
+(async()=>{const box=document.getElementById("customer-reviews-grid");if(!box)return;const esc=v=>String(v??"").replace(/[&<>"\']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","\'":"&#39;"}[c]));try{const response=await fetch("/api/reviews",{cache:"no-store"});if(!response.ok)throw new Error();const reviews=await response.json();box.innerHTML=reviews.map(r=>`<article class="bg-surface-container-lowest rounded-2xl p-7 shadow-sm flex flex-col justify-between space-y-4"><div class="space-y-3"><div class="flex items-center gap-1 text-[#E09F3E]" aria-label="${Number(r.rating)} out of 5 stars">${"★".repeat(Number(r.rating)||0)}${"☆".repeat(5-(Number(r.rating)||0))}</div><p class="font-body-md text-body-md text-on-surface leading-relaxed italic">“${esc(r.comment)}”</p></div><div class="flex items-center justify-between gap-3 pt-4 border-t border-outline-variant/30"><div><h4 class="font-title-md text-title-md text-on-surface leading-snug">${esc(r.userName)}</h4><p class="font-body-sm text-body-sm text-on-surface-variant">${esc(r.pet)} • ${esc(r.service)}</p></div>${r.featured?'<span class="px-2 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-semibold">Featured</span>':''}</div></article>`).join("");}catch{box.innerHTML="";}})();
 </script>
 </body></html>

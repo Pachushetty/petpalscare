@@ -81,7 +81,7 @@
 </div>
 <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm shadow-sm">
 <span class="w-2 h-2 rounded-full bg-primary"></span>
-<span>Selected: <strong class="text-on-surface font-semibold" id="bsp-service-title">Grooming &amp; Spa</strong> (<span id="bsp-service-price">$45</span>)</span>
+<span>Selected: <strong class="text-on-surface font-semibold" id="bsp-service-title">Select a service</strong> (<span id="bsp-service-price">—</span>)</span>
 </div>
 </div>
 <!-- 1. Pet Profiles Grid -->
@@ -91,55 +91,12 @@
 <span class="font-body-sm text-body-sm text-on-surface-variant">Select profile or register newcomer</span>
 </div>
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="petSelector">
-<!-- Milo (Selected) -->
-<div class="relative bg-surface-container-low p-4 rounded-DEFAULT shadow-md cursor-pointer transition-all hover:shadow-lg flex flex-col justify-between" id="pet-milo">
-<div class="absolute top-3 right-3 w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center">
-<span class="material-symbols-outlined text-[16px]">check</span>
-</div>
-<div class="flex items-center gap-3 mb-3">
-<div class="w-12 h-12 rounded-full bg-secondary-fixed flex items-center justify-center shrink-0 shadow-inner">
-<span class="material-symbols-outlined text-secondary text-[26px]" style="font-variation-settings: 'FILL' 1;">sound_detection_dog_barking</span>
-</div>
-<div>
-<h4 class="font-title-md text-title-md text-on-surface leading-tight">Milo</h4>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Golden Retriever</p>
-</div>
-</div>
-<div class="pt-3 flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm bg-surface-container-lowest/80 px-2.5 py-1 rounded-full">
-<span>Dog • 3 yrs</span>
-<span class="font-semibold text-primary">32 kg</span>
-</div>
-</div>
-<!-- Luna (Unselected) -->
-<div class="relative bg-surface-container-lowest p-4 rounded-DEFAULT shadow-sm cursor-pointer transition-all hover:bg-surface-container-low hover:shadow-md flex flex-col justify-between" id="pet-luna">
-<div class="flex items-center gap-3 mb-3">
-<div class="w-12 h-12 rounded-full bg-surface-container-highest flex items-center justify-center shrink-0">
-<span class="material-symbols-outlined text-on-surface-variant text-[24px]">pets</span>
-</div>
-<div>
-<h4 class="font-title-md text-title-md text-on-surface leading-tight">Luna</h4>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Domestic Short-hair</p>
-</div>
-</div>
-<div class="pt-3 flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm bg-surface-container-low px-2.5 py-1 rounded-full">
-<span>Cat • 2 yrs</span>
-<span class="font-semibold">4.5 kg</span>
-</div>
-</div>
-<!-- Add New Pet Card -->
-<button class="group p-4 rounded-DEFAULT bg-surface-container-low/50 hover:bg-surface-container text-left transition-all flex flex-col items-center justify-center min-h-[110px] text-center" type="button">
-<div class="w-10 h-10 rounded-full bg-surface-container-lowest group-hover:bg-primary-container group-hover:text-on-primary text-primary flex items-center justify-center transition-colors mb-2 shadow-sm">
-<span class="material-symbols-outlined text-[22px]">add</span>
-</div>
-<span class="font-label-lg text-label-lg text-on-surface group-hover:text-primary transition-colors">+ Add New Pet</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant">Quick 1-min profile</span>
-</button>
 </div>
 </div>
 <!-- 2. Temperament & Behavioral Notes -->
 <div class="p-6 rounded-DEFAULT bg-surface-container-low space-y-5">
 <div>
-<label class="font-title-md text-title-md text-on-surface block mb-1">Milo's Temperament</label>
+<label class="font-title-md text-title-md text-on-surface block mb-1">Companion's Temperament</label>
 <p class="font-body-sm text-body-sm text-on-surface-variant mb-3">Helps our master groomers set the right room pace, handling touch, and drying sound levels.</p>
 <div class="flex flex-wrap gap-2.5" id="temperamentGroup">
 <button class="temperament-pill px-4 py-2 rounded-full font-label-md text-label-md bg-primary text-on-primary shadow-sm transition-all flex items-center gap-1.5" data-selected="true" type="button">
@@ -172,24 +129,24 @@
 </div>
 </div>
 <!-- 3. Curated Add-ons & Treatments -->
-<div class="space-y-4">
+<div id="bsp-addons-section" class="space-y-4">
 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
 <div>
 <h4 class="font-title-md text-title-md text-on-surface">Curated Add-ons &amp; Spa Treatments</h4>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Recommended pairings specifically for Milo's coat and breed profile.</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Recommended pairings based on the selected companion and service.</p>
 </div>
-<span class="font-label-sm text-label-sm text-primary uppercase font-bold tracking-wider self-start sm:self-auto">Grooming &amp; Spa Additions</span>
+<span id="bsp-addon-heading" class="font-label-sm text-label-sm text-primary uppercase font-bold tracking-wider self-start sm:self-auto">Grooming &amp; Spa Additions</span>
 </div>
 <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
 <!-- Add-on 1: Blueberry Facial (Checked) -->
 <label class="group relative flex items-start gap-3.5 p-4 rounded-DEFAULT bg-surface-container-low hover:bg-surface-container cursor-pointer transition-all shadow-sm select-none">
 <div class="pt-0.5">
-<input checked="" class="addon-checkbox w-5 h-5 rounded text-primary focus:ring-0 accent-primary cursor-pointer" data-name="Blueberry Facial" data-price="12" type="checkbox"/>
+<input class="addon-checkbox w-5 h-5 rounded text-primary focus:ring-0 accent-primary cursor-pointer" data-name="Blueberry Facial" data-price="1150" type="checkbox"/>
 </div>
 <div class="flex-1 min-w-0 pr-2">
 <div class="flex items-baseline justify-between gap-2">
 <h5 class="font-label-lg text-label-lg text-on-surface group-hover:text-primary transition-colors">Blueberry Facial &amp; Tear Stain Treatment</h5>
-<span class="font-label-lg text-label-lg font-bold text-primary shrink-0">+$12</span>
+<span class="font-label-lg text-label-lg font-bold text-primary shrink-0">+₹1,150</span>
 </div>
 <p class="font-body-sm text-body-sm text-on-surface-variant mt-1 leading-snug">
                   Gentle natural berry cleanser with soothing antioxidant face massage.
@@ -199,12 +156,12 @@
 <!-- Add-on 2: Paw Balm (Checked) -->
 <label class="group relative flex items-start gap-3.5 p-4 rounded-DEFAULT bg-surface-container-low hover:bg-surface-container cursor-pointer transition-all shadow-sm select-none">
 <div class="pt-0.5">
-<input checked="" class="addon-checkbox w-5 h-5 rounded text-primary focus:ring-0 accent-primary cursor-pointer" data-name="Paw Balm" data-price="8" type="checkbox"/>
+<input class="addon-checkbox w-5 h-5 rounded text-primary focus:ring-0 accent-primary cursor-pointer" data-name="Paw Balm" data-price="800" type="checkbox"/>
 </div>
 <div class="flex-1 min-w-0 pr-2">
 <div class="flex items-baseline justify-between gap-2">
 <h5 class="font-label-lg text-label-lg text-on-surface group-hover:text-primary transition-colors">Deep Conditioning Paw Balm &amp; Pad Care</h5>
-<span class="font-label-lg text-label-lg font-bold text-primary shrink-0">+$8</span>
+<span class="font-label-lg text-label-lg font-bold text-primary shrink-0">+₹800</span>
 </div>
 <p class="font-body-sm text-body-sm text-on-surface-variant mt-1 leading-snug">
                   Organic shea butter and beeswax moisture balm for soft, resilient pads.
@@ -214,12 +171,12 @@
 <!-- Add-on 3: Flea & Tick (Unchecked) -->
 <label class="group relative flex items-start gap-3.5 p-4 rounded-DEFAULT bg-surface-container-lowest hover:bg-surface-container-low cursor-pointer transition-all shadow-sm select-none">
 <div class="pt-0.5">
-<input class="addon-checkbox w-5 h-5 rounded text-primary focus:ring-0 accent-primary cursor-pointer" data-name="Botanical Rinse" data-price="15" type="checkbox"/>
+<input class="addon-checkbox w-5 h-5 rounded text-primary focus:ring-0 accent-primary cursor-pointer" data-name="Botanical Rinse" data-price="1450" type="checkbox"/>
 </div>
 <div class="flex-1 min-w-0 pr-2">
 <div class="flex items-baseline justify-between gap-2">
 <h5 class="font-label-lg text-label-lg text-on-surface group-hover:text-primary transition-colors">Flea &amp; Tick Botanical Rinse</h5>
-<span class="font-label-lg text-label-lg font-bold text-on-surface-variant shrink-0">+$15</span>
+<span class="font-label-lg text-label-lg font-bold text-on-surface-variant shrink-0">+₹1,450</span>
 </div>
 <p class="font-body-sm text-body-sm text-on-surface-variant mt-1 leading-snug">
                   Chemical-free eucalyptus and wild lavender shield wash for outdoor pets.
@@ -229,12 +186,12 @@
 <!-- Add-on 4: De-Shedding (Unchecked) -->
 <label class="group relative flex items-start gap-3.5 p-4 rounded-DEFAULT bg-surface-container-lowest hover:bg-surface-container-low cursor-pointer transition-all shadow-sm select-none">
 <div class="pt-0.5">
-<input class="addon-checkbox w-5 h-5 rounded text-primary focus:ring-0 accent-primary cursor-pointer" data-name="De-Shedding Undercoat" data-price="20" type="checkbox"/>
+<input class="addon-checkbox w-5 h-5 rounded text-primary focus:ring-0 accent-primary cursor-pointer" data-name="De-Shedding Undercoat" data-price="1950" type="checkbox"/>
 </div>
 <div class="flex-1 min-w-0 pr-2">
 <div class="flex items-baseline justify-between gap-2">
 <h5 class="font-label-lg text-label-lg text-on-surface group-hover:text-primary transition-colors">De-Shedding Undercoat Treatment</h5>
-<span class="font-label-lg text-label-lg font-bold text-on-surface-variant shrink-0">+$20</span>
+<span class="font-label-lg text-label-lg font-bold text-on-surface-variant shrink-0">+₹1,950</span>
 </div>
 <p class="font-body-sm text-body-sm text-on-surface-variant mt-1 leading-snug">
                   20-minute specialized carding and fur rejuvenation to diminish shedding.
@@ -263,11 +220,11 @@
 </div>
 <div>
 <div class="flex items-center gap-2">
-<span class="font-title-md text-title-md text-on-surface font-bold" id="bsp-service-summary-title">Grooming &amp; Spa</span>
-<span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-surface-container-highest text-secondary font-medium" id="bsp-pet-summary-badge">for Milo</span>
+<span class="font-title-md text-title-md text-on-surface font-bold" id="bsp-service-summary-title">Select a service</span>
+<span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-surface-container-highest text-secondary font-medium" id="bsp-pet-summary-badge">No companion</span>
 </div>
 <p class="font-body-sm text-body-sm text-on-surface-variant">
-<span id="addonsCountDisplay">Grooming + 2 Add-ons</span> • <span class="font-semibold text-primary">Subtotal: <span id="subtotalDisplay">$65</span></span>
+<span id="addonsCountDisplay">Grooming + 2 Add-ons</span> • <span class="font-semibold text-primary">Subtotal: <span id="subtotalDisplay">₹6,300</span></span>
 </p>
 </div>
 </div>
@@ -277,7 +234,7 @@
 <span class="material-symbols-outlined text-[18px]">arrow_back</span>
 <span>Back to Services</span>
 </button>
-<button id="continueToScheduleBtn" onclick="handleContinueToSchedule()" class="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full font-label-lg text-label-lg bg-primary-container hover:bg-primary text-on-primary shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 w-full sm:w-auto" type="button">
+<button id="continueToScheduleBtn" onclick="handleContinueToSchedule()" disabled class="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full font-label-lg text-label-lg bg-primary-container hover:bg-primary text-on-primary shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 w-full sm:w-auto opacity-50 cursor-not-allowed" type="button">
 <span>Continue to Schedule</span>
 <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
 </button>
@@ -303,15 +260,17 @@
 <script>
   // Simple interactive logic for dynamic subtotal and pills
   document.addEventListener('DOMContentLoaded', () => {
-    const baseServicePrice = 45;
+    let baseServicePrice = 0;
     const checkboxes = document.querySelectorAll('.addon-checkbox');
     const subtotalDisplay = document.getElementById('subtotalDisplay');
     const addonsCountDisplay = document.getElementById('addonsCountDisplay');
     const temperamentPills = document.querySelectorAll('.temperament-pill');
 
     function updateSubtotal() {
-      let total = baseServicePrice;
-      let selectedCount = 0;
+      const active = window.PetPalsStore?.getActiveBooking() || {};
+      const step1Addons = active.step1Addons || [];
+      let total = baseServicePrice + step1Addons.reduce((sum, addon) => sum + (Number(addon.price) || 0), 0);
+      let selectedCount = step1Addons.length;
 
       checkboxes.forEach(cb => {
         if (cb.checked) {
@@ -321,21 +280,38 @@
       });
 
       if (subtotalDisplay) {
-        subtotalDisplay.textContent = `$${total}`;
+        subtotalDisplay.textContent = `₹${total.toLocaleString('en-IN')}`;
       }
 
       if (addonsCountDisplay) {
         if (selectedCount === 0) {
-          addonsCountDisplay.textContent = 'Grooming only';
+          addonsCountDisplay.textContent = 'Service only';
         } else {
-          addonsCountDisplay.textContent = `Grooming + ${selectedCount} Add-on${selectedCount > 1 ? 's' : ''}`;
+          addonsCountDisplay.textContent = `Service + ${selectedCount} Add-on${selectedCount > 1 ? 's' : ''}`;
         }
       }
+      if (window.PetPalsStore) {
+        const petStepAddons = Array.from(checkboxes).filter(cb => cb.checked).map(cb => ({
+          name: cb.dataset.name || '',
+          price: parseInt(cb.dataset.price || '0', 10) || 0
+        }));
+        const selectedAddons = [...(active.step1Addons || []), ...petStepAddons];
+        window.PetPalsStore.saveActiveBooking({ petStepAddons, selectedAddons });
+      }
     }
+
+    window.setPetStepServicePrice = price => {
+      baseServicePrice = Number(price) || 0;
+      updateSubtotal();
+    };
 
     checkboxes.forEach(cb => {
       cb.addEventListener('change', updateSubtotal);
     });
+
+    const activeBooking = window.PetPalsStore?.getActiveBooking();
+    baseServicePrice = parseFloat(String(activeBooking?.servicePrice || '').replace(/[^0-9.]/g, '')) || 0;
+    updateSubtotal();
 
     temperamentPills.forEach(pill => {
       pill.addEventListener('click', () => {
@@ -402,23 +378,64 @@
 (function() {
   let selectedPetId = null;
   let selectedTemperament = 'Friendly & Calm';
+  let companionChoice = 'none';
+  let petStepInitialized = false;
+  function updateContinueButton() {
+    const button = document.getElementById('continueToScheduleBtn');
+    if (!button) return;
+    const enabled = Boolean(selectedPetId && companionChoice === 'pet');
+    button.disabled = !enabled;
+    button.setAttribute('aria-disabled', String(!enabled));
+    button.classList.toggle('opacity-50', !enabled);
+    button.classList.toggle('cursor-not-allowed', !enabled);
+  }
+  const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
 
   function initPetStep() {
+    if (petStepInitialized) return;
+    petStepInitialized = true;
     if (!window.PetPalsStore) return;
     const active = PetPalsStore.getActiveBooking();
+    if (!active.service || !active.servicePrice) {
+      window.location.replace('/book-service');
+      return;
+    }
     const pets = PetPalsStore.getPets();
+    const basePrice = parseFloat(String(active.servicePrice).replace(/[^0-9.]/g, '')) || 0;
+    const addonsSection = document.getElementById('bsp-addons-section');
+    const addonCheckboxes = document.querySelectorAll('.addon-checkbox');
+    if (active.serviceCategory === 'grooming') {
+      if (addonsSection) addonsSection.style.display = '';
+      if (Array.isArray(active.selectedAddons)) {
+        addonCheckboxes.forEach(checkbox => {
+          checkbox.checked = (active.petStepAddons || []).some(addon => addon.name === checkbox.dataset.name);
+        });
+      }
+    } else {
+      addonCheckboxes.forEach(checkbox => { checkbox.checked = false; });
+      if (addonsSection) addonsSection.style.display = 'none';
+      PetPalsStore.saveActiveBooking({ petStepAddons: [], selectedAddons: active.step1Addons || [] });
+    }
+    window.setPetStepServicePrice?.(basePrice);
 
     // 1. Update service badge
     const titleEl = document.getElementById('bsp-service-title');
     const priceEl = document.getElementById('bsp-service-price');
+    const summaryTitleEl = document.getElementById('bsp-service-summary-title');
     if (titleEl && active.service) titleEl.textContent = active.service;
+    if (summaryTitleEl && active.service) summaryTitleEl.textContent = active.service;
     if (priceEl && active.servicePrice) priceEl.textContent = active.servicePrice;
 
     // 2. Determine initial selected pet
-    selectedPetId = active.petId || (pets.length > 0 ? pets[0].id : null);
+    const activePet = pets.find(pet => String(pet.id) === String(active.petId)) || (active.petName ? pets.find(pet => String(pet.name||'').trim().toLowerCase() === String(active.petName).trim().toLowerCase()) : null);
+    selectedPetId = activePet?.id ?? null;
+    if (activePet) PetPalsStore.saveActiveBooking({companionChoice:'pet',petId:activePet.id,petName:activePet.name,petBreed:activePet.breed||activePet.species||''});
+    companionChoice = selectedPetId ? 'pet' : (active.companionChoice === 'new' ? 'new' : 'none');
 
     renderPets();
+    updateContinueButton();
     setupTemperament();
+    if (active.companionChoice === 'new' && !selectedPetId) window.openAddPetModal?.();
   }
 
   function renderPets() {
@@ -428,24 +445,24 @@
 
     let html = '';
     pets.forEach(pet => {
-      const isSelected = pet.id === selectedPetId;
+      const isSelected = String(pet.id) === String(selectedPetId);
       html += `
-        <div onclick="selectPet('${pet.id}')" class="relative ${isSelected ? 'bg-surface-container-low ring-2 ring-primary shadow-md' : 'bg-surface-container-lowest shadow-sm hover:bg-surface-container-low'} p-4 rounded-DEFAULT cursor-pointer transition-all hover:shadow-md flex flex-col justify-between" id="${pet.id}">
+        <div onclick="selectPet('${escapeHtml(pet.id)}')" class="relative ${isSelected ? 'bg-surface-container-low ring-2 ring-primary shadow-md' : 'bg-surface-container-lowest shadow-sm hover:bg-surface-container-low'} p-4 rounded-DEFAULT cursor-pointer transition-all hover:shadow-md flex flex-col justify-between">
           ${isSelected ? `
             <div class="absolute top-3 right-3 w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center">
               <span class="material-symbols-outlined text-[16px]">check</span>
             </div>
           ` : ''}
           <div class="flex items-center gap-3 mb-3">
-            <img src="${pet.avatar}" class="w-12 h-12 rounded-full object-cover shadow-sm bg-surface-container shrink-0" alt="${pet.name}">
+            <img src="${escapeHtml(pet.photo || pet.avatar || '')}" class="w-12 h-12 rounded-full object-cover shadow-sm bg-surface-container shrink-0" alt="${escapeHtml(pet.name)}">
             <div class="min-w-0">
-              <h4 class="font-title-md text-title-md text-on-surface leading-tight font-semibold truncate">${pet.name}</h4>
-              <p class="font-body-sm text-body-sm text-on-surface-variant truncate">${pet.breed || pet.species}</p>
+              <h4 class="font-title-md text-title-md text-on-surface leading-tight font-semibold truncate">${escapeHtml(pet.name)}</h4>
+              <p class="font-body-sm text-body-sm text-on-surface-variant truncate">${escapeHtml(pet.breed || pet.species)}</p>
             </div>
           </div>
           <div class="pt-3 flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm bg-surface-container-lowest/80 px-2.5 py-1 rounded-full">
-            <span>${pet.species} • ${pet.age || '1 yr'}</span>
-            <span class="font-semibold text-primary">${pet.weight || '5 kg'}</span>
+            <span>${escapeHtml(pet.species)} • ${escapeHtml(pet.age || '1 yr')}</span>
+            <span class="font-semibold text-primary">${escapeHtml(pet.weight || '5 kg')}</span>
           </div>
         </div>
       `;
@@ -464,11 +481,9 @@
 
     container.innerHTML = html;
 
-    const selectedPet = pets.find(p => p.id === selectedPetId);
+    const selectedPet = pets.find(p => String(p.id) === String(selectedPetId));
     const summaryBadge = document.getElementById('bsp-pet-summary-badge');
-    if (summaryBadge && selectedPet) {
-      summaryBadge.textContent = `for ${selectedPet.name}`;
-    }
+    if (summaryBadge) summaryBadge.textContent = selectedPet ? `for ${selectedPet.name}` : (companionChoice === 'new' ? 'New pet' : 'No companion');
     const summaryTitle = document.getElementById('bsp-service-summary-title');
     const active = PetPalsStore.getActiveBooking();
     if (summaryTitle && active.service) {
@@ -477,8 +492,13 @@
   }
 
   window.selectPet = function(id) {
-    selectedPetId = id;
+    const pet = PetPalsStore.getPets().find(item => String(item.id) === String(id));
+    if (!pet) return;
+    selectedPetId = pet.id;
+    companionChoice = 'pet';
     renderPets();
+    PetPalsStore.saveActiveBooking({ companionChoice: 'pet', petId: pet.id, petName: pet.name, petBreed: pet.breed || pet.species, petAge: pet.age || '', petWeight: pet.weight || '', petPhoto: pet.photo || pet.avatar || '', petAvatar: pet.avatar || pet.photo || '' });
+    updateContinueButton();
   };
 
   function setupTemperament() {
@@ -550,7 +570,7 @@
       </div>
     `;
 
-    document.getElementById('bsp-add-pet-form').onsubmit = function(e) {
+    document.getElementById('bsp-add-pet-form').onsubmit = async function(e) {
       e.preventDefault();
       const name = document.getElementById('new-pet-name').value.trim();
       const species = document.getElementById('new-pet-species').value;
@@ -559,18 +579,38 @@
       const weight = document.getElementById('new-pet-weight').value.trim() || '5.0 kg';
 
       const newPet = PetPalsStore.addPet({ name, species, breed, age, weight });
+      const persistedPet = await PetPalsStore.lastPetPersistence;
+      if (!persistedPet) {
+        window.alert('The new pet could not be saved. Please try again.');
+        return;
+      }
+      newPet.id = persistedPet.id;
       selectedPetId = newPet.id;
+      companionChoice = 'pet';
+      PetPalsStore.saveActiveBooking({ companionChoice: 'pet', petId: newPet.id, petName: newPet.name, petBreed: newPet.breed || newPet.species, petAge: newPet.age || '', petWeight: newPet.weight || '', petPhoto: newPet.photo || newPet.avatar || '', petAvatar: newPet.avatar || newPet.photo || '' });
       document.getElementById('bsp-add-pet-modal').remove();
       renderPets();
+      updateContinueButton();
     };
   };
 
   // Continue to Schedule
   window.handleContinueToSchedule = function() {
+    if (!selectedPetId || companionChoice !== 'pet') {
+      updateContinueButton();
+      document.getElementById('petSelector')?.scrollIntoView({behavior:'smooth',block:'center'});
+      return;
+    }
     const pets = PetPalsStore.getPets();
-    const pet = pets.find(p => p.id === selectedPetId) || pets[0];
-    if (pet) {
-      PetPalsStore.saveActiveBooking({
+    const pet = pets.find(p => String(p.id) === String(selectedPetId)) || null;
+    if (!pet) {
+      selectedPetId = null;
+      companionChoice = 'none';
+      updateContinueButton();
+      return;
+    }
+    PetPalsStore.saveActiveBooking({
+        companionChoice: 'pet',
         petId: pet.id,
         petName: pet.name,
         petBreed: pet.breed || pet.species,
@@ -580,7 +620,6 @@
         petPhoto: pet.photo || pet.avatar,
         notes: selectedTemperament
       });
-    }
     window.location.href = '/book-service-schedule';
   };
 
@@ -606,6 +645,15 @@
 
   document.addEventListener('DOMContentLoaded', initPetStep);
   initPetStep();
+  window.addEventListener('petpals:pets-updated', () => {
+    const pets = PetPalsStore.getPets();
+    if (selectedPetId && !pets.some(pet => String(pet.id) === String(selectedPetId))) {
+      selectedPetId = null;
+      companionChoice = 'none';
+    }
+    renderPets();
+    updateContinueButton();
+  });
 })();
 </script>
 </body></html>

@@ -6,6 +6,22 @@ const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 require('dotenv').config();
 
+const USD_TO_INR_RATE = 97;
+const INR_PRICE_INCREMENT = 50;
+
+function convertLegacyPriceToINR(value) {
+  const raw = String(value ?? '').trim();
+  const amount = parseFloat(raw.replace(/[^0-9.]/g, '')) || 0;
+  return raw.startsWith('$')
+    ? Math.round(amount * USD_TO_INR_RATE / INR_PRICE_INCREMENT) * INR_PRICE_INCREMENT
+    : amount;
+}
+
+function formatINR(value) {
+  const amount = convertLegacyPriceToINR(value);
+  return `₹${Math.round(amount).toLocaleString('en-IN')}`;
+}
+
 const connectionString = process.env.DATABASE_URL;
 let pool = null;
 let isPostgres = false;
@@ -86,142 +102,24 @@ const DEFAULT_ADMIN = {
   email: 'admin@petpals.com',
   password_hash: bcrypt.hashSync('admin123', 10),
   role: 'Super Admin',
-  avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+  avatar: null,
   created_at: new Date('2026-01-01T00:00:00Z').toISOString()
 };
 
-const DEFAULT_PETS = [
-  {
-    id: 'pet-bruno',
-    user_id: DEFAULT_USER_ID,
-    name: 'Bruno',
-    species: 'Dog',
-    breed: 'Golden Retriever',
-    age: '2 years',
-    weight: '31.0 kg',
-    gender: 'Male (Neutered)',
-    microchip: '985 141 002 381',
-    status: 'Active',
-    note: 'Last wellness check: 2 weeks ago',
-    notes: 'Salmon & sweet potato kibble twice daily. Sensitive to loud air blowers.',
-    photo: 'https://lh3.googleusercontent.com/aida/AEtjO1Uuc_lq8IwyBwbjSlNL1obmQxxUrnJznxdjFzSncsyQDO1-YLIUzfA26YIg8yEhskgu9bqGS8QeWYZPTGpIQD6FXUjqJOTEPL92yxV6_uo66Re6T62xuKeC1UJF5zhXDGpeUIx3UpOQOFfTvElfqK-3SvN_G681f6Is0T7pjxiMowIXYwAQiutnTNbf70J32lVHH31Pn4LZk54wkstesIfLUzUa5mtuN06jDWNkEWTtCVkamIVdAptB-t6J',
-    avatar: 'https://lh3.googleusercontent.com/aida/AEtjO1Uuc_lq8IwyBwbjSlNL1obmQxxUrnJznxdjFzSncsyQDO1-YLIUzfA26YIg8yEhskgu9bqGS8QeWYZPTGpIQD6FXUjqJOTEPL92yxV6_uo66Re6T62xuKeC1UJF5zhXDGpeUIx3UpOQOFfTvElfqK-3SvN_G681f6Is0T7pjxiMowIXYwAQiutnTNbf70J32lVHH31Pn4LZk54wkstesIfLUzUa5mtuN06jDWNkEWTtCVkamIVdAptB-t6J',
-    created_at: new Date('2026-01-16T10:00:00Z').toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: 'pet-milo',
-    user_id: DEFAULT_USER_ID,
-    name: 'Milo',
-    species: 'Cat',
-    breed: 'Tabby Cat',
-    age: '1 year',
-    weight: '4.8 kg',
-    gender: 'Male (Neutered)',
-    microchip: '985 141 009 842',
-    status: 'Active',
-    note: 'Vaccinations fully updated',
-    notes: 'Nutritious balanced formula twice daily.',
-    photo: 'https://lh3.googleusercontent.com/aida/AEtjO1WT6ANlajBfAFZfy7s2ZiqXTDUYaiJGV-Hu02OGU9PgovrJw8KPqccWgiG93n2PwTxchuFVJ3ASByB6dPS4dMyMzed6GF9xPYMGkUfOw9pVQY0mIH7U4hxSFJ3vXHqSyMhnnjpwmDSD8uEEh7mB5FeOP2gk61l4gyqODvdUhL5TDs1EOSm8R69PQ2QmROFVLmTomMBxfeSAD-EuGOnPSGeQE2uRBmqA8ealfCucmUXvwTJ2HOqlPVelelg',
-    avatar: 'https://lh3.googleusercontent.com/aida/AEtjO1WT6ANlajBfAFZfy7s2ZiqXTDUYaiJGV-Hu02OGU9PgovrJw8KPqccWgiG93n2PwTxchuFVJ3ASByB6dPS4dMyMzed6GF9xPYMGkUfOw9pVQY0mIH7U4hxSFJ3vXHqSyMhnnjpwmDSD8uEEh7mB5FeOP2gk61l4gyqODvdUhL5TDs1EOSm8R69PQ2QmROFVLmTomMBxfeSAD-EuGOnPSGeQE2uRBmqA8ealfCucmUXvwTJ2HOqlPVelelg',
-    created_at: new Date('2026-02-01T12:00:00Z').toISOString(),
-    updated_at: new Date().toISOString()
-  }
-];
-
 const DEFAULT_SERVICES = [
-  { id: 'srv-1', name: 'Grooming & Spa Experience', category: 'grooming', price: '$65.00', price_num: 65, duration: '75 min', specialist: 'Sarah Jenkins', active: true, description: 'Botanical hydrobath, blueberry facial, breed scissor trim, and paw massage.', badge: 'Most Popular', rating: 4.9, reviews_count: 142 },
-  { id: 'srv-2', name: 'Veterinary Comprehensive Exam', category: 'medical', price: '$85.00', price_num: 85, duration: '45 min', specialist: 'Dr. Emily Chen, DVM', active: true, description: 'Full physical examination, vitals, dental inspection, and vaccination check.', badge: 'Recommended', rating: 5.0, reviews_count: 98 },
-  { id: 'srv-3', name: 'Luxury Sanctuary Boarding', category: 'boarding', price: '$75.00', price_num: 75, duration: 'Per Night', specialist: 'Care Sanctuary Team', active: true, description: 'Private suite with orthopaedic bedding, webcam access, and 3 daily play sessions.', badge: 'Premium', rating: 4.8, reviews_count: 76 },
-  { id: 'srv-4', name: 'Canine Adventure Walking', category: 'training', price: '$30.00', price_num: 30, duration: '60 min', specialist: 'Alex Rivera', active: true, description: 'Solo or small pack enrichment walk through nature reserve trails with GPS tracking.', badge: '', rating: 4.9, reviews_count: 64 },
-  { id: 'srv-5', name: 'Gentle Dental Hygiene Polish', category: 'medical', price: '$95.00', price_num: 95, duration: '50 min', specialist: 'Dr. Emily Chen, DVM', active: true, description: 'Ultrasonic scaling, antiseptic irrigation, and breath freshening enzyme coat.', badge: '', rating: 4.7, reviews_count: 53 },
-  { id: 'srv-6', name: 'Puppy & Companion Socialization', category: 'training', price: '$45.00', price_num: 45, duration: '60 min', specialist: 'Marcus Vance', active: true, description: 'Certified trainer-led positive reinforcement and manners development.', badge: '', rating: 5.0, reviews_count: 39 }
-];
-
-const DEFAULT_BOOKINGS = [
-  {
-    id: 'PP-84920',
-    user_id: DEFAULT_USER_ID,
-    pet_id: 'pet-bruno',
-    service_id: 'srv-1',
-    service_name: 'Grooming & Spa Experience',
-    service_category: 'grooming',
-    service_price: '$65.00',
-    duration: '75 min',
-    pet_name: 'Bruno',
-    booking_date: 'Tomorrow, Oct 6',
-    booking_time: '10:30 AM',
-    provider: 'Sarah Jenkins',
-    status: 'Confirmed',
-    notes: 'Sensitive to loud air blowers. Use organic aloe wash.',
-    address: 'PetPals Main Sanctuary • Studio 4',
-    created_at: new Date('2026-10-04T11:00:00Z').toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: 'PP-84921',
-    user_id: DEFAULT_USER_ID,
-    pet_id: 'pet-milo',
-    service_id: 'srv-2',
-    service_name: 'Veterinary Comprehensive Exam',
-    service_category: 'medical',
-    service_price: '$85.00',
-    duration: '45 min',
-    pet_name: 'Milo',
-    booking_date: 'Thu, Oct 15',
-    booking_time: '02:00 PM',
-    provider: 'Dr. Emily Chen, DVM',
-    status: 'Confirmed',
-    notes: 'Annual booster & feline wellness routine.',
-    address: 'PetPals Clinical Suite A',
-    created_at: new Date('2026-10-04T12:00:00Z').toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: 'PP-83110',
-    user_id: DEFAULT_USER_ID,
-    pet_id: 'pet-bruno',
-    service_id: 'srv-4',
-    service_name: 'Canine Adventure Walking',
-    service_category: 'training',
-    service_price: '$30.00',
-    duration: '60 min',
-    pet_name: 'Bruno',
-    booking_date: '28 Sep 2026',
-    booking_time: '09:00 AM',
-    provider: 'Alex Rivera',
-    status: 'Completed',
-    notes: 'Lake trail route completed happily.',
-    address: 'Sanctuary Reserve Trailhead',
-    created_at: new Date('2026-09-25T14:00:00Z').toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: 'PP-81204',
-    user_id: DEFAULT_USER_ID,
-    pet_id: 'pet-bruno',
-    service_id: 'srv-1',
-    service_name: 'Grooming & Spa Experience',
-    service_category: 'grooming',
-    service_price: '$65.00',
-    duration: '75 min',
-    pet_name: 'Bruno',
-    booking_date: '14 Sep 2026',
-    booking_time: '11:00 AM',
-    provider: 'Sarah Jenkins',
-    status: 'Completed',
-    notes: 'Clean scissor clip and dental freshening.',
-    address: 'PetPals Main Sanctuary • Studio 4',
-    created_at: new Date('2026-09-10T10:00:00Z').toISOString(),
-    updated_at: new Date().toISOString()
-  }
+  { id: 'srv-1', name: 'Grooming & Spa Experience', category: 'grooming', price: '₹6,300', price_num: 6300, duration: '75 min', specialist: 'Sarah Jenkins', active: true, description: 'Botanical hydrobath, blueberry facial, breed scissor trim, and paw massage.', badge: 'Most Popular', rating: 4.9, reviews_count: 142 },
+  { id: 'srv-2', name: 'Veterinary Comprehensive Exam', category: 'medical', price: '₹8,250', price_num: 8250, duration: '45 min', specialist: 'Dr. Emily Chen, DVM', active: true, description: 'Full physical examination, vitals, dental inspection, and vaccination check.', badge: 'Recommended', rating: 5.0, reviews_count: 98 },
+  { id: 'srv-3', name: 'Luxury Sanctuary Boarding', category: 'boarding', price: '₹7,300', price_num: 7300, duration: 'Per Night', specialist: 'Care Sanctuary Team', active: true, description: 'Private suite with orthopaedic bedding, webcam access, and 3 daily play sessions.', badge: 'Premium', rating: 4.8, reviews_count: 76 },
+  { id: 'srv-4', name: 'Canine Adventure Walking', category: 'training', price: '₹2,900', price_num: 2900, duration: '60 min', specialist: 'Alex Rivera', active: true, description: 'Solo or small pack enrichment walk through nature reserve trails with GPS tracking.', badge: '', rating: 4.9, reviews_count: 64 },
+  { id: 'srv-5', name: 'Gentle Dental Hygiene Polish', category: 'medical', price: '₹9,200', price_num: 9200, duration: '50 min', specialist: 'Dr. Emily Chen, DVM', active: true, description: 'Ultrasonic scaling, antiseptic irrigation, and breath freshening enzyme coat.', badge: '', rating: 4.7, reviews_count: 53 },
+  { id: 'srv-6', name: 'Puppy & Companion Socialization', category: 'training', price: '₹4,350', price_num: 4350, duration: '60 min', specialist: 'Marcus Vance', active: true, description: 'Certified trainer-led positive reinforcement and manners development.', badge: '', rating: 5.0, reviews_count: 39 }
 ];
 
 const DEFAULT_REVIEWS = [
-  { id: 'rev-1', user_id: DEFAULT_USER_ID, user_name: 'Prathiksha Shetty', user_avatar: DEFAULT_USER.avatar, pet: 'Bruno (Golden Retriever)', rating: 5, service_name: 'Grooming & Spa Experience', status: 'Approved', featured: true, comment: 'Sarah took incredible care of Bruno! He came home so clean, soft, and completely stress-free. The report card was wonderful.', created_at: new Date('2026-10-02T14:00:00Z').toISOString() },
+  { id: 'rev-1', user_id: null, user_name: 'Prathiksha Shetty', user_avatar: DEFAULT_USER.avatar, pet: 'Bruno (Golden Retriever)', rating: 5, service_name: 'Grooming & Spa Experience', status: 'Approved', featured: true, comment: 'Sarah took incredible care of Bruno! He came home so clean, soft, and completely stress-free. The report card was wonderful.', created_at: new Date('2026-10-02T14:00:00Z').toISOString() },
   { id: 'rev-2', user_id: null, user_name: 'Sneha R.', user_avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80', pet: 'Simba (Spitz)', rating: 5, service_name: 'Veterinary Comprehensive Exam', status: 'Approved', featured: false, comment: 'Dr. Emily Chen was so gentle and thorough. The online records access makes tracking vaccinations effortless.', created_at: new Date('2026-09-28T10:00:00Z').toISOString() },
   { id: 'rev-3', user_id: null, user_name: 'Arjun T.', user_avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80', pet: 'Charlie (Beagle)', rating: 4, service_name: 'Canine Adventure Walking', status: 'Approved', featured: false, comment: 'Alex is great with high-energy dogs. Charlie had a blast and slept like a log afterwards!', created_at: new Date('2026-09-25T11:00:00Z').toISOString() },
-  { id: 'rev-4', user_id: DEFAULT_USER_ID, user_name: 'Prathiksha Shetty', user_avatar: DEFAULT_USER.avatar, pet: 'Milo (Cat)', rating: 5, service_name: 'Luxury Sanctuary Boarding', status: 'Pending', featured: false, comment: 'Leaving Milo for 3 days was hard, but the daily video check-ins put our minds completely at ease.', created_at: new Date('2026-09-20T16:00:00Z').toISOString() }
+  { id: 'rev-4', user_id: null, user_name: 'Prathiksha Shetty', user_avatar: DEFAULT_USER.avatar, pet: 'Milo (Cat)', rating: 5, service_name: 'Luxury Sanctuary Boarding', status: 'Pending', featured: false, comment: 'Leaving Milo for 3 days was hard, but the daily video check-ins put our minds completely at ease.', created_at: new Date('2026-09-20T16:00:00Z').toISOString() }
 ];
 
 const DEFAULT_MESSAGES = [
@@ -248,13 +146,39 @@ const DEFAULT_SETTINGS = {
 let localStore = loadLocalStore() || {
   users: [DEFAULT_USER],
   admin_users: [DEFAULT_ADMIN],
-  pets: [...DEFAULT_PETS],
+  pets: [],
   services: [...DEFAULT_SERVICES],
-  bookings: [...DEFAULT_BOOKINGS],
+  bookings: [],
   reviews: [...DEFAULT_REVIEWS],
   messages: [...DEFAULT_MESSAGES],
   settings: { ...DEFAULT_SETTINGS }
 };
+localStore.specialists = Array.isArray(localStore.specialists) ? localStore.specialists : [];
+
+// Clear profile image URLs that were shared demo placeholders from every account.
+let cleanedGeneratedAvatars = false;
+for (const user of localStore.users || []) {
+  if (isGeneratedProfileAvatar(user)) {
+    user.avatar = null;
+    cleanedGeneratedAvatars = true;
+  }
+}
+let cleanedLegacyPrices = false;
+for (const service of localStore.services || []) {
+  if (typeof service.price === 'string' && service.price.trim().startsWith('$')) {
+    service.price_num = convertLegacyPriceToINR(service.price);
+    service.price = formatINR(service.price);
+    cleanedLegacyPrices = true;
+  }
+}
+for (const booking of localStore.bookings || []) {
+  if (typeof booking.service_price === 'string' && booking.service_price.trim().startsWith('$')) {
+    booking.service_price = formatINR(booking.service_price);
+    cleanedLegacyPrices = true;
+  }
+}
+if (cleanedGeneratedAvatars) saveLocalStore(localStore);
+if (cleanedLegacyPrices) saveLocalStore(localStore);
 
 // Initialize Database (Tables, Constraints, Seed Data)
 async function initDatabase() {
@@ -270,6 +194,37 @@ async function initDatabase() {
     console.log('[PostgreSQL] Connected successfully to PostgreSQL database.');
 
     await client.query('BEGIN');
+
+    // Existing accounts may contain the old shared generated profile image.
+    await client.query(
+      `UPDATE users SET avatar = NULL, updated_at = CURRENT_TIMESTAMP
+       WHERE avatar LIKE $1 OR avatar LIKE $2 OR avatar LIKE $3 OR avatar LIKE $4 OR avatar LIKE $5`,
+      [
+        '%AEtjO1W2uQrDJs4Vq5TYFXxKRstMqlWw%',
+        '%photo-1535713875002-d1d0cf377fde%',
+        '%photo-1544005313-94ddf0286df2%',
+        '%photo-1507003211169-0a1dd7228f2d%',
+        '%photo-1534528741775-53994a69daeb%'
+      ]
+    );
+
+    // Convert existing dollar-denominated services and bookings once, keeping
+    // the conversion idempotent for subsequent application starts.
+    await client.query(
+      `UPDATE services
+       SET price_num = ROUND((price_num * $1) / $2) * $2,
+           price = '₹' || (ROUND((price_num * $1) / $2) * $2)::BIGINT::TEXT,
+           updated_at = CURRENT_TIMESTAMP
+       WHERE price LIKE '$%'`,
+      [USD_TO_INR_RATE, INR_PRICE_INCREMENT]
+    );
+    await client.query(
+      `UPDATE bookings
+       SET service_price = '₹' || (ROUND((REGEXP_REPLACE(service_price, '[^0-9.]', '', 'g')::NUMERIC * $1) / $2) * $2)::BIGINT::TEXT,
+           updated_at = CURRENT_TIMESTAMP
+       WHERE service_price LIKE '$%'`,
+      [USD_TO_INR_RATE, INR_PRICE_INCREMENT]
+    );
 
     // 1. Users Table
     await client.query(`
@@ -343,6 +298,22 @@ async function initDatabase() {
       );
     `);
 
+    // Specialists managed by Admin and shown to users when active.
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS specialists (
+        id VARCHAR(64) PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        specialization VARCHAR(255) NOT NULL,
+        rating NUMERIC(2, 1) NOT NULL DEFAULT 5.0 CHECK (rating >= 0 AND rating <= 5),
+        sessions INTEGER NOT NULL DEFAULT 0 CHECK (sessions >= 0),
+        availability TEXT NOT NULL DEFAULT 'Availability to be confirmed',
+        photo TEXT,
+        active BOOLEAN NOT NULL DEFAULT TRUE,
+        created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
     // 5. Bookings Table
     await client.query(`
       CREATE TABLE IF NOT EXISTS bookings (
@@ -353,18 +324,42 @@ async function initDatabase() {
         service_name VARCHAR(255) NOT NULL,
         service_category VARCHAR(100),
         service_price VARCHAR(50),
+        total_amount NUMERIC(12, 2),
         duration VARCHAR(50),
         pet_name VARCHAR(255),
         booking_date VARCHAR(100) NOT NULL,
         booking_time VARCHAR(100) NOT NULL,
         provider VARCHAR(255) DEFAULT 'Dr. Aris Thorne',
+        specialist_id VARCHAR(64),
+        specialist_role VARCHAR(255),
+        specialist_photo TEXT,
+        specialist_rating NUMERIC(2, 1),
+        specialist_sessions INTEGER,
+        specialist_availability TEXT,
         status VARCHAR(50) DEFAULT 'Confirmed',
         notes TEXT,
         address TEXT,
+        location_type VARCHAR(32),
+        selected_addons JSONB NOT NULL DEFAULT '[]'::jsonb,
         created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
       );
     `);
+    await client.query(`
+      ALTER TABLE bookings
+        ADD COLUMN IF NOT EXISTS total_amount NUMERIC(12, 2),
+        ADD COLUMN IF NOT EXISTS specialist_id VARCHAR(64),
+        ADD COLUMN IF NOT EXISTS specialist_role VARCHAR(255),
+        ADD COLUMN IF NOT EXISTS specialist_photo TEXT,
+        ADD COLUMN IF NOT EXISTS specialist_rating NUMERIC(2, 1),
+        ADD COLUMN IF NOT EXISTS specialist_sessions INTEGER,
+        ADD COLUMN IF NOT EXISTS specialist_availability TEXT,
+        ADD COLUMN IF NOT EXISTS location_type VARCHAR(32),
+        ADD COLUMN IF NOT EXISTS selected_addons JSONB NOT NULL DEFAULT '[]'::jsonb
+    `);
+
+    // Remove only the original demo booking seed records; preserve user-created bookings.
+    await client.query(`DELETE FROM bookings WHERE id IN ('PP-84920','PP-84921','PP-83110','PP-81204')`);
 
     // 6. Reviews Table
     await client.query(`
@@ -374,7 +369,9 @@ async function initDatabase() {
         user_name VARCHAR(255) NOT NULL,
         user_avatar TEXT,
         pet VARCHAR(255),
+        pet_id VARCHAR(64) REFERENCES pets(id) ON DELETE SET NULL,
         service_id VARCHAR(64),
+        booking_id VARCHAR(64) REFERENCES bookings(id) ON DELETE SET NULL,
         service_name VARCHAR(255),
         rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
         comment TEXT NOT NULL,
@@ -420,6 +417,20 @@ async function initDatabase() {
         expires_at TIMESTAMPTZ NOT NULL
       );
     `);
+    await client.query(`ALTER TABLE reviews ADD COLUMN IF NOT EXISTS pet_id VARCHAR(64) REFERENCES pets(id) ON DELETE SET NULL, ADD COLUMN IF NOT EXISTS booking_id VARCHAR(64) REFERENCES bookings(id) ON DELETE SET NULL`);
+    await client.query(`CREATE UNIQUE INDEX IF NOT EXISTS reviews_booking_once_idx ON reviews (user_id, booking_id) WHERE booking_id IS NOT NULL`);
+    // These legacy example reviews were never submitted through user accounts.
+    await client.query(`UPDATE reviews SET user_id = NULL WHERE id IN ('rev-1','rev-4')`);
+
+    // Admin credentials and sessions are isolated from user auth state.
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS admin_sessions (
+        token VARCHAR(128) PRIMARY KEY,
+        admin_id VARCHAR(64) REFERENCES admin_users(id) ON DELETE CASCADE,
+        created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+        expires_at TIMESTAMPTZ NOT NULL
+      );
+    `);
 
     // Seed default User if empty
     const usersCheck = await client.query('SELECT COUNT(*) FROM users');
@@ -441,18 +452,6 @@ async function initDatabase() {
       );
     }
 
-    // Seed default Pets if empty
-    const petsCheck = await client.query('SELECT COUNT(*) FROM pets');
-    if (parseInt(petsCheck.rows[0].count, 10) === 0) {
-      for (const p of DEFAULT_PETS) {
-        await client.query(
-          `INSERT INTO pets (id, user_id, name, species, breed, age, weight, gender, microchip, status, note, notes, photo, avatar)
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`,
-          [p.id, p.user_id, p.name, p.species, p.breed, p.age, p.weight, p.gender, p.microchip, p.status, p.note, p.notes, p.photo, p.avatar]
-        );
-      }
-    }
-
     // Seed default Services if empty
     const srvCheck = await client.query('SELECT COUNT(*) FROM services');
     if (parseInt(srvCheck.rows[0].count, 10) === 0) {
@@ -461,18 +460,6 @@ async function initDatabase() {
           `INSERT INTO services (id, name, category, price, price_num, duration, specialist, description, badge, rating, reviews_count, active)
            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
           [s.id, s.name, s.category, s.price, s.price_num, s.duration, s.specialist, s.description, s.badge, s.rating, s.reviews_count, s.active]
-        );
-      }
-    }
-
-    // Seed default Bookings if empty
-    const bkgCheck = await client.query('SELECT COUNT(*) FROM bookings');
-    if (parseInt(bkgCheck.rows[0].count, 10) === 0) {
-      for (const b of DEFAULT_BOOKINGS) {
-        await client.query(
-          `INSERT INTO bookings (id, user_id, pet_id, service_id, service_name, service_category, service_price, duration, pet_name, booking_date, booking_time, provider, status, notes, address)
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`,
-          [b.id, b.user_id, b.pet_id, b.service_id, b.service_name, b.service_category, b.service_price, b.duration, b.pet_name, b.booking_date, b.booking_time, b.provider, b.status, b.notes, b.address]
         );
       }
     }
@@ -570,8 +557,13 @@ function optionalProfileValue(value) {
 
 function isGeneratedProfileAvatar(user) {
   const avatar = typeof user?.avatar === 'string' ? user.avatar : '';
-  return avatar.includes('photo-1535713875002-d1d0cf377fde') ||
-    avatar.includes('aida/AEtjO1W2uQrDJs4Vq5TYFXxKRstMqlWw');
+  return [
+    'photo-1535713875002-d1d0cf377fde',
+    'photo-1544005313-94ddf0286df2',
+    'photo-1507003211169-0a1dd7228f2d',
+    'photo-1534528741775-53994a69daeb',
+    'aida/AEtjO1W2uQrDJs4Vq5TYFXxKRstMqlWw'
+  ].some(marker => avatar.includes(marker));
 }
 
 async function createUser(data) {
@@ -697,7 +689,9 @@ async function getAllUsers() {
       SELECT u.id, u.name, u.first_name, u.email, u.phone, u.location, u.avatar, u.role, u.created_at,
              COUNT(DISTINCT p.id) as pets_count,
              COUNT(DISTINCT b.id) as bookings_count,
-             COALESCE(STRING_AGG(DISTINCT p.name, ', '), '') as pets_list
+             COALESCE(STRING_AGG(DISTINCT p.name, ', '), '') as pets_list,
+             (SELECT COALESCE(SUM(CAST(REGEXP_REPLACE(service_price, '[^0-9.]', '', 'g') AS NUMERIC)), 0)
+              FROM bookings user_bookings WHERE user_bookings.user_id = u.id AND user_bookings.status != 'Cancelled') as total_spent
       FROM users u
       LEFT JOIN pets p ON p.user_id = u.id
       LEFT JOIN bookings b ON b.user_id = u.id
@@ -710,13 +704,13 @@ async function getAllUsers() {
       email: r.email,
       phone: r.phone,
       location: r.location,
-      avatar: r.avatar,
+      avatar: isGeneratedProfileAvatar(r) ? null : r.avatar,
       petsCount: parseInt(r.pets_count, 10) || 0,
       bookingsCount: parseInt(r.bookings_count, 10) || 0,
       petsList: r.pets_list || 'None',
       joinedDate: new Date(r.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
       status: 'Active',
-      totalSpent: '$' + ((parseInt(r.bookings_count, 10) || 0) * 65)
+      totalSpent: formatINR(parseFloat(r.total_spent) || 0)
     }));
   }
 
@@ -729,13 +723,13 @@ async function getAllUsers() {
       email: u.email,
       phone: u.phone,
       location: u.location,
-      avatar: u.avatar,
+      avatar: isGeneratedProfileAvatar(u) ? null : u.avatar,
       petsCount: userPets.length,
       bookingsCount: userBookings.length,
       petsList: userPets.map(p => p.name).join(', ') || 'None',
       joinedDate: new Date(u.created_at || Date.now()).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
       status: 'Active',
-      totalSpent: '$' + (userBookings.length * 65)
+      totalSpent: formatINR(userBookings.filter(b => b.status !== 'Cancelled').reduce((sum, b) => sum + convertLegacyPriceToINR(b.service_price || 0), 0))
     };
   });
 }
@@ -1041,11 +1035,13 @@ async function deletePet(id, userId) {
       sql += ' AND user_id = $2';
       params.push(userId);
     }
-    await pool.query(sql, params);
-    return true;
+    const result = await pool.query(`${sql} RETURNING id`, params);
+    return result.rowCount > 0;
   }
 
+  const initialCount = localStore.pets.length;
   localStore.pets = localStore.pets.filter(p => !(p.id === id && (!userId || p.user_id === userId)));
+  if (localStore.pets.length === initialCount) return false;
   saveLocalStore(localStore);
   return true;
 }
@@ -1070,8 +1066,8 @@ function mapServiceRow(s) {
     id: s.id,
     name: s.name,
     category: s.category,
-    price: typeof s.price === 'number' ? `$${s.price.toFixed(2)}` : (s.price || `$${s.price_num || 50}`),
-    priceNum: parseFloat(s.price_num) || parseFloat(String(s.price).replace(/[^0-9.]/g, '')) || 50,
+    price: formatINR(s.price_num || s.price || 4350),
+    priceNum: convertLegacyPriceToINR(s.price_num || s.price || 4350),
     duration: s.duration,
     specialist: s.specialist || 'Sarah Jenkins',
     description: s.description,
@@ -1084,8 +1080,8 @@ function mapServiceRow(s) {
 
 async function createService(data) {
   const id = data.id || 'srv-' + Date.now();
-  const priceNum = parseFloat(String(data.price).replace(/[^0-9.]/g, '')) || 50;
-  const priceStr = typeof data.price === 'string' && data.price.startsWith('$') ? data.price : `$${priceNum.toFixed(2)}`;
+  const priceNum = convertLegacyPriceToINR(data.price || 4350);
+  const priceStr = formatINR(priceNum);
 
   if (isPostgres && pool) {
     const res = await pool.query(
@@ -1124,8 +1120,8 @@ async function updateService(id, data) {
 
     const name = data.name !== undefined ? data.name : existing.name;
     const category = data.category !== undefined ? data.category : existing.category;
-    const priceNum = data.price !== undefined ? (parseFloat(String(data.price).replace(/[^0-9.]/g, '')) || existing.price_num) : existing.price_num;
-    const priceStr = data.price !== undefined ? (typeof data.price === 'string' && data.price.startsWith('$') ? data.price : `$${priceNum.toFixed(2)}`) : existing.price;
+    const priceNum = data.price !== undefined ? (convertLegacyPriceToINR(data.price) || existing.price_num) : existing.price_num;
+    const priceStr = formatINR(priceNum);
     const duration = data.duration !== undefined ? data.duration : existing.duration;
     const specialist = data.specialist !== undefined ? data.specialist : existing.specialist;
     const description = data.description !== undefined ? data.description : existing.description;
@@ -1144,12 +1140,12 @@ async function updateService(id, data) {
   const idx = localStore.services.findIndex(s => s.id === id);
   if (idx !== -1) {
     const s = localStore.services[idx];
-    const priceNum = data.price !== undefined ? (parseFloat(String(data.price).replace(/[^0-9.]/g, '')) || s.price_num) : s.price_num;
+    const priceNum = data.price !== undefined ? (convertLegacyPriceToINR(data.price) || s.price_num) : s.price_num;
     localStore.services[idx] = {
       ...s,
       name: data.name !== undefined ? data.name : s.name,
       category: data.category !== undefined ? data.category : s.category,
-      price: data.price !== undefined ? (typeof data.price === 'string' && data.price.startsWith('$') ? data.price : `$${priceNum.toFixed(2)}`) : s.price,
+      price: formatINR(priceNum),
       price_num: priceNum,
       duration: data.duration !== undefined ? data.duration : s.duration,
       specialist: data.specialist !== undefined ? data.specialist : s.specialist,
@@ -1172,14 +1168,170 @@ async function deleteService(id) {
   return true;
 }
 
+async function createAdminSession(adminId, durationDays = 7) {
+  const token = crypto.randomBytes(32).toString('hex');
+  const expiresAt = new Date(Date.now() + durationDays * 24 * 60 * 60 * 1000);
+  if (isPostgres && pool) {
+    await pool.query(
+      `INSERT INTO admin_sessions (token, admin_id, expires_at) VALUES ($1, $2, $3)`,
+      [token, adminId, expiresAt.toISOString()]
+    );
+    return { token, adminId, expiresAt };
+  }
+  localStore.admin_sessions = (localStore.admin_sessions || []).filter(s => new Date(s.expires_at) > new Date());
+  localStore.admin_sessions.push({ token, admin_id: adminId, created_at: new Date().toISOString(), expires_at: expiresAt.toISOString() });
+  saveLocalStore(localStore);
+  return { token, adminId, expiresAt };
+}
+
+async function getAdminSession(token) {
+  const cleanToken = typeof token === 'string' ? token.trim() : '';
+  if (!cleanToken) return null;
+  if (isPostgres && pool) {
+    const res = await pool.query(
+      `SELECT a.id, a.name, a.email, a.role, a.avatar, s.expires_at
+       FROM admin_sessions s JOIN admin_users a ON a.id = s.admin_id
+       WHERE s.token = $1 AND s.expires_at > CURRENT_TIMESTAMP LIMIT 1`, [cleanToken]
+    );
+    return res.rows[0] || null;
+  }
+  const session = (localStore.admin_sessions || []).find(s => s.token === cleanToken && new Date(s.expires_at) > new Date());
+  if (!session) return null;
+  const admin = (localStore.admin_users || []).find(a => a.id === session.admin_id);
+  if (!admin) return null;
+  const { password_hash, ...safeAdmin } = admin;
+  return { ...safeAdmin, expires_at: session.expires_at };
+}
+
+async function deleteAdminSession(token) {
+  const cleanToken = typeof token === 'string' ? token.trim() : '';
+  if (!cleanToken) return false;
+  if (isPostgres && pool) {
+    await pool.query('DELETE FROM admin_sessions WHERE token = $1', [cleanToken]);
+    return true;
+  }
+  localStore.admin_sessions = (localStore.admin_sessions || []).filter(s => s.token !== cleanToken);
+  saveLocalStore(localStore);
+  return true;
+}
+
+function mapSpecialistRow(s) {
+  return {
+    id: s.id,
+    name: s.name,
+    specialization: s.specialization,
+    rating: Number(s.rating) || 0,
+    sessions: parseInt(s.sessions, 10) || 0,
+    availability: s.availability || 'Availability to be confirmed',
+    photo: s.photo || null,
+    active: s.active !== false,
+    createdAt: s.created_at,
+    updatedAt: s.updated_at
+  };
+}
+
+async function getSpecialists(onlyActive = true) {
+  if (isPostgres && pool) {
+    const res = await pool.query(
+      `SELECT * FROM specialists ${onlyActive ? 'WHERE active = TRUE' : ''} ORDER BY name ASC`
+    );
+    return res.rows.map(mapSpecialistRow);
+  }
+  return (localStore.specialists || [])
+    .filter(s => !onlyActive || s.active !== false)
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map(mapSpecialistRow);
+}
+
+async function getSpecialistById(id) {
+  if (!id) return null;
+  if (isPostgres && pool) {
+    const res = await pool.query('SELECT * FROM specialists WHERE id = $1 LIMIT 1', [id]);
+    return res.rows[0] ? mapSpecialistRow(res.rows[0]) : null;
+  }
+  const row = (localStore.specialists || []).find(s => s.id === id);
+  return row ? mapSpecialistRow(row) : null;
+}
+
+async function createSpecialist(data) {
+  const record = {
+    id: data.id || `spc-${Date.now()}-${crypto.randomBytes(3).toString('hex')}`,
+    name: String(data.name || '').trim(),
+    specialization: String(data.specialization || '').trim(),
+    rating: Number(data.rating ?? 5),
+    sessions: parseInt(data.sessions ?? 0, 10),
+    availability: String(data.availability || '').trim(),
+    photo: data.photo || null,
+    active: data.active !== false
+  };
+  if (isPostgres && pool) {
+    const res = await pool.query(
+      `INSERT INTO specialists (id, name, specialization, rating, sessions, availability, photo, active)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
+      [record.id, record.name, record.specialization, record.rating, record.sessions, record.availability, record.photo, record.active]
+    );
+    return mapSpecialistRow(res.rows[0]);
+  }
+  record.created_at = new Date().toISOString();
+  record.updated_at = record.created_at;
+  localStore.specialists.push(record);
+  saveLocalStore(localStore);
+  return mapSpecialistRow(record);
+}
+
+async function updateSpecialist(id, data) {
+  const current = await getSpecialistById(id);
+  if (!current) return null;
+  const next = {
+    name: data.name !== undefined ? String(data.name).trim() : current.name,
+    specialization: data.specialization !== undefined ? String(data.specialization).trim() : current.specialization,
+    rating: data.rating !== undefined ? Number(data.rating) : current.rating,
+    sessions: data.sessions !== undefined ? parseInt(data.sessions, 10) : current.sessions,
+    availability: data.availability !== undefined ? String(data.availability).trim() : current.availability,
+    photo: data.photo !== undefined ? data.photo || null : current.photo,
+    active: data.active !== undefined ? data.active === true || data.active === 'true' : current.active
+  };
+  if (isPostgres && pool) {
+    const res = await pool.query(
+      `UPDATE specialists SET name = $1, specialization = $2, rating = $3, sessions = $4,
+       availability = $5, photo = $6, active = $7, updated_at = CURRENT_TIMESTAMP
+       WHERE id = $8 RETURNING *`,
+      [next.name, next.specialization, next.rating, next.sessions, next.availability, next.photo, next.active, id]
+    );
+    return res.rows[0] ? mapSpecialistRow(res.rows[0]) : null;
+  }
+  const row = localStore.specialists.find(s => s.id === id);
+  Object.assign(row, next, { updated_at: new Date().toISOString() });
+  saveLocalStore(localStore);
+  return mapSpecialistRow(row);
+}
+
+async function deleteSpecialist(id) {
+  if (isPostgres && pool) {
+    await pool.query('DELETE FROM specialists WHERE id = $1', [id]);
+    return true;
+  }
+  localStore.specialists = (localStore.specialists || []).filter(s => s.id !== id);
+  saveLocalStore(localStore);
+  return true;
+}
+
 // --- BOOKINGS OPERATIONS ---
 async function getBookingsByUserId(userId) {
   if (!userId) return [];
   if (isPostgres && pool) {
-    const res = await pool.query('SELECT * FROM bookings WHERE user_id = $1 ORDER BY created_at DESC', [userId]);
-    return res.rows.map(mapBookingRow);
+    const res = await pool.query(
+      `SELECT b.*, p.breed AS pet_breed, COALESCE(p.photo, p.avatar) AS pet_photo
+       FROM bookings b
+       LEFT JOIN pets p ON p.id = b.pet_id AND p.user_id = b.user_id
+       WHERE b.user_id = $1 ORDER BY b.created_at DESC`, [userId]
+    );
+    return res.rows.map(r => ({ ...mapBookingRow(r), petBreed: r.pet_breed || '', petPhoto: r.pet_photo || '' }));
   }
-  return (localStore.bookings || []).filter(b => b.user_id === userId).map(mapBookingRow);
+  return (localStore.bookings || []).filter(b => b.user_id === userId).map(b => {
+    const pet = (localStore.pets || []).find(p => p.id === b.pet_id && p.user_id === userId);
+    return { ...mapBookingRow(b), petBreed: pet?.breed || '', petPhoto: pet?.photo || pet?.avatar || '' };
+  });
 }
 
 async function getAllBookings() {
@@ -1195,6 +1347,7 @@ async function getAllBookings() {
     return res.rows.map(r => ({
       ...mapBookingRow(r),
       userName: r.user_name || 'Pet Parent',
+      ownerName: r.user_name || 'Pet Parent',
       userEmail: r.user_email || '',
       userPhone: r.user_phone || '',
       petBreed: r.pet_breed || '',
@@ -1208,6 +1361,7 @@ async function getAllBookings() {
     return {
       ...mapBookingRow(b),
       userName: user ? user.name : 'Pet Parent',
+      ownerName: user ? user.name : 'Pet Parent',
       userEmail: user ? user.email : '',
       userPhone: user ? user.phone : '',
       petBreed: pet ? pet.breed : '',
@@ -1217,19 +1371,23 @@ async function getAllBookings() {
 }
 
 function mapBookingRow(b) {
+  const bookingTotal = Number(b.total_amount) || convertLegacyPriceToINR(b.service_price || 0);
   return {
     id: b.id,
     userId: b.user_id,
     user_id: b.user_id,
     petId: b.pet_id,
     pet_id: b.pet_id,
+    companionChoice: b.pet_id ? 'pet' : 'none',
     serviceId: b.service_id,
     service_id: b.service_id,
     service: b.service_name || b.service,
     serviceName: b.service_name || b.service,
     service_name: b.service_name || b.service,
     serviceCategory: b.service_category,
-    servicePrice: b.service_price,
+    servicePrice: formatINR(bookingTotal),
+    serviceBasePrice: formatINR(b.service_price || 0),
+    totalAmount: bookingTotal,
     duration: b.duration,
     petName: b.pet_name,
     pet_name: b.pet_name,
@@ -1237,69 +1395,137 @@ function mapBookingRow(b) {
     booking_date: b.booking_date,
     time: b.booking_time,
     booking_time: b.booking_time,
-    provider: b.provider || 'Care Specialist',
+    provider: b.provider || 'Any Master Groomer',
+    specialist: b.provider || 'Any Master Groomer',
+    specialistId: b.specialist_id || null,
+    specialistRole: b.specialist_role || 'Any available specialist',
+    specialistPhoto: b.specialist_photo || null,
+    specialistRating: b.specialist_rating == null ? null : Number(b.specialist_rating),
+    specialistSessions: b.specialist_sessions == null ? null : Number(b.specialist_sessions),
+    specialistAvailability: b.specialist_availability || '',
     status: b.status || 'Confirmed',
     notes: b.notes || '',
     address: b.address || 'PetPals Flagship Spa & Sanctuary',
+    location: b.address || 'PetPals Flagship Spa & Sanctuary',
+    locationType: b.location_type || '',
+    selectedAddons: Array.isArray(b.selected_addons) ? b.selected_addons : (typeof b.selected_addons === 'string' ? JSON.parse(b.selected_addons || '[]') : []),
     createdAt: b.created_at
   };
 }
 
-async function createBooking(data, userId) {
-  const id = data.id || 'PP-' + Math.floor(10000 + Math.random() * 89999);
-  const finalUserId = userId || data.user_id;
+const BOOKING_TIME_SLOTS = ['09:30','10:30','11:15','13:30','14:45','15:30','16:30'];
+function isIsoDate(value) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(value || ''))) return false;
+  const [year, month, day] = value.split('-').map(Number);
+  const date = new Date(year, month - 1, day); date.setHours(0,0,0,0);
+  const today = new Date(); today.setHours(0,0,0,0);
+  return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day && date >= today;
+}
 
-  if (!finalUserId) {
-    throw new Error('User ID is required to create a booking');
+async function getUnavailableBookingTimes(date, specialistId = null) {
+  if (!isIsoDate(date)) throw Object.assign(new Error('Select a valid future date'), { statusCode: 400 });
+  if (isPostgres && pool) {
+    const result = await pool.query(
+      `SELECT booking_time FROM bookings WHERE booking_date = $1 AND LOWER(COALESCE(status,'')) <> 'cancelled'
+       AND ($2::varchar IS NULL OR specialist_id = $2 OR specialist_id IS NULL)`, [date, specialistId || null]
+    );
+    return [...new Set(result.rows.map(row => String(row.booking_time).slice(0,5)))];
+  }
+  return [...new Set((localStore.bookings || []).filter(booking => booking.booking_date === date && String(booking.status).toLowerCase() !== 'cancelled'
+    && (!specialistId || booking.specialist_id === specialistId || !booking.specialist_id)).map(booking => String(booking.booking_time).slice(0,5)))];
+}
+
+async function createBooking(data, userId, options = {}) {
+  const id = `PP-${Date.now().toString(36).toUpperCase()}-${crypto.randomBytes(3).toString('hex').toUpperCase()}`;
+  const finalUserId = userId || data.user_id;
+  if (!finalUserId) throw new Error('User ID is required to create a booking');
+
+  const date = String(data.date || data.booking_date || '');
+  if (!isIsoDate(date)) throw Object.assign(new Error('Select a valid future booking date'), { statusCode: 400 });
+  const time = String(data.time || data.booking_time || '');
+  if (!BOOKING_TIME_SLOTS.includes(time)) throw Object.assign(new Error('Select an available appointment time'), { statusCode: 400 });
+  const nowLocal = new Date();
+  const todayLocal = `${nowLocal.getFullYear()}-${String(nowLocal.getMonth()+1).padStart(2,'0')}-${String(nowLocal.getDate()).padStart(2,'0')}`;
+  if (date === todayLocal) {
+    const [hour, minute] = time.split(':').map(Number);
+    const now = new Date();
+    if (hour * 60 + minute <= now.getHours() * 60 + now.getMinutes()) throw Object.assign(new Error('Choose a future appointment time'), { statusCode: 400 });
+  }
+  const locationType = data.locationType || data.location_type;
+  if (!['clinic','mobile'].includes(locationType)) throw Object.assign(new Error('Select a service location'), { statusCode: 400 });
+
+  const serviceId = data.serviceId || data.service_id;
+  if (!serviceId) throw Object.assign(new Error('Select a service'), { statusCode: 400 });
+  const service = (await getAllServices(true)).find(item => item.id === serviceId);
+  if (!service) throw Object.assign(new Error('Selected service is unavailable'), { statusCode: 400 });
+
+  const petId = data.petId || data.pet_id || null;
+  let selectedPet = null;
+  if (petId) {
+    if (isPostgres && pool) {
+      const petResult = await pool.query('SELECT * FROM pets WHERE id = $1 AND user_id = $2 LIMIT 1', [petId, finalUserId]);
+      selectedPet = petResult.rows[0] || null;
+    } else selectedPet = (localStore.pets || []).find(pet => pet.id === petId && pet.user_id === finalUserId) || null;
+    if (!selectedPet) throw Object.assign(new Error('Selected companion does not belong to this account'), { statusCode: 400 });
   }
 
-  const serviceName = data.service || data.serviceName || data.service_name || 'Grooming & Spa Experience';
-  const serviceCategory = data.serviceCategory || data.service_category || 'grooming';
-  const servicePrice = data.servicePrice || data.service_price || '$65.00';
-  const duration = data.duration || '60 min';
-  const petName = data.petName || data.pet_name || 'Companion';
-  const date = data.date || data.booking_date || 'Upcoming';
-  const time = data.time || data.booking_time || '10:00 AM';
-  const provider = data.provider || 'Care Specialist';
-  const status = data.status || 'Confirmed';
+  const servicePriceNum = Number(service.priceNum);
+  const servicePrice = formatINR(servicePriceNum);
+  const serviceName = service.name;
+  const serviceCategory = service.category;
+  const duration = service.duration;
+  const petName = selectedPet ? selectedPet.name : 'No companion';
+  const specialistId = data.specialistId || data.specialist_id || null;
+  const selectedSpecialist = specialistId ? await getSpecialistById(specialistId) : null;
+  if (specialistId && (!selectedSpecialist || !selectedSpecialist.active)) {
+    throw Object.assign(new Error('Selected specialist is unavailable'), { statusCode: 400 });
+  }
+  const provider = selectedSpecialist?.name || 'Any Master Groomer';
+  const specialistRole = selectedSpecialist?.specialization || 'Any available specialist';
+  const specialistPhoto = selectedSpecialist?.photo || null;
+  const specialistRating = selectedSpecialist?.rating ?? null;
+  const specialistSessions = selectedSpecialist?.sessions ?? null;
+  const specialistAvailability = selectedSpecialist?.availability || '';
+  const status = 'Confirmed';
   const notes = data.notes || '';
-  const address = data.address || 'PetPals Main Sanctuary';
+  const address = data.location || data.address || (locationType === 'mobile' ? 'In-Home Concierge Van' : 'PetPals Flagship Spa & Wellness Lounge • Suite 4');
+  const allowedAddons = new Map([['Paw Balm & Nail Trim',1450],['Organic Teeth Brushing',950]]);
+  const selectedAddons = [...new Set((Array.isArray(data.selectedAddons) ? data.selectedAddons : []).map(addon => String(addon.name || '').trim()))]
+    .filter(name => allowedAddons.has(name)).map(name => ({ name, price: allowedAddons.get(name) }));
+  const addonTotal = selectedAddons.reduce((sum, addon) => sum + addon.price, 0);
+  const fee = servicePriceNum >= 9700 ? Math.round(servicePriceNum * 0.05) : 450;
+  const tax = servicePriceNum >= 9700 ? Math.round(servicePriceNum * 0.06) : 450;
+  const totalAmount = servicePriceNum + addonTotal + fee + tax;
+  if (!options.skipAvailabilityCheck) {
+    const unavailable = await getUnavailableBookingTimes(date, specialistId);
+    if (unavailable.includes(time)) throw Object.assign(new Error('That time is no longer available. Choose another time.'), { statusCode: 409 });
+  }
 
   if (isPostgres && pool) {
     const res = await pool.query(
-      `INSERT INTO bookings (id, user_id, pet_id, service_id, service_name, service_category, service_price, duration, pet_name, booking_date, booking_time, provider, status, notes, address)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+      `INSERT INTO bookings (id, user_id, pet_id, service_id, service_name, service_category, service_price, total_amount, duration, pet_name, booking_date, booking_time, provider, status, notes, address, specialist_id, specialist_role, specialist_photo, specialist_rating, specialist_sessions, specialist_availability, location_type, selected_addons)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24)
        RETURNING *`,
-      [id, finalUserId, data.petId || data.pet_id || null, data.serviceId || data.service_id || null, serviceName, serviceCategory, servicePrice, duration, petName, date, time, provider, status, notes, address]
+      [id, finalUserId, petId, serviceId, serviceName, serviceCategory, servicePrice, totalAmount, duration, petName, date, time, provider, status, notes, address, specialistId, specialistRole, specialistPhoto, specialistRating, specialistSessions, specialistAvailability, locationType, JSON.stringify(selectedAddons)]
     );
     return mapBookingRow(res.rows[0]);
   }
 
-  const b = {
-    id,
-    user_id: finalUserId,
-    pet_id: data.petId || data.pet_id || null,
-    service_id: data.serviceId || data.service_id || null,
-    service_name: serviceName,
-    service_category: serviceCategory,
-    service_price: servicePrice,
-    duration,
-    pet_name: petName,
-    booking_date: date,
-    booking_time: time,
-    provider,
-    status,
-    notes,
-    address,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
+  const booking = {
+    id, user_id: finalUserId, pet_id: petId, service_id: serviceId, service_name: serviceName,
+    service_category: serviceCategory, service_price: servicePrice, total_amount: totalAmount,
+    duration, pet_name: petName, booking_date: date, booking_time: time, provider,
+    specialist_id: specialistId, specialist_role: specialistRole, specialist_photo: specialistPhoto,
+    specialist_rating: specialistRating, specialist_sessions: specialistSessions,
+    specialist_availability: specialistAvailability, location_type: locationType,
+    selected_addons: selectedAddons, status, notes, address,
+    created_at: new Date().toISOString(), updated_at: new Date().toISOString()
   };
   localStore.bookings = localStore.bookings || [];
-  localStore.bookings.unshift(b);
+  localStore.bookings.unshift(booking);
   saveLocalStore(localStore);
-  return mapBookingRow(b);
+  return mapBookingRow(booking);
 }
-
 async function updateBookingStatus(id, status, notes) {
   if (isPostgres && pool) {
     let sql = 'UPDATE bookings SET status = $1, updated_at = CURRENT_TIMESTAMP';
@@ -1351,6 +1577,9 @@ function mapReviewRow(r) {
     avatar: r.user_avatar || DEFAULT_USER.avatar,
     userAvatar: r.user_avatar || DEFAULT_USER.avatar,
     pet: r.pet || 'Companion',
+    petId: r.pet_id || null,
+    serviceId: r.service_id || null,
+    bookingId: r.booking_id || null,
     service: r.service_name || r.service,
     serviceName: r.service_name || r.service,
     rating: r.rating || 5,
@@ -1362,17 +1591,51 @@ function mapReviewRow(r) {
   };
 }
 
-async function createReview(data, userId) {
-  const id = data.id || 'rev-' + Date.now();
-  const userName = data.userName || data.user || 'Prathiksha Shetty';
-  const userAvatar = data.userAvatar || data.avatar || DEFAULT_USER.avatar;
+async function getReviewsByUserId(userId) {
+  if (!userId) return [];
+  if (isPostgres && pool) {
+    const result = await pool.query('SELECT * FROM reviews WHERE user_id = $1 ORDER BY created_at DESC', [userId]);
+    return result.rows.map(mapReviewRow);
+  }
+  return localStore.reviews.filter(review => review.user_id === userId).map(mapReviewRow);
+}
+
+async function createReview(data, userId, user) {
+  if (!userId) throw Object.assign(new Error('Authentication required'), { statusCode: 401 });
+  const id = 'rev-' + Date.now() + '-' + crypto.randomBytes(3).toString('hex');
+  const rating = Number(data.rating);
+  if (!Number.isInteger(rating) || rating < 1 || rating > 5 || !String(data.comment || '').trim() || !data.petId || !data.serviceId) {
+    throw Object.assign(new Error('Pet, service, a 1–5 star rating, and review text are required'), { statusCode: 400 });
+  }
+  let pet, service;
+  if (isPostgres && pool) {
+    const [petResult, activeServices] = await Promise.all([
+      pool.query('SELECT * FROM pets WHERE id = $1 AND user_id = $2 LIMIT 1', [data.petId, userId]),
+      getAllServices(true)
+    ]);
+    pet = petResult.rows[0]; service = activeServices.find(item => String(item.id) === String(data.serviceId));
+    if (data.bookingId) {
+      const booking = await pool.query("SELECT id FROM bookings WHERE id = $1 AND user_id = $2 AND pet_id = $3 AND service_id = $4 AND LOWER(status) IN ('completed','complete') LIMIT 1", [data.bookingId, userId, data.petId, data.serviceId]);
+      if (!booking.rows[0]) throw Object.assign(new Error('Reviews can only be added for your completed booking'), { statusCode: 400 });
+      const duplicate = await pool.query('SELECT 1 FROM reviews WHERE user_id = $1 AND booking_id = $2 LIMIT 1', [userId, data.bookingId]);
+      if (duplicate.rows[0]) throw Object.assign(new Error('A review has already been submitted for this booking'), { statusCode: 409 });
+    }
+  } else {
+    pet = localStore.pets.find(item => item.id === data.petId && item.user_id === userId);
+    service = localStore.services.find(item => item.id === data.serviceId && item.active !== false);
+  }
+  if (!pet) throw Object.assign(new Error('Selected pet does not belong to this account'), { statusCode: 400 });
+  if (!service) throw Object.assign(new Error('Selected service is unavailable'), { statusCode: 400 });
+  const petLabel = `${pet.name}${pet.breed ? ` (${pet.breed})` : ''}`;
+  const userName = user?.name || '';
+  const userAvatar = user?.avatar || null;
 
   if (isPostgres && pool) {
     const res = await pool.query(
-      `INSERT INTO reviews (id, user_id, user_name, user_avatar, pet, service_name, rating, comment, status, featured)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      `INSERT INTO reviews (id, user_id, user_name, user_avatar, pet, pet_id, service_id, booking_id, service_name, rating, comment, status, featured)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, 'Pending', FALSE)
        RETURNING *`,
-      [id, userId || null, userName, userAvatar, data.pet || 'Companion', data.service || data.serviceName || 'Pet Care Experience', parseInt(data.rating, 10) || 5, data.comment, 'Approved', Boolean(data.featured)]
+      [id, userId, userName, userAvatar, petLabel, pet.id, service.id, data.bookingId || null, service.name, rating, String(data.comment).trim()]
     );
     return mapReviewRow(res.rows[0]);
   }
@@ -1382,12 +1645,15 @@ async function createReview(data, userId) {
     user_id: userId || null,
     user_name: userName,
     user_avatar: userAvatar,
-    pet: data.pet || 'Companion',
-    service_name: data.service || data.serviceName || 'Pet Care Experience',
-    rating: parseInt(data.rating, 10) || 5,
-    comment: data.comment,
-    status: 'Approved',
-    featured: Boolean(data.featured),
+    pet: petLabel,
+    pet_id: pet.id,
+    service_id: service.id,
+    booking_id: data.bookingId || null,
+    service_name: service.name,
+    rating,
+    comment: String(data.comment).trim(),
+    status: 'Pending',
+    featured: false,
     created_at: new Date().toISOString()
   };
   localStore.reviews.unshift(r);
@@ -1518,7 +1784,7 @@ async function getAdminStats() {
       pool.query("SELECT COUNT(*) FROM pets WHERE status = 'Active'"),
       pool.query("SELECT COUNT(*) FROM bookings WHERE status = 'Completed'"),
       pool.query("SELECT COUNT(*) FROM reviews WHERE status = 'Pending'"),
-      pool.query("SELECT COALESCE(SUM(CAST(REPLACE(REPLACE(service_price, '$', ''), ',', '') AS NUMERIC)), 0) as total FROM bookings WHERE status != 'Cancelled'")
+      pool.query("SELECT COALESCE(SUM(CAST(REGEXP_REPLACE(service_price, '[^0-9.]', '', 'g') AS NUMERIC)), 0) as total FROM bookings WHERE status != 'Cancelled'")
     ]);
 
     return {
@@ -1526,7 +1792,7 @@ async function getAdminStats() {
       activePets: parseInt(petsRes.rows[0].count, 10),
       completedBookings: parseInt(bookingsRes.rows[0].count, 10),
       pendingReviews: parseInt(reviewsRes.rows[0].count, 10),
-      revenue: '$' + Math.round(parseFloat(revenueRes.rows[0].total) || 12450).toLocaleString()
+      revenue: formatINR(Math.round(parseFloat(revenueRes.rows[0].total) || 12450))
     };
   }
 
@@ -1536,14 +1802,14 @@ async function getAdminStats() {
   const pendingReviews = localStore.reviews.filter(r => r.status === 'Pending').length;
   const revenueNum = localStore.bookings
     .filter(b => b.status !== 'Cancelled')
-    .reduce((sum, b) => sum + (parseFloat(String(b.service_price).replace(/[^0-9.]/g, '')) || 65), 0);
+    .reduce((sum, b) => sum + (convertLegacyPriceToINR(b.service_price) || 6300), 0);
 
   return {
     totalUsers,
     activePets,
     completedBookings,
     pendingReviews,
-    revenue: '$' + Math.round(revenueNum || 12450).toLocaleString()
+    revenue: formatINR(Math.round(revenueNum || 12450))
   };
 }
 
@@ -1583,20 +1849,30 @@ module.exports = {
   updateUser,
   getAllUsers,
   findAdminByEmail,
+  createAdminSession,
+  getAdminSession,
+  deleteAdminSession,
   getPetsByUserId,
   getAllPets,
   createPet,
   updatePet,
   deletePet,
   getAllServices,
+  getSpecialists,
+  getSpecialistById,
+  createSpecialist,
+  updateSpecialist,
+  deleteSpecialist,
   createService,
   updateService,
   deleteService,
   getBookingsByUserId,
   getAllBookings,
+  getUnavailableBookingTimes,
   createBooking,
   updateBookingStatus,
   getAllReviews,
+  getReviewsByUserId,
   createReview,
   updateReview,
   deleteReview,

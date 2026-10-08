@@ -7,16 +7,22 @@
     REVIEWS: 'petpals_admin_reviews',
     MESSAGES: 'petpals_admin_messages',
     SETTINGS: 'petpals_admin_settings',
-    USERS: 'petpals_admin_users'
+    USERS: 'petpals_admin_users',
+    SPECIALISTS: 'petpals_admin_specialists',
+    BOOKINGS: 'petpals_admin_bookings'
   };
 
+  const DEFAULT_PROFILE_AVATAR = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="32" fill="#e8ded4"/><circle cx="32" cy="23" r="11" fill="#8c6246"/><path d="M10 60c1-15 10-23 22-23s21 8 22 23" fill="#8c6246"/></svg>'
+  );
+
   const DEFAULT_SERVICES = [
-    { id: 'srv-1', name: 'Grooming & Spa Experience', category: 'grooming', price: 65, duration: '75 min', specialist: 'Sarah Jenkins', active: true, description: 'Botanical hydrobath, blueberry facial, breed scissor trim, and paw massage.' },
-    { id: 'srv-2', name: 'Veterinary Comprehensive Exam', category: 'medical', price: 85, duration: '45 min', specialist: 'Dr. Emily Chen, DVM', active: true, description: 'Full physical examination, vitals, dental inspection, and vaccination check.' },
-    { id: 'srv-3', name: 'Luxury Sanctuary Boarding', category: 'boarding', price: 75, duration: 'Per Night', specialist: 'Care Sanctuary Team', active: true, description: 'Private suite with orthopaedic bedding, webcam access, and 3 daily play sessions.' },
-    { id: 'srv-4', name: 'Canine Adventure Walking', category: 'training', price: 30, duration: '60 min', specialist: 'Alex Rivera', active: true, description: 'Solo or small pack enrichment walk through nature reserve trails with GPS tracking.' },
-    { id: 'srv-5', name: 'Gentle Dental Hygiene Polish', category: 'medical', price: 95, duration: '50 min', specialist: 'Dr. Emily Chen, DVM', active: true, description: 'Ultrasonic scaling, antiseptic irrigation, and breath freshening enzyme coat.' },
-    { id: 'srv-6', name: 'Puppy & Companion Socialization', category: 'training', price: 45, duration: '60 min', specialist: 'Marcus Vance', active: true, description: 'Certified trainer-led positive reinforcement and manners development.' }
+    { id: 'srv-1', name: 'Grooming & Spa Experience', category: 'grooming', price: 6300, duration: '75 min', specialist: 'Sarah Jenkins', active: true, description: 'Botanical hydrobath, blueberry facial, breed scissor trim, and paw massage.' },
+    { id: 'srv-2', name: 'Veterinary Comprehensive Exam', category: 'medical', price: 8250, duration: '45 min', specialist: 'Dr. Emily Chen, DVM', active: true, description: 'Full physical examination, vitals, dental inspection, and vaccination check.' },
+    { id: 'srv-3', name: 'Luxury Sanctuary Boarding', category: 'boarding', price: 7300, duration: 'Per Night', specialist: 'Care Sanctuary Team', active: true, description: 'Private suite with orthopaedic bedding, webcam access, and 3 daily play sessions.' },
+    { id: 'srv-4', name: 'Canine Adventure Walking', category: 'training', price: 2900, duration: '60 min', specialist: 'Alex Rivera', active: true, description: 'Solo or small pack enrichment walk through nature reserve trails with GPS tracking.' },
+    { id: 'srv-5', name: 'Gentle Dental Hygiene Polish', category: 'medical', price: 9200, duration: '50 min', specialist: 'Dr. Emily Chen, DVM', active: true, description: 'Ultrasonic scaling, antiseptic irrigation, and breath freshening enzyme coat.' },
+    { id: 'srv-6', name: 'Puppy & Companion Socialization', category: 'training', price: 4350, duration: '60 min', specialist: 'Marcus Vance', active: true, description: 'Certified trainer-led positive reinforcement and manners development.' }
   ];
 
   const DEFAULT_REVIEWS = [
@@ -50,7 +56,18 @@
     getServices() {
       try {
         const val = localStorage.getItem(STORAGE_KEYS.SERVICES);
-        if (val) return JSON.parse(val);
+        if (val) {
+          const services = JSON.parse(val);
+          let migrated = false;
+          services.forEach(service => {
+            if (Number(service.price) > 0 && Number(service.price) < 1000) {
+              service.price = Math.round(Number(service.price) * 97 / 50) * 50;
+              migrated = true;
+            }
+          });
+          if (migrated) localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(services));
+          return services;
+        }
       } catch(e) {}
       localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(DEFAULT_SERVICES));
       return [...DEFAULT_SERVICES];
@@ -65,7 +82,7 @@
         id: service.id || ('srv-' + Date.now()),
         name: service.name || 'New Care Service',
         category: service.category || 'grooming',
-        price: parseFloat(service.price) || 50,
+        price: parseFloat(service.price) || 6300,
         duration: service.duration || '60 min',
         specialist: service.specialist || 'Pet Care Specialist',
         active: service.active !== false,
@@ -220,35 +237,44 @@
 
     async syncFromBackend() {
       try {
-        const [services, reviews, messages, users, settings, stats] = await Promise.all([
+        const [services, reviews, messages, users, settings, stats, specialists, bookings] = await Promise.all([
           fetch('/api/services?all=true').then(r => r.ok ? r.json() : null),
           fetch('/api/reviews?admin=true').then(r => r.ok ? r.json() : null),
           fetch('/api/messages').then(r => r.ok ? r.json() : null),
           fetch('/api/admin/users').then(r => r.ok ? r.json() : null),
           fetch('/api/admin/settings').then(r => r.ok ? r.json() : null),
-          fetch('/api/admin/stats').then(r => r.ok ? r.json() : null)
+          fetch('/api/admin/stats').then(r => r.ok ? r.json() : null),
+          fetch('/api/specialists?all=true').then(r => r.ok ? r.json() : null),
+          fetch('/api/bookings?admin=true').then(r => r.ok ? r.json() : null)
         ]);
 
-        if (Array.isArray(services) && services.length > 0) {
+        if (Array.isArray(services)) {
           localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(services));
         }
-        if (Array.isArray(reviews) && reviews.length > 0) {
+        if (Array.isArray(reviews)) {
           localStorage.setItem(STORAGE_KEYS.REVIEWS, JSON.stringify(reviews));
         }
-        if (Array.isArray(messages) && messages.length > 0) {
+        if (Array.isArray(messages)) {
           localStorage.setItem(STORAGE_KEYS.MESSAGES, JSON.stringify(messages));
         }
-        if (Array.isArray(users) && users.length > 0) {
+        if (Array.isArray(users)) {
           localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
         }
+        if (Array.isArray(specialists)) localStorage.setItem(STORAGE_KEYS.SPECIALISTS, JSON.stringify(specialists));
+        if (Array.isArray(bookings)) this.saveBookings(bookings);
         if (settings && typeof settings === 'object') {
           localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
         }
         if (stats) {
           window.PetPalsAdminStats = stats;
         }
+        window.PetPalsAdminSynced = true;
+        window.PetPalsAdminSyncFailed = false;
       } catch (err) {
-        console.warn('Admin backend sync failed, using cached store:', err);
+        window.PetPalsAdminSynced = false;
+        window.PetPalsAdminSyncFailed = true;
+        localStorage.removeItem(STORAGE_KEYS.USERS);
+        console.warn('Admin backend sync failed:', err);
       }
     },
 
@@ -261,74 +287,7 @@
         }
       } catch(e) {}
 
-      const currentUser = (window.PetPalsStore && window.PetPalsStore.getUser()) || {
-        name: 'Prathiksha Shetty',
-        email: 'prathiksha@gmail.com',
-        phone: '+91 98765 43210',
-        location: 'Mangalore, Karnataka',
-        avatar: 'https://lh3.googleusercontent.com/aida/AEtjO1W2uQrDJs4Vq5TYFXxKRstMqlWwR7xI1Vd89lXd1ZvB7avK7gnREQ5WOfaUosw8l-wR8L7-eAfCJuvY7Cdxkt317Wkh_wn-EKHXll2I84VoOFaioaG2l8yZtkkQGVoXM8G4qG0iUi8m9vS2hjJib1qyvdhI6AzazhdyK9EGdq-j_RpdlDJb8JyxcEVyEU7peCGUk_svquzx-8jfE0aefqTpVg7JuQ55FJTJZ-LnWWoZI1waQwUpguaERD58ZXbKt52BFZtBOSmgo_4'
-      };
-
-      const pets = (window.PetPalsStore && window.PetPalsStore.getPets()) || [];
-      const bookings = (window.PetPalsStore && window.PetPalsStore.getBookings()) || [];
-
-      const initialUsers = [
-        {
-          id: 'usr-1',
-          name: currentUser.name,
-          email: currentUser.email,
-          phone: currentUser.phone,
-          location: currentUser.location || 'Mangalore, Karnataka',
-          avatar: currentUser.avatar,
-          petsCount: pets.length,
-          petsList: pets.map(p => p.name).join(', ') || 'Bruno, Milo',
-          bookingsCount: bookings.length || 4,
-          joined: 'Sep 2026',
-          status: 'Active'
-        },
-        {
-          id: 'usr-2',
-          name: 'Sneha Rao',
-          email: 'sneha.rao@gmail.com',
-          phone: '+91 98451 22334',
-          location: 'Indiranagar, Bangalore',
-          avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80',
-          petsCount: 1,
-          petsList: 'Simba (Dog)',
-          bookingsCount: 2,
-          joined: 'Aug 2026',
-          status: 'Active'
-        },
-        {
-          id: 'usr-3',
-          name: 'Arjun Talwar',
-          email: 'arjun.t@outlook.com',
-          phone: '+91 99120 44556',
-          location: 'Koramangala, Bangalore',
-          avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
-          petsCount: 1,
-          petsList: 'Charlie (Beagle)',
-          bookingsCount: 4,
-          joined: 'Jul 2026',
-          status: 'Active'
-        },
-        {
-          id: 'usr-4',
-          name: 'Priya Kulkarni',
-          email: 'priya.kulkarni@gmail.com',
-          phone: '+91 97410 99881',
-          location: 'Whitefield, Bangalore',
-          avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
-          petsCount: 2,
-          petsList: 'Rocky, Bella',
-          bookingsCount: 5,
-          joined: 'May 2026',
-          status: 'Active'
-        }
-      ];
-
-      localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(initialUsers));
-      return initialUsers;
+      return [];
     },
     saveUsers(users) {
       localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
@@ -338,6 +297,24 @@
       const users = this.getUsers().filter(u => u.id !== id);
       this.saveUsers(users);
       return users;
+    },
+    getSpecialists() {
+      try {
+        const records = JSON.parse(localStorage.getItem(STORAGE_KEYS.SPECIALISTS) || '[]');
+        return Array.isArray(records) ? records : [];
+      } catch (e) { return []; }
+    },
+    saveSpecialists(records) {
+      localStorage.setItem(STORAGE_KEYS.SPECIALISTS, JSON.stringify(records));
+    },
+    getBookings() {
+      try {
+        const records = JSON.parse(localStorage.getItem(STORAGE_KEYS.BOOKINGS) || '[]');
+        return Array.isArray(records) ? records : [];
+      } catch (e) { return []; }
+    },
+    saveBookings(records) {
+      localStorage.setItem(STORAGE_KEYS.BOOKINGS, JSON.stringify(Array.isArray(records) ? records : []));
     }
   };
 
@@ -349,12 +326,140 @@
     );
   }
 
+  function renderDashboardAnalytics(bookings) {
+    const chart = document.getElementById('dashboard-bookings-chart');
+    if (chart) {
+      const now = new Date();
+      const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      weekStart.setDate(weekStart.getDate() - ((weekStart.getDay() + 6) % 7));
+      const counts = Array(7).fill(0);
+      bookings.forEach(booking => {
+        if (!booking.date) return;
+        const match = String(booking.date).match(/^(\d{4})-(\d{2})-(\d{2})/);
+        const date = match
+          ? new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]))
+          : new Date(booking.date);
+        if (Number.isNaN(date.getTime())) return;
+        const dayOffset = Math.round((date.setHours(0, 0, 0, 0) - weekStart.getTime()) / 86400000);
+        if (dayOffset >= 0 && dayOffset < 7) counts[dayOffset] += 1;
+      });
+
+      const maxCount = Math.max(...counts);
+      const tickStep = Math.max(1, Math.ceil(maxCount / 4));
+      const axisMax = tickStep * 4;
+      const xPoints = [50, 125, 195, 270, 345, 420, 495];
+      const yPoints = counts.map(count => 195 - (count / axisMax) * 175);
+      const linePath = xPoints.slice(1).reduce((path, x, index) => {
+        const startX = xPoints[index];
+        const endY = yPoints[index + 1].toFixed(1);
+        const startY = yPoints[index].toFixed(1);
+        const controlOffset = (x - startX) / 3;
+        return `${path} C ${(startX + controlOffset).toFixed(1)} ${startY}, ${(x - controlOffset).toFixed(1)} ${endY}, ${x} ${endY}`;
+      }, `M ${xPoints[0]} ${yPoints[0].toFixed(1)}`);
+      const areaPath = `${linePath} L 495 195 L 50 195 Z`;
+      chart.querySelector('path[fill="url(#areaGradient)"]')?.setAttribute('d', areaPath);
+      chart.querySelector('path[fill="none"]')?.setAttribute('d', linePath);
+      chart.querySelectorAll('circle').forEach((point, index) => {
+        if (index < xPoints.length) {
+          point.setAttribute('cx', xPoints[index]);
+          point.setAttribute('cy', yPoints[index].toFixed(1));
+        }
+      });
+      chart.querySelectorAll('g text').forEach((label, index) => {
+        if (index < 5) label.textContent = String(axisMax - tickStep * index);
+      });
+    }
+
+    const legend = document.getElementById('dashboard-service-legend');
+    const segments = document.querySelectorAll('.donut-segment');
+    if (!legend || !segments.length) return;
+
+    const countsByService = new Map();
+    bookings.forEach(booking => {
+      const name = String(booking.serviceName || booking.service || 'Other service').trim() || 'Other service';
+      countsByService.set(name, (countsByService.get(name) || 0) + 1);
+    });
+    const sorted = [...countsByService.entries()].sort((a, b) => b[1] - a[1]);
+    const topServices = sorted.slice(0, 4);
+    const remainder = sorted.slice(4).reduce((sum, [, count]) => sum + count, 0);
+    if (remainder) topServices.push(['Other services', remainder]);
+    if (!topServices.length) topServices.push(['No bookings yet', 0]);
+
+    const colors = ['#5c3d28', '#8c6246', '#b68d6c', '#d4b89b', '#e8d8c8'];
+    const total = bookings.length;
+    const circumference = 2 * Math.PI * 58;
+    const mixTotal = document.getElementById('dashboard-bookings-mix-total');
+    if (mixTotal) mixTotal.textContent = total ? '100%' : '0%';
+    let offset = 0;
+    segments.forEach((segment, index) => {
+      const entry = topServices[index];
+      const count = entry ? entry[1] : 0;
+      const length = total ? (count / total) * circumference : (index === 0 ? circumference : 0);
+      segment.setAttribute('stroke', total ? (colors[index] || colors[colors.length - 1]) : colors[colors.length - 1]);
+      segment.setAttribute('stroke-dasharray', `${length.toFixed(2)} ${(circumference - length).toFixed(2)}`);
+      segment.setAttribute('stroke-dashoffset', `${-offset.toFixed(2)}`);
+      segment.style.display = entry ? '' : 'none';
+      offset += length;
+    });
+
+    legend.innerHTML = topServices.map(([name, count], index) => `
+      <div class="flex items-start justify-between gap-2">
+        <div class="flex items-start gap-2 min-w-0">
+          <span class="w-3 h-3 mt-0.5 rounded-full shrink-0" style="background-color:${total ? (colors[index] || colors[colors.length - 1]) : colors[colors.length - 1]}"></span>
+          <span class="font-medium text-brand-dark">${escapeHtml(name)}</span>
+        </div>
+        <span class="font-semibold text-brand-muted shrink-0">${total ? Math.round(count / total * 100) : 0}%</span>
+      </div>
+    `).join('');
+  }
+
+  function renderDashboardActivity(bookings) {
+    const list = document.getElementById('admin-recent-activity-list');
+    if (!list) return;
+    if (!window.PetPalsAdminSynced) {
+      list.innerHTML = `<p class="text-[11px] text-brand-muted">${window.PetPalsAdminSyncFailed ? 'Recent activity is unavailable.' : 'Loading recent activity…'}</p>`;
+      return;
+    }
+    if (!bookings.length) {
+      list.innerHTML = '<p class="text-[11px] text-brand-muted">No recent activity yet.</p>';
+      return;
+    }
+
+    list.innerHTML = bookings.slice(0, 4).map(booking => {
+      const details = [booking.serviceName || booking.service || 'Service', booking.petName || 'No companion'].join(' · ');
+      const schedule = [booking.date, booking.time].filter(Boolean).join(' · ') || 'Schedule not set';
+      return `
+        <div class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded-full bg-status-greenBg text-status-green flex items-center justify-center shrink-0 mt-0.5">
+            <svg class="w-4 h-4 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
+              <rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect>
+              <line x1="16" x2="16" y1="2" y2="6"></line>
+              <line x1="8" x2="8" y1="2" y2="6"></line>
+              <line x1="3" x2="21" y1="10" y2="10"></line>
+            </svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="font-semibold text-brand-dark">Booking received</p>
+            <p class="text-[11px] text-brand-muted truncate">${escapeHtml(details)}</p>
+          </div>
+          <span class="text-[10px] text-brand-muted shrink-0">${escapeHtml(schedule)}</span>
+        </div>
+      `;
+    }).join('');
+  }
+
   // Admin Portal UI Manager
   const AdminPortal = {
     currentSection: 'dashboard',
 
     init() {
+      window.PetPalsAdminSynced = false;
+      window.PetPalsAdminSyncFailed = false;
+      this.initAdminIdentityMenu();
       this.initRouting();
+      // Avoid rendering cached directory records before PostgreSQL refresh completes.
+      localStorage.removeItem(STORAGE_KEYS.USERS);
+      localStorage.removeItem(STORAGE_KEYS.SPECIALISTS);
       this.updateBadges();
       this.renderCurrentSection();
 
@@ -383,13 +488,55 @@
       });
     },
 
+    initAdminIdentityMenu() {
+      const toggle = document.getElementById('admin-profile-toggle');
+      const menu = document.getElementById('admin-profile-menu');
+      const name = document.getElementById('admin-header-name');
+      const email = document.getElementById('admin-header-email');
+      const avatar = document.getElementById('admin-header-avatar');
+      const fallbackAvatar = DEFAULT_PROFILE_AVATAR;
+      fetch('/api/admin/me', { credentials: 'same-origin', cache: 'no-store' })
+        .then(response => response.ok ? response.json() : null)
+        .then(admin => {
+          if (!admin) return;
+          if (name) name.textContent = 'Admin';
+          if (email) email.textContent = admin.email || 'admin@petpalscare.com';
+          if (avatar && admin.avatar) {
+            avatar.src = admin.avatar;
+            avatar.classList.remove('hidden');
+            avatar.nextElementSibling?.classList.add('hidden');
+          } else if (avatar) {
+            avatar.src = fallbackAvatar;
+            avatar.classList.add('hidden');
+            avatar.nextElementSibling?.classList.remove('hidden');
+          }
+        })
+        .catch(() => {});
+      toggle?.addEventListener('click', event => {
+        event.stopPropagation();
+        const opening = menu?.classList.contains('hidden');
+        menu?.classList.toggle('hidden', !opening);
+        toggle.setAttribute('aria-expanded', String(Boolean(opening)));
+      });
+      document.addEventListener('click', event => {
+        if (!menu?.contains(event.target) && !toggle?.contains(event.target)) {
+          menu?.classList.add('hidden');
+          toggle?.setAttribute('aria-expanded', 'false');
+        }
+      });
+      document.getElementById('admin-sign-out')?.addEventListener('click', async () => {
+        try { await fetch('/api/admin/logout', { method: 'POST', credentials: 'same-origin' }); } catch (err) {}
+        window.location.assign('/');
+      });
+    },
+
     initRouting() {
       // Determine initial section from URL pathname or hash
       let initial = 'dashboard';
       const path = window.location.pathname.replace(/^\/admin\/?/, '');
       const hash = window.location.hash.replace(/^#/, '');
 
-      const validSections = ['dashboard', 'bookings', 'users', 'pets', 'services', 'reviews', 'messages', 'reports', 'settings'];
+      const validSections = ['dashboard', 'bookings', 'users', 'pets', 'services', 'specialists', 'reviews', 'messages', 'reports', 'settings'];
       if (validSections.includes(path)) {
         initial = path;
       } else if (validSections.includes(hash)) {
@@ -438,7 +585,7 @@
     },
 
     switchSection(sectionId, pushHistory = true) {
-      const valid = ['dashboard', 'bookings', 'users', 'pets', 'services', 'reviews', 'messages', 'reports', 'settings'];
+      const valid = ['dashboard', 'bookings', 'users', 'pets', 'services', 'specialists', 'reviews', 'messages', 'reports', 'settings'];
       if (!valid.includes(sectionId)) sectionId = 'dashboard';
       this.currentSection = sectionId;
 
@@ -480,15 +627,15 @@
       });
 
       // Toggle Right Sidebar (Recent Activity & Quick Actions)
-      // Only show on dashboard on xl screens, hide on other heavy data sections for full viewport space
+      // Keep the dashboard side panel for wide screens so the main dashboard cards retain enough room.
       const rightSidebar = document.getElementById('admin-right-sidebar');
       if (rightSidebar) {
         if (sectionId === 'dashboard') {
-          rightSidebar.classList.remove('xl:hidden');
-          rightSidebar.classList.add('hidden', 'xl:block');
+          rightSidebar.classList.remove('2xl:hidden');
+          rightSidebar.classList.add('hidden', '2xl:block');
         } else {
           rightSidebar.classList.add('hidden');
-          rightSidebar.classList.remove('xl:block');
+          rightSidebar.classList.remove('2xl:block');
         }
       }
 
@@ -499,6 +646,7 @@
         users: 'PetPals Admin - Registered Users Directory',
         pets: 'PetPals Admin - Registered Pets Directory',
         services: 'PetPals Admin - Services Management',
+        specialists: 'PetPals Admin - Specialists & Groomers',
         reviews: 'PetPals Admin - Customer Reviews & Moderation',
         messages: 'PetPals Admin - Client Inquiries & Messages',
         reports: 'PetPals Admin - Business & Performance Reports',
@@ -511,7 +659,7 @@
     },
 
     updateBadges() {
-      const bookings = (window.PetPalsStore && window.PetPalsStore.getBookings()) || [];
+      const bookings = AdminDataStore.getBookings();
       const pets = (window.PetPalsStore && window.PetPalsStore.getPets()) || [];
       const users = AdminDataStore.getUsers();
       const messages = AdminDataStore.getMessages();
@@ -540,6 +688,9 @@
         case 'services':
           this.renderServices();
           break;
+        case 'specialists':
+          this.renderSpecialists();
+          break;
         case 'reviews':
           this.renderReviews();
           break;
@@ -557,12 +708,21 @@
 
     // 1. DASHBOARD
     renderDashboard() {
-      const bookings = (window.PetPalsStore && window.PetPalsStore.getBookings()) || [];
+      const bookings = AdminDataStore.getBookings();
       const pets = (window.PetPalsStore && window.PetPalsStore.getPets()) || [];
       const users = AdminDataStore.getUsers();
       const messages = AdminDataStore.getMessages();
       const pendingBookings = bookings.filter(b => b.status === 'Pending').length;
       const unreadMsgs = messages.filter(m => m.status === 'Unread').length;
+
+      const dashboardDate = document.getElementById('dashboard-date-display');
+      if (dashboardDate) {
+        dashboardDate.textContent = new Intl.DateTimeFormat(undefined, {
+          month: 'short', day: 'numeric', year: 'numeric'
+        }).format(new Date());
+      }
+      renderDashboardAnalytics(bookings);
+      renderDashboardActivity(bookings);
 
       // Update KPI numbers
       const elKpiBookings = document.getElementById('kpi-total-bookings');
@@ -597,9 +757,11 @@
               statusBadge = `<span class="inline-block px-3 py-1 rounded-full text-[11px] font-semibold bg-status-redBg text-status-red">Cancelled</span>`;
             }
 
-            const ownerName = b.ownerName || 'Prathiksha S.';
-            const petDisplay = b.petName ? `${escapeHtml(b.petName)} (${b.petBreed ? b.petBreed.split(' ')[0] : 'Pet'})` : 'Bruno (Dog)';
-            const dateTime = `${b.date || 'Oct 10, 2026'} - ${b.time || '10:00 AM'}`;
+            const ownerName = b.ownerName || b.userName || 'Pet Parent';
+            const petDisplay = b.petName
+              ? `${escapeHtml(b.petName)} (${escapeHtml(b.petBreed ? b.petBreed.split(' ')[0] : 'Pet')})`
+              : 'No companion';
+            const dateTime = [b.date || 'Date not set', b.time || 'Time not set'].join(' - ');
 
             return `
               <tr class="hover:bg-brand-cream/40 transition-colors">
@@ -611,7 +773,7 @@
                 <td class="py-3.5 px-3 text-center">${statusBadge}</td>
                 <td class="py-3.5 px-3">
                   <div class="flex items-center justify-center gap-2">
-                    <button onclick="AdminPortal.openBookingDetailsModal('${b.id}')" class="px-3.5 py-1 rounded-lg bg-brand-brown hover:bg-brand-brownHover text-white font-medium text-xs shadow-xs transition-colors">View</button>
+                    <button onclick="AdminPortal.openBookingDetailsModal(decodeURIComponent('${encodeURIComponent(String(b.id || ''))}'))" class="px-3.5 py-1 rounded-lg bg-brand-brown hover:bg-brand-brownHover text-white font-medium text-xs shadow-xs transition-colors">View</button>
                   </div>
                 </td>
               </tr>
@@ -626,7 +788,7 @@
       const container = document.getElementById('bookings-table-container');
       if (!container) return;
 
-      const bookings = (window.PetPalsStore && window.PetPalsStore.getBookings()) || [];
+      const bookings = AdminDataStore.getBookings();
       const query = (document.getElementById('bookings-search-input')?.value || '').trim().toLowerCase();
       const filterStatus = window._currentBookingsFilter || 'all';
 
@@ -706,34 +868,34 @@
                     <td class="py-4 px-4 font-mono font-medium text-brand-brown">${escapeHtml(b.id)}</td>
                     <td class="py-4 px-4">
                       <div class="font-semibold text-brand-dark">${escapeHtml(b.service)}</div>
-                      <div class="text-[11px] text-brand-muted">${escapeHtml(b.duration || '60 min')} • ${escapeHtml(b.specialist || 'Specialist')}</div>
+                      <div class="text-[11px] text-brand-muted">${escapeHtml(b.duration || '60 min')} • ${escapeHtml(b.specialist || b.provider || 'Any Master Groomer')}</div>
                     </td>
                     <td class="py-4 px-4">
                       <div class="font-medium text-brand-dark flex items-center gap-1.5">
-                        <span class="w-2 h-2 rounded-full bg-brand-brown"></span>
-                        ${escapeHtml(b.petName || 'Bruno')}
+                        ${b.petName ? '<span class="w-2 h-2 rounded-full bg-brand-brown"></span>' : ''}
+                        ${escapeHtml(b.petName || 'No companion')}
                       </div>
-                      <div class="text-[11px] text-brand-muted pl-3.5">${escapeHtml(b.petBreed || 'Golden Retriever')}</div>
+                      ${b.petName && b.petBreed ? `<div class="text-[11px] text-brand-muted pl-3.5">${escapeHtml(b.petBreed)}</div>` : ''}
                     </td>
                     <td class="py-4 px-4">
-                      <div class="font-medium text-brand-dark">${escapeHtml(b.ownerName || 'Prathiksha Shetty')}</div>
-                      <div class="text-[11px] text-brand-muted">+91 98765 43210</div>
+                      <div class="font-medium text-brand-dark">${escapeHtml(b.ownerName || b.userName || 'Pet Parent')}</div>
+                      <div class="text-[11px] text-brand-muted">${escapeHtml(b.userPhone || 'No phone on file')}</div>
                     </td>
                     <td class="py-4 px-4">
-                      <div class="font-medium text-brand-dark">${escapeHtml(b.date || 'Oct 10, 2026')}</div>
-                      <div class="text-[11px] text-brand-muted">${escapeHtml(b.time || '10:00 AM')}</div>
+                      <div class="font-medium text-brand-dark">${escapeHtml(b.date || 'Date not set')}</div>
+                      <div class="text-[11px] text-brand-muted">${escapeHtml(b.time || 'Time not set')}</div>
                     </td>
-                    <td class="py-4 px-4 font-semibold text-brand-dark">${escapeHtml(b.servicePrice || '$65.00')}</td>
+                    <td class="py-4 px-4 font-semibold text-brand-dark">${escapeHtml(b.servicePrice || (Number(b.totalAmount) ? `₹${Number(b.totalAmount).toLocaleString('en-IN')}` : '—'))}</td>
                     <td class="py-4 px-4 text-center">${statusBadge}</td>
                     <td class="py-4 px-4 text-right">
                       <div class="inline-flex items-center gap-1.5 justify-end">
-                        <select onchange="AdminPortal.changeBookingStatus('${b.id}', this.value)" class="text-[11px] py-1 pl-2 pr-6 rounded-lg bg-brand-cream border border-brand-border text-brand-dark font-medium focus:ring-1 focus:ring-brand-brown cursor-pointer">
+                        <select onchange="AdminPortal.changeBookingStatus(decodeURIComponent('${encodeURIComponent(String(b.id || ''))}'), this.value)" class="text-[11px] py-1 pl-2 pr-6 rounded-lg bg-brand-cream border border-brand-border text-brand-dark font-medium focus:ring-1 focus:ring-brand-brown cursor-pointer">
                           <option value="Confirmed" ${st === 'confirmed' || st === 'upcoming' ? 'selected' : ''}>Confirmed</option>
                           <option value="Pending" ${st === 'pending' ? 'selected' : ''}>Pending</option>
                           <option value="Completed" ${st === 'completed' ? 'selected' : ''}>Completed</option>
                           <option value="Cancelled" ${st === 'cancelled' ? 'selected' : ''}>Cancelled</option>
                         </select>
-                        <button onclick="AdminPortal.openBookingDetailsModal('${b.id}')" class="px-2.5 py-1 rounded-lg bg-brand-brown hover:bg-brand-brownHover text-white font-medium text-xs transition-colors">
+                        <button onclick="AdminPortal.openBookingDetailsModal(decodeURIComponent('${encodeURIComponent(String(b.id || ''))}'))" class="px-2.5 py-1 rounded-lg bg-brand-brown hover:bg-brand-brownHover text-white font-medium text-xs transition-colors">
                           View
                         </button>
                       </div>
@@ -747,16 +909,22 @@
       `;
     },
 
-    changeBookingStatus(id, newStatus) {
-      if (!window.PetPalsStore) return;
-      window.PetPalsStore.updateBooking(id, { status: newStatus });
-      this.renderBookings();
-      this.updateBadges();
-      this.showToast(`Booking ${id} marked as ${newStatus}`);
+    async changeBookingStatus(id, newStatus) {
+      try {
+        const response = await fetch('/api/bookings/' + encodeURIComponent(id) + '/status', {
+          method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: newStatus })
+        });
+        const updated = await response.json();
+        if (!response.ok) throw new Error(updated.error || 'Unable to update booking');
+        AdminDataStore.saveBookings(AdminDataStore.getBookings().map(booking => booking.id === id ? { ...booking, ...updated, ownerName: booking.ownerName, petBreed: booking.petBreed } : booking));
+        this.renderBookings();
+        this.updateBadges();
+        this.showToast(`Booking ${id} marked as ${newStatus}`);
+      } catch (error) { this.showToast(error.message || 'Unable to update booking.'); }
     },
 
     openBookingDetailsModal(id) {
-      const bookings = (window.PetPalsStore && window.PetPalsStore.getBookings()) || [];
+      const bookings = AdminDataStore.getBookings();
       const booking = bookings.find(b => b.id === id);
       if (!booking) return;
 
@@ -774,28 +942,28 @@
               <span class="font-mono text-xs font-semibold text-brand-brown uppercase tracking-wider">${escapeHtml(booking.id)}</span>
             </div>
             <h3 class="font-serif font-bold text-xl text-brand-dark mb-1">${escapeHtml(booking.service)}</h3>
-            <p class="text-xs text-brand-muted mb-4">${escapeHtml(booking.location || 'PetPals Flagship Spa & Sanctuary')}</p>
+            <p class="text-xs text-brand-muted mb-4">${escapeHtml(booking.location || 'Location not specified')}</p>
 
             <div class="space-y-3 bg-brand-cream/50 p-4 rounded-xl border border-brand-border text-xs mb-5">
               <div class="flex justify-between py-1 border-b border-brand-border/60">
                 <span class="text-brand-muted">Pet Name & Breed:</span>
-                <span class="font-semibold text-brand-dark">${escapeHtml(booking.petName || 'Bruno')} (${escapeHtml(booking.petBreed || 'Dog')})</span>
+                <span class="font-semibold text-brand-dark">${booking.petName ? `${escapeHtml(booking.petName)}${booking.petBreed ? ` (${escapeHtml(booking.petBreed)})` : ''}` : 'No companion'}</span>
               </div>
               <div class="flex justify-between py-1 border-b border-brand-border/60">
                 <span class="text-brand-muted">Owner / Pet Parent:</span>
-                <span class="font-semibold text-brand-dark">${escapeHtml(booking.ownerName || 'Prathiksha Shetty')} (+91 98765 43210)</span>
+                <span class="font-semibold text-brand-dark">${escapeHtml(booking.ownerName || booking.userName || 'Pet Parent')} (${escapeHtml(booking.userPhone || 'No phone on file')})</span>
               </div>
               <div class="flex justify-between py-1 border-b border-brand-border/60">
                 <span class="text-brand-muted">Date & Time:</span>
-                <span class="font-semibold text-brand-dark">${escapeHtml(booking.date)} at ${escapeHtml(booking.time)}</span>
+                <span class="font-semibold text-brand-dark">${escapeHtml(booking.date || 'Date not set')} at ${escapeHtml(booking.time || 'Time not set')}</span>
               </div>
               <div class="flex justify-between py-1 border-b border-brand-border/60">
                 <span class="text-brand-muted">Specialist:</span>
-                <span class="font-semibold text-brand-dark">${escapeHtml(booking.specialist || 'Sarah Jenkins')}</span>
+                <span class="font-semibold text-brand-dark">${escapeHtml(booking.specialist || booking.provider || 'Any Master Groomer')}</span>
               </div>
               <div class="flex justify-between py-1 border-b border-brand-border/60">
                 <span class="text-brand-muted">Price:</span>
-                <span class="font-bold text-brand-brown text-sm">${escapeHtml(booking.servicePrice || '$65.00')}</span>
+                <span class="font-bold text-brand-brown text-sm">${escapeHtml(booking.servicePrice || (Number(booking.totalAmount) ? `₹${Number(booking.totalAmount).toLocaleString('en-IN')}` : '—'))}</span>
               </div>
               <div class="flex justify-between py-1">
                 <span class="text-brand-muted">Current Status:</span>
@@ -854,7 +1022,7 @@
               <div>
                 <div class="flex items-start justify-between gap-3 mb-4">
                   <div class="flex items-center gap-3">
-                    <img src="${u.avatar || 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80'}" class="w-12 h-12 rounded-full object-cover border border-brand-border shadow-xs" alt="${escapeHtml(u.name)}">
+                    <img src="${escapeHtml(u.avatar || DEFAULT_PROFILE_AVATAR)}" onerror="this.onerror=null;this.src='${DEFAULT_PROFILE_AVATAR}'" class="w-12 h-12 rounded-full object-cover border border-brand-border shadow-xs" alt="${escapeHtml(u.name)}">
                     <div>
                       <h4 class="font-serif font-bold text-base text-brand-dark leading-tight">${escapeHtml(u.name)}</h4>
                       <p class="text-[11px] text-brand-muted mt-0.5">${escapeHtml(u.location)}</p>
@@ -948,7 +1116,7 @@
       const users = AdminDataStore.getUsers();
       const u = users.find(x => x.id === userId) || users[0];
       const pets = (window.PetPalsStore && window.PetPalsStore.getPets()) || [];
-      const bookings = (window.PetPalsStore && window.PetPalsStore.getBookings()) || [];
+      const bookings = AdminDataStore.getBookings();
 
       const modalEl = document.getElementById('admin-modal-container');
       if (!modalEl) return;
@@ -960,7 +1128,7 @@
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
             <div class="flex items-center gap-4 mb-4">
-              <img src="${u.avatar || 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80'}" class="w-14 h-14 rounded-full object-cover border-2 border-brand-border shadow-sm">
+              <img src="${escapeHtml(u.avatar || DEFAULT_PROFILE_AVATAR)}" onerror="this.onerror=null;this.src='${DEFAULT_PROFILE_AVATAR}'" class="w-14 h-14 rounded-full object-cover border-2 border-brand-border shadow-sm" alt="${escapeHtml(u.name)}">
               <div>
                 <h3 class="font-serif font-bold text-xl text-brand-dark">${escapeHtml(u.name)}</h3>
                 <p class="text-xs text-brand-muted">${escapeHtml(u.email)} • Joined ${escapeHtml(u.joined)}</p>
@@ -1156,6 +1324,106 @@
       `;
     },
 
+    renderSpecialists() {
+      const container = document.getElementById('specialists-grid-container');
+      if (!container) return;
+      const specialists = AdminDataStore.getSpecialists();
+      container.innerHTML = specialists.length ? specialists.map(s => `
+        <article class="bg-brand-surface p-5 rounded-2xl border border-brand-border shadow-soft flex flex-col justify-between">
+          <div class="flex items-start gap-3">
+            ${s.photo ? `<img src="${escapeHtml(s.photo)}" alt="${escapeHtml(s.name)}" class="w-14 h-14 rounded-full object-cover border border-brand-border">` : `<div class="w-14 h-14 rounded-full bg-brand-tan text-brand-brown flex items-center justify-center font-serif font-bold text-lg">${escapeHtml((s.name || '?').slice(0, 1).toUpperCase())}</div>`}
+            <div class="min-w-0 flex-1">
+              <div class="flex items-start justify-between gap-2"><h3 class="font-serif font-bold text-lg text-brand-dark">${escapeHtml(s.name)}</h3><span class="px-2 py-0.5 rounded-full text-[10px] font-semibold ${s.active ? 'bg-emerald-50 text-emerald-700' : 'bg-brand-tan text-brand-muted'}">${s.active ? 'Active' : 'Disabled'}</span></div>
+              <p class="text-xs text-brand-muted">${escapeHtml(s.specialization)}</p>
+              <p class="text-xs text-brand-brown mt-2">★ ${Number(s.rating || 0).toFixed(1)} · ${Number(s.sessions || 0).toLocaleString('en-IN')} sessions</p>
+              <p class="text-xs text-brand-muted mt-1">${escapeHtml(s.availability || 'Availability to be confirmed')}</p>
+            </div>
+          </div>
+          <div class="flex items-center justify-end gap-2 mt-5 pt-3 border-t border-brand-border">
+            <button onclick="AdminPortal.openSpecialistModal('${escapeHtml(s.id)}')" class="px-3 py-1.5 rounded-lg bg-brand-tan/70 hover:bg-brand-tan text-brand-dark font-medium text-xs">Edit</button>
+            <button onclick="AdminPortal.toggleSpecialist('${escapeHtml(s.id)}', ${!s.active})" class="px-3 py-1.5 rounded-lg bg-brand-cream hover:bg-brand-tan/50 text-brand-dark font-medium text-xs">${s.active ? 'Disable' : 'Enable'}</button>
+            <button onclick="AdminPortal.deleteSpecialist('${escapeHtml(s.id)}')" class="px-3 py-1.5 rounded-lg text-status-red hover:bg-status-redBg font-medium text-xs">Delete</button>
+          </div>
+        </article>`).join('') : '<div class="col-span-full bg-brand-surface p-8 rounded-2xl border border-brand-border text-center text-sm text-brand-muted">No specialists have been added yet.</div>';
+    },
+
+    openSpecialistModal(id) {
+      const specialist = id ? AdminDataStore.getSpecialists().find(s => s.id === id) : null;
+      if (id && !specialist) return;
+      const modal = document.getElementById('admin-modal-container');
+      if (!modal) return;
+      const s = specialist || { name: '', specialization: '', rating: 5, sessions: 0, availability: '', active: true, photo: '' };
+      modal.innerHTML = `
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"><div class="bg-brand-surface rounded-2xl max-w-lg w-full border border-brand-border shadow-2xl p-6 relative max-h-[90vh] overflow-y-auto">
+          <button onclick="document.getElementById('admin-modal-container').innerHTML=''" class="absolute top-4 right-4 text-brand-muted hover:text-brand-dark p-1">✕</button>
+          <h3 class="font-serif font-bold text-xl text-brand-dark mb-1">${id ? 'Edit Specialist' : 'Add Specialist / Groomer'}</h3><p class="text-xs text-brand-muted mb-4">Set the profile and availability shown during booking.</p>
+          <form id="specialist-form" class="space-y-3 text-xs" onsubmit="event.preventDefault(); AdminPortal.submitSpecialist('${id ? escapeHtml(id) : ''}')">
+            <div><label class="block font-semibold text-brand-dark mb-1">Name</label><input id="specialist-name" required value="${escapeHtml(s.name)}" class="w-full px-3 py-2 rounded-xl bg-brand-cream border border-brand-border outline-none"></div>
+            <div><label class="block font-semibold text-brand-dark mb-1">Specialization / Service Type</label><input id="specialist-specialization" required value="${escapeHtml(s.specialization)}" placeholder="Grooming & Spa" class="w-full px-3 py-2 rounded-xl bg-brand-cream border border-brand-border outline-none"></div>
+            <div class="grid grid-cols-2 gap-3"><div><label class="block font-semibold text-brand-dark mb-1">Rating</label><input id="specialist-rating" type="number" min="0" max="5" step="0.1" value="${Number(s.rating)}" required class="w-full px-3 py-2 rounded-xl bg-brand-cream border border-brand-border outline-none"></div><div><label class="block font-semibold text-brand-dark mb-1">Sessions</label><input id="specialist-sessions" type="number" min="0" step="1" value="${Number(s.sessions)}" required class="w-full px-3 py-2 rounded-xl bg-brand-cream border border-brand-border outline-none"></div></div>
+            <div><label class="block font-semibold text-brand-dark mb-1">Availability</label><input id="specialist-availability" value="${escapeHtml(s.availability)}" placeholder="Weekdays, 9 AM – 5 PM" class="w-full px-3 py-2 rounded-xl bg-brand-cream border border-brand-border outline-none"></div>
+            <div><label class="block font-semibold text-brand-dark mb-1">Profile Photo</label><input id="specialist-photo-file" type="file" accept="image/png,image/jpeg,image/webp,image/gif" class="w-full text-xs"><input id="specialist-photo" type="hidden" value="${escapeHtml(s.photo || '')}"><img id="specialist-photo-preview" src="${escapeHtml(s.photo || DEFAULT_PROFILE_AVATAR)}" class="w-14 h-14 rounded-full object-cover mt-2"></div>
+            <label class="flex items-center gap-2"><input id="specialist-active" type="checkbox" ${s.active ? 'checked' : ''}> Active and available for booking</label>
+            <div class="flex justify-end gap-2 pt-3"><button type="button" onclick="document.getElementById('admin-modal-container').innerHTML=''" class="px-4 py-2 rounded-xl bg-brand-tan/60 text-brand-dark font-medium">Cancel</button><button type="submit" class="px-5 py-2 rounded-xl bg-brand-brown hover:bg-brand-brownHover text-white font-semibold">Save Specialist</button></div>
+          </form>
+        </div></div>`;
+      document.getElementById('specialist-photo-file').addEventListener('change', event => {
+        const file = event.target.files && event.target.files[0];
+        if (!file) return;
+        if (file.size > 5 * 1024 * 1024) { this.showToast('Choose an image smaller than 5 MB.'); event.target.value = ''; return; }
+        const reader = new FileReader();
+        reader.onload = () => { document.getElementById('specialist-photo').value = reader.result; document.getElementById('specialist-photo-preview').src = reader.result; };
+        reader.readAsDataURL(file);
+      });
+    },
+
+    async submitSpecialist(id) {
+      const payload = {
+        name: document.getElementById('specialist-name').value.trim(),
+        specialization: document.getElementById('specialist-specialization').value.trim(),
+        rating: Number(document.getElementById('specialist-rating').value),
+        sessions: Number(document.getElementById('specialist-sessions').value),
+        availability: document.getElementById('specialist-availability').value.trim(),
+        photo: document.getElementById('specialist-photo').value || null,
+        active: document.getElementById('specialist-active').checked
+      };
+      try {
+        const response = await fetch(id ? '/api/specialists/' + encodeURIComponent(id) : '/api/specialists', { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || 'Unable to save specialist');
+        const list = AdminDataStore.getSpecialists();
+        const index = list.findIndex(s => s.id === result.id);
+        if (index < 0) list.push(result); else list[index] = result;
+        AdminDataStore.saveSpecialists(list);
+        document.getElementById('admin-modal-container').innerHTML = '';
+        this.renderSpecialists();
+        this.showToast('Specialist saved successfully.');
+      } catch (error) { this.showToast(error.message || 'Unable to save specialist.'); }
+    },
+
+    async toggleSpecialist(id, active) {
+      const current = AdminDataStore.getSpecialists().find(s => s.id === id);
+      if (!current) return;
+      try {
+        const response = await fetch('/api/specialists/' + encodeURIComponent(id), { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ active }) });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || 'Unable to update specialist');
+        AdminDataStore.saveSpecialists(AdminDataStore.getSpecialists().map(s => s.id === id ? result : s));
+        this.renderSpecialists();
+      } catch (error) { this.showToast(error.message || 'Unable to update specialist.'); }
+    },
+
+    async deleteSpecialist(id) {
+      if (!confirm('Delete this specialist? Existing bookings will keep their saved specialist details.')) return;
+      try {
+        const response = await fetch('/api/specialists/' + encodeURIComponent(id), { method: 'DELETE' });
+        if (!response.ok) throw new Error('Unable to delete specialist');
+        AdminDataStore.saveSpecialists(AdminDataStore.getSpecialists().filter(s => s.id !== id));
+        this.renderSpecialists();
+        this.showToast('Specialist deleted.');
+      } catch (error) { this.showToast(error.message || 'Unable to delete specialist.'); }
+    },
+
     // 5. SERVICES MANAGEMENT
     renderServices() {
       const container = document.getElementById('services-grid-container');
@@ -1191,7 +1459,7 @@
               <span class="text-brand-muted font-medium">${escapeHtml(s.duration)}</span>
             </div>
             <div class="flex items-center justify-between pt-1">
-              <span class="text-xl font-bold font-serif text-brand-brown">$${s.price.toFixed(2)}</span>
+              <span class="text-xl font-bold font-serif text-brand-brown">₹${Number(s.price).toLocaleString('en-IN')}</span>
               <div class="flex items-center gap-1.5">
                 <button onclick="AdminPortal.openEditServiceModal('${s.id}')" class="px-3 py-1 rounded-lg bg-brand-tan/70 hover:bg-brand-tan text-brand-dark font-medium text-xs transition-colors">Edit</button>
                 <button onclick="AdminPortal.deleteService('${s.id}')" class="p-1 rounded-lg text-brand-muted hover:text-status-red transition-colors" title="Delete Service">
@@ -1246,8 +1514,8 @@
                   </select>
                 </div>
                 <div>
-                  <label class="block font-semibold text-brand-dark mb-1">Fee ($ USD)</label>
-                  <input id="srv-input-price" type="number" step="0.01" required placeholder="65.00" class="w-full px-3 py-2 rounded-xl bg-brand-cream border border-brand-border focus:ring-1 focus:ring-brand-brown outline-none">
+                  <label class="block font-semibold text-brand-dark mb-1">Fee (₹ INR)</label>
+                  <input id="srv-input-price" type="number" step="50" required placeholder="6300" class="w-full px-3 py-2 rounded-xl bg-brand-cream border border-brand-border focus:ring-1 focus:ring-brand-brown outline-none">
                 </div>
               </div>
               <div class="grid grid-cols-2 gap-3">
@@ -1282,7 +1550,7 @@
     submitAddService() {
       const name = document.getElementById('srv-input-name')?.value.trim();
       const category = document.getElementById('srv-input-category')?.value;
-      const price = parseFloat(document.getElementById('srv-input-price')?.value) || 50;
+      const price = parseFloat(document.getElementById('srv-input-price')?.value) || 6300;
       const duration = document.getElementById('srv-input-duration')?.value.trim() || '60 min';
       const specialist = document.getElementById('srv-input-specialist')?.value.trim() || 'Care Specialist';
       const description = document.getElementById('srv-input-desc')?.value.trim() || '';
@@ -1328,8 +1596,8 @@
                   </select>
                 </div>
                 <div>
-                  <label class="block font-semibold text-brand-dark mb-1">Fee ($ USD)</label>
-                  <input id="edit-srv-price" type="number" step="0.01" value="${s.price}" required class="w-full px-3 py-2 rounded-xl bg-brand-cream border border-brand-border focus:ring-1 focus:ring-brand-brown outline-none">
+                  <label class="block font-semibold text-brand-dark mb-1">Fee (₹ INR)</label>
+                  <input id="edit-srv-price" type="number" step="50" value="${s.price}" required class="w-full px-3 py-2 rounded-xl bg-brand-cream border border-brand-border focus:ring-1 focus:ring-brand-brown outline-none">
                 </div>
               </div>
               <div class="grid grid-cols-2 gap-3">
@@ -1364,7 +1632,7 @@
     submitEditService(id) {
       const name = document.getElementById('edit-srv-name')?.value.trim();
       const category = document.getElementById('edit-srv-category')?.value;
-      const price = parseFloat(document.getElementById('edit-srv-price')?.value) || 50;
+      const price = parseFloat(document.getElementById('edit-srv-price')?.value) || 6300;
       const duration = document.getElementById('edit-srv-duration')?.value.trim();
       const specialist = document.getElementById('edit-srv-specialist')?.value.trim();
       const description = document.getElementById('edit-srv-desc')?.value.trim();
@@ -1586,14 +1854,14 @@
 
     // 8. REPORTS & ANALYTICS
     renderReports() {
-      const bookings = (window.PetPalsStore && window.PetPalsStore.getBookings()) || [];
+      const bookings = AdminDataStore.getBookings();
       const pets = (window.PetPalsStore && window.PetPalsStore.getPets()) || [];
       const users = AdminDataStore.getUsers();
 
       // Calculate total revenue from all bookings
       let totalRevenue = 0;
       bookings.forEach(b => {
-        const val = parseFloat(String(b.servicePrice || '65').replace(/[^0-9.]/g, '')) || 65;
+        const val = parseFloat(String(b.servicePrice || '6300').replace(/[^0-9.]/g, '')) || 6300;
         totalRevenue += val;
       });
 
@@ -1601,17 +1869,19 @@
       const completedCount = bookings.filter(b => (b.status || '').toLowerCase() === 'completed').length;
       const completionRate = bookings.length ? Math.round((completedCount / bookings.length) * 100) : 75;
 
-      document.getElementById('report-stat-revenue') && (document.getElementById('report-stat-revenue').textContent = '$' + totalRevenue.toLocaleString());
+      document.getElementById('report-stat-revenue') && (document.getElementById('report-stat-revenue').textContent = '₹' + totalRevenue.toLocaleString('en-IN'));
       document.getElementById('report-stat-bookings') && (document.getElementById('report-stat-bookings').textContent = bookings.length);
       document.getElementById('report-stat-clients') && (document.getElementById('report-stat-clients').textContent = users.length);
       document.getElementById('report-stat-completion') && (document.getElementById('report-stat-completion').textContent = completionRate + '%');
     },
 
     exportReportCSV() {
-      const bookings = (window.PetPalsStore && window.PetPalsStore.getBookings()) || [];
+      const bookings = AdminDataStore.getBookings();
       let csv = 'Booking ID,Service,Pet Name,Owner,Date,Time,Price,Status\n';
+      const csvCell = value => `"${String(value ?? '').replace(/"/g, '""')}"`;
       bookings.forEach(b => {
-        csv += `"${b.id}","${b.service}","${b.petName || ''}","${b.ownerName || 'Prathiksha S.'}","${b.date}","${b.time}","${b.servicePrice || '$65.00'}","${b.status || 'Confirmed'}"\n`;
+        const price = b.servicePrice || (Number(b.totalAmount) ? `₹${Number(b.totalAmount).toLocaleString('en-IN')}` : '');
+        csv += [b.id, b.service, b.petName || 'No companion', b.ownerName || b.userName || 'Pet Parent', b.date, b.time, price, b.status || 'Confirmed'].map(csvCell).join(',') + '\n';
       });
 
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
