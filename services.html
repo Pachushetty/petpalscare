@@ -64,7 +64,7 @@
 <!-- Filter Chips -->
 <div class="flex items-center gap-space-xs overflow-x-auto pb-1 lg:pb-0" id="categoryFilterContainer">
 <button class="filter-chip px-space-md py-2 rounded-full font-label-md text-label-md bg-primary-container text-on-primary whitespace-nowrap shadow-sm transition-all" data-filter="all" type="button">
-          All Services (8)
+          All Services (7)
         </button>
 <button class="filter-chip px-space-md py-2 rounded-full font-label-md text-label-md bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface whitespace-nowrap shadow-sm transition-all" data-filter="medical" type="button">
           Wellness &amp; Medical
@@ -460,18 +460,26 @@
   // Wire booking triggers for every service card
   function initServiceBooking() {
     // 1. Featured Spotlight Card ("Book for Bruno")
-    const featuredBtn = document.querySelector('section.bg-surface-container-lowest button.bg-primary-container');
+    const featuredCard = document.querySelector('section.bg-surface-container-lowest');
+    const featuredBtn = featuredCard ? featuredCard.querySelector('button.bg-primary-container') : null;
     if (featuredBtn) {
       featuredBtn.addEventListener('click', () => {
+        const title = 'Signature Grooming & Wellness Spa';
+        const price = '₹6,300';
+        const category = 'grooming';
+        const duration = '75 Mins';
         if (window.PetPalsStore) {
           PetPalsStore.saveActiveBooking({
-            service: 'Signature Grooming & Wellness Spa',
-            serviceCategory: 'grooming',
-            servicePrice: '₹6,300',
-            duration: '75 Mins'
+            service: title,
+            serviceName: title,
+            serviceCategory: category,
+            servicePrice: price,
+            servicePriceNum: 6300,
+            duration: duration,
+            petName: 'Bruno'
           });
         }
-        window.location.href = '/book-service-pet';
+        window.location.href = `/book-service?service=${encodeURIComponent(title)}&pet=Bruno`;
       });
     }
 
@@ -480,20 +488,28 @@
       const bookBtn = card.querySelector('button.bg-primary-container, button:first-of-type');
       if (bookBtn) {
         bookBtn.addEventListener('click', () => {
-          const title = card.querySelector('h3')?.textContent.trim() || 'Veterinary Care';
+          const title = card.querySelector('h3')?.textContent.trim() || 'Veterinary Care & Health Checkup';
           const price = card.querySelector('.font-display')?.textContent.trim() || '₹6,300';
+          const cleanPrice = price.replace(/From\s*/i, '').replace(/\/.*$/i, '').trim();
           const category = card.getAttribute('data-category') || 'grooming';
           const duration = card.querySelector('.rounded-full')?.textContent.trim() || '60 Mins';
+          const btnText = bookBtn.textContent.trim().toLowerCase();
+          let targetPet = '';
+          if (btnText.includes('bruno')) targetPet = 'Bruno';
+          else if (btnText.includes('milo')) targetPet = 'Milo';
 
           if (window.PetPalsStore) {
             PetPalsStore.saveActiveBooking({
               service: title,
+              serviceName: title,
               serviceCategory: category,
-              servicePrice: price.replace(/From\s*/i, ''),
-              duration: duration
+              servicePrice: cleanPrice,
+              duration: duration,
+              ...(targetPet ? { petName: targetPet } : {})
             });
           }
-          window.location.href = '/book-service-pet';
+          const petParam = targetPet ? `&pet=${encodeURIComponent(targetPet)}` : '';
+          window.location.href = `/book-service?service=${encodeURIComponent(title)}${petParam}`;
         });
       }
     });

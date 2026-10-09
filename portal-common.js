@@ -936,10 +936,13 @@
 
         const pets = PetPalsStore.getPets();
         const services = [
-          { title: 'Grooming & Spa Experience', desc: 'Bathing, styling, ear cleaning', path: '/services' },
-          { title: 'Veterinary Checkup & Vaccines', desc: 'Comprehensive wellness exam', path: '/services' },
-          { title: 'Dental Hygiene & Scaling', desc: 'Preventative oral health', path: '/services' },
-          { title: 'Sanctuary Daycare & Boarding', desc: 'Luxury stays and play areas', path: '/services' }
+          { title: 'Grooming & Holistic Spa', desc: 'Hypoallergenic botanical baths & styling', path: '/services' },
+          { title: 'Veterinary Care & Health Checkup', desc: 'Comprehensive annual physical exams & vaccines', path: '/services' },
+          { title: 'Dog Walking & Outdoor Adventure', desc: 'GPS tracked neighborhood walks & trails', path: '/services' },
+          { title: 'Luxury Pet Boarding & Suites', desc: 'Private climate-controlled lodging suites', path: '/services' },
+          { title: 'Feline Care & Dental Hygiene', desc: 'Low-stress dental scaling & oral care', path: '/services' },
+          { title: 'Positive Puppy & Companion Training', desc: 'Science-backed reinforcement training', path: '/services' },
+          { title: 'Signature Grooming & Wellness Spa', desc: 'Organic extracts & luxury spa treatments', path: '/services' }
         ];
 
         const matchedPets = pets.filter(p => 

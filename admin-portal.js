@@ -17,19 +17,20 @@
   );
 
   const DEFAULT_SERVICES = [
-    { id: 'srv-1', name: 'Grooming & Spa Experience', category: 'grooming', price: 6300, duration: '75 min', specialist: 'Sarah Jenkins', active: true, description: 'Botanical hydrobath, blueberry facial, breed scissor trim, and paw massage.' },
-    { id: 'srv-2', name: 'Veterinary Comprehensive Exam', category: 'medical', price: 8250, duration: '45 min', specialist: 'Dr. Emily Chen, DVM', active: true, description: 'Full physical examination, vitals, dental inspection, and vaccination check.' },
-    { id: 'srv-3', name: 'Luxury Sanctuary Boarding', category: 'boarding', price: 7300, duration: 'Per Night', specialist: 'Care Sanctuary Team', active: true, description: 'Private suite with orthopaedic bedding, webcam access, and 3 daily play sessions.' },
-    { id: 'srv-4', name: 'Canine Adventure Walking', category: 'training', price: 2900, duration: '60 min', specialist: 'Alex Rivera', active: true, description: 'Solo or small pack enrichment walk through nature reserve trails with GPS tracking.' },
-    { id: 'srv-5', name: 'Gentle Dental Hygiene Polish', category: 'medical', price: 9200, duration: '50 min', specialist: 'Dr. Emily Chen, DVM', active: true, description: 'Ultrasonic scaling, antiseptic irrigation, and breath freshening enzyme coat.' },
-    { id: 'srv-6', name: 'Puppy & Companion Socialization', category: 'training', price: 4350, duration: '60 min', specialist: 'Marcus Vance', active: true, description: 'Certified trainer-led positive reinforcement and manners development.' }
+    { id: 'srv-1', name: 'Grooming & Holistic Spa', category: 'grooming', price: 6300, duration: '60-90 Mins', specialist: 'Sarah Jenkins', active: true, description: 'Hypoallergenic botanical baths, gentle de-shedding, nail filing, ear care, and blueberry facial treatments in a serene environment.' },
+    { id: 'srv-2', name: 'Veterinary Care & Health Checkup', category: 'medical', price: 8250, duration: '45 Mins', specialist: 'Dr. Emily Chen, DVM', active: true, description: 'Comprehensive annual physical exams, vaccinations, diagnostics, blood chemistry, and preventive advice from licensed practitioners.' },
+    { id: 'srv-3', name: 'Dog Walking & Outdoor Adventure', category: 'training', price: 2900, duration: '30 / 60 Mins', specialist: 'Alex Rivera', active: true, description: 'Energizing 30 or 60-minute neighborhood walks or nature trail pack adventures with GPS tracking and live photo check-ins.' },
+    { id: 'srv-4', name: 'Luxury Pet Boarding & Suites', category: 'boarding', price: 6800, duration: 'Overnight', specialist: 'Care Sanctuary Team', active: true, description: 'Climate-controlled private suites, orthopedic bedding, web-cam access, tailored meal plans, and four daily play sessions.' },
+    { id: 'srv-5', name: 'Feline Care & Dental Hygiene', category: 'medical', price: 6800, duration: '50 Mins', specialist: 'Dr. Emily Chen, DVM', active: true, description: 'Specialized low-stress feline dental plaque scaling, ultrasonic polish, breath freshening, and oral cavity wellness evaluation.' },
+    { id: 'srv-6', name: 'Positive Puppy & Companion Training', category: 'training', price: 8750, duration: '60 Mins', specialist: 'Marcus Vance', active: true, description: 'Science-backed positive reinforcement training for leash manners, recall, separation anxiety, and socialization skills.' },
+    { id: 'srv-7', name: 'Signature Grooming & Wellness Spa', category: 'grooming', price: 6300, duration: '75 Mins', specialist: 'Sarah Jenkins', active: true, description: 'Deep-coat herbal bubble bath, blueberry facial massage, custom breed scissor trim, gentle ear cleansing, and soothing organic paw balm nourishment.' }
   ];
 
   const DEFAULT_REVIEWS = [
-    { id: 'rev-1', user: 'Prathiksha Shetty', pet: 'Bruno (Golden Retriever)', rating: 5, date: '02 Oct 2026', service: 'Grooming & Spa Experience', status: 'Approved', featured: true, comment: 'Sarah took incredible care of Bruno! He came home so clean, soft, and completely stress-free. The report card was wonderful.' },
-    { id: 'rev-2', user: 'Sneha R.', pet: 'Simba (Spitz)', rating: 5, date: '28 Sep 2026', service: 'Veterinary Comprehensive Exam', status: 'Approved', featured: false, comment: 'Dr. Emily Chen was so gentle and thorough. The online records access makes tracking vaccinations effortless.' },
-    { id: 'rev-3', user: 'Arjun T.', pet: 'Charlie (Beagle)', rating: 4, date: '25 Sep 2026', service: 'Canine Adventure Walking', status: 'Approved', featured: false, comment: 'Alex is great with high-energy dogs. Charlie had a blast and slept like a log afterwards!' },
-    { id: 'rev-4', user: 'Priya K.', pet: 'Milo (Cat)', rating: 5, date: '20 Sep 2026', service: 'Luxury Sanctuary Boarding', status: 'Pending', featured: false, comment: 'Leaving Milo for 3 days was hard, but the daily video check-ins put our minds completely at ease.' }
+    { id: 'rev-1', user: 'Prathiksha Shetty', pet: 'Bruno (Golden Retriever)', rating: 5, date: '02 Oct 2026', service: 'Grooming & Holistic Spa', status: 'Approved', featured: true, comment: 'Sarah took incredible care of Bruno! He came home so clean, soft, and completely stress-free. The report card was wonderful.' },
+    { id: 'rev-2', user: 'Sneha R.', pet: 'Simba (Spitz)', rating: 5, date: '28 Sep 2026', service: 'Veterinary Care & Health Checkup', status: 'Approved', featured: false, comment: 'Dr. Emily Chen was so gentle and thorough. The online records access makes tracking vaccinations effortless.' },
+    { id: 'rev-3', user: 'Arjun T.', pet: 'Charlie (Beagle)', rating: 4, date: '25 Sep 2026', service: 'Dog Walking & Outdoor Adventure', status: 'Approved', featured: false, comment: 'Alex is great with high-energy dogs. Charlie had a blast and slept like a log afterwards!' },
+    { id: 'rev-4', user: 'Priya K.', pet: 'Milo (Cat)', rating: 5, date: '20 Sep 2026', service: 'Luxury Pet Boarding & Suites', status: 'Pending', featured: false, comment: 'Leaving Milo for 3 days was hard, but the daily video check-ins put our minds completely at ease.' }
   ];
 
   const DEFAULT_MESSAGES = [

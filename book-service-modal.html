@@ -248,66 +248,193 @@
   let services=[];
   let selectedCompanion='none';
   let selectedPet=null;
-  function setContinue(enabled){if(!continueBtn)return;continueBtn.disabled=!enabled;continueBtn.setAttribute('aria-disabled',String(!enabled));continueBtn.classList.toggle('opacity-50',!enabled);continueBtn.classList.toggle('cursor-not-allowed',!enabled);}
+
+  function setContinue(enabled){
+    if(!continueBtn)return;
+    continueBtn.disabled=!enabled;
+    continueBtn.setAttribute('aria-disabled',String(!enabled));
+    continueBtn.classList.toggle('opacity-50',!enabled);
+    continueBtn.classList.toggle('cursor-not-allowed',!enabled);
+  }
+
   function updateContinueState(){
     const hasServices=Boolean(grid?.querySelector('input[name="service-option"]:checked'));
     const hasCompanion=Boolean(selectedPet||selectedCompanion==='new');
     setContinue(hasServices&&hasCompanion);
   }
+
   function renderCompanions(){
     if(!companionContainer||!window.PetPalsStore)return;
     const pets=PetPalsStore.getPets()||[];
     const active=PetPalsStore.getActiveBooking()||{};
+    const urlParams=new URLSearchParams(window.location.search);
+    const targetPetName=urlParams.get('pet')||urlParams.get('companion')||active.petName||'';
+
     selectedCompanion=active.companionChoice||'none';
-    selectedPet=pets.find(p=>String(p.id)===String(active.petId))||(active.petName?pets.find(p=>String(p.name||'').trim().toLowerCase()===String(active.petName).trim().toLowerCase()):null)||null;
-    if(selectedPet)selectedCompanion='pet';
-    if(selectedCompanion==='pet'&&!selectedPet)selectedCompanion='none';
+    if(targetPetName){
+      selectedPet=pets.find(p=>String(p.name||'').trim().toLowerCase()===targetPetName.trim().toLowerCase())||null;
+    }
+    if(!selectedPet&&active.petId){
+      selectedPet=pets.find(p=>String(p.id)===String(active.petId))||null;
+    }
+    // Default to first companion if none chosen yet and user has registered pets
+    if(!selectedPet&&pets.length>0&&selectedCompanion!=='new'){
+      selectedPet=pets[0];
+    }
+
+    if(selectedPet){
+      selectedCompanion='pet';
+      PetPalsStore.saveActiveBooking({
+        companionChoice:'pet',
+        petId:selectedPet.id,
+        petName:selectedPet.name,
+        petBreed:selectedPet.breed||selectedPet.species||'',
+        petAge:selectedPet.age||'',
+        petWeight:selectedPet.weight||'',
+        petAvatar:selectedPet.avatar||selectedPet.photo||'',
+        petPhoto:selectedPet.photo||selectedPet.avatar||''
+      });
+    }
+
     companionContainer.innerHTML=pets.map(pet=>`<button data-pet-id="${escapeHtml(pet.id)}" type="button" class="flex-1 p-3 rounded-2xl ${selectedPet?.id===pet.id?'bg-secondary-container/30 ring-2 ring-primary-container':'bg-surface-container-low hover:bg-surface-container'} flex items-center gap-3 text-left transition-all">${(pet.photo||pet.avatar)?`<img alt="${escapeHtml(pet.name)}" class="w-12 h-12 rounded-xl object-cover shrink-0" src="${escapeHtml(pet.photo||pet.avatar)}"/>`:'<span class="w-12 h-12 rounded-xl bg-surface-container-highest text-secondary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-[24px]">pets</span></span>'}<span class="min-w-0"><span class="font-label-lg text-label-lg text-on-surface block truncate">${escapeHtml(pet.name)}</span><span class="font-body-sm text-on-surface-variant block truncate">${escapeHtml(pet.breed||pet.species||'Companion')}</span></span></button>`).join('');
     companionContainer.querySelectorAll('[data-pet-id]').forEach(button=>button.addEventListener('click',()=>{const pet=pets.find(p=>String(p.id)===String(button.dataset.petId));if(pet)selectCompanion('pet',pet);}));
     updateContinueState();
   }
+
   function selectCompanion(choice,pet=null){
     selectedCompanion=choice;selectedPet=pet;
     PetPalsStore.saveActiveBooking({companionChoice:choice,petId:pet?.id||null,petName:pet?.name||'',petBreed:pet?(pet.breed||pet.species||''):'',petAge:pet?.age||'',petWeight:pet?.weight||'',petAvatar:pet?.avatar||pet?.photo||'',petPhoto:pet?.photo||pet?.avatar||''});
     renderCompanions();
     updateContinueState();
   }
+
   function selectServices(){
     const selected=Array.from(grid.querySelectorAll('input[name="service-option"]:checked')).map(input=>services.find(item=>String(item.id)===input.value)).filter(Boolean);
-    grid.querySelectorAll('input[name="service-option"]').forEach(input=>input.closest('label')?.classList.toggle('ring-2',input.checked));
-    grid.querySelectorAll('input[name="service-option"]').forEach(input=>input.closest('label')?.classList.toggle('ring-primary-container',input.checked));
-    if(!selected.length){if(nameEl)nameEl.textContent='Select a service';if(priceEl)priceEl.textContent='₹0';setContinue(false);return;}
+    grid.querySelectorAll('input[name="service-option"]').forEach(input=>{
+      const label=input.closest('label');
+      if(label){
+        label.classList.toggle('ring-2',input.checked);
+        label.classList.toggle('ring-primary-container',input.checked);
+        label.classList.toggle('bg-primary-fixed/20',input.checked);
+        label.classList.toggle('bg-surface-container-low',!input.checked);
+        const checkIcon=label.querySelector('.service-selected-check');
+        if(checkIcon){
+          checkIcon.classList.toggle('hidden',!input.checked);
+          checkIcon.classList.toggle('flex',input.checked);
+        }
+      }
+    });
+
+    if(!selected.length){
+      if(nameEl)nameEl.textContent='Select a service';
+      if(priceEl)priceEl.textContent='₹0';
+      setContinue(false);
+      return;
+    }
+
     const total=selected.reduce((sum,item)=>sum+(Number(item.priceNum)||0),0);
     if(nameEl)nameEl.textContent=selected.length===1?selected[0].name:`${selected.length} services selected`;
     if(priceEl)priceEl.textContent=formatPrice(total);
     const primary=selected[0];
-    PetPalsStore.saveActiveBooking({services:selected.map(item=>({id:item.id,name:item.name,category:item.category,priceNum:Number(item.priceNum),price:formatPrice(item.priceNum),duration:item.duration||''})),serviceId:primary.id,service:selected.map(item=>item.name).join(', '),serviceName:selected.map(item=>item.name).join(', '),serviceCategory:selected.length===1?primary.category:'multiple',servicePrice:formatPrice(total),servicePriceNum:total,duration:selected.map(item=>item.duration).filter(Boolean).join(', '),selectedAddons:[],step1Addons:[],petStepAddons:[]});
+    PetPalsStore.saveActiveBooking({
+      services:selected.map(item=>({id:item.id,name:item.name,category:item.category,priceNum:Number(item.priceNum),price:formatPrice(item.priceNum),duration:item.duration||''})),
+      serviceId:primary.id,
+      service:selected.map(item=>item.name).join(', '),
+      serviceName:selected.map(item=>item.name).join(', '),
+      serviceCategory:selected.length===1?primary.category:'multiple',
+      servicePrice:formatPrice(total),
+      servicePriceNum:total,
+      duration:selected.map(item=>item.duration).filter(Boolean).join(', '),
+      selectedAddons:[],
+      step1Addons:[],
+      petStepAddons:[]
+    });
+
     const showSpa=selected.length===1&&String(primary.category).toLowerCase()==='grooming';
-    const addons=document.getElementById('spa-addons-panel');if(addons)addons.classList.toggle('hidden',!showSpa);
+    const addons=document.getElementById('spa-addons-panel');
+    if(addons)addons.classList.toggle('hidden',!showSpa);
     document.querySelectorAll('.booking-addon').forEach(input=>{if(!showSpa)input.checked=false;});
     if(!showSpa)PetPalsStore.saveActiveBooking({step1Addons:[],selectedAddons:[]});
     updateContinueState();
   }
+
   async function loadServices(){
     if(!grid)return;
     grid.innerHTML='<p class="font-body-sm text-body-sm text-outline">Loading available services…</p>';
     try{
-      const response=await fetch('/api/services',{credentials:'same-origin',cache:'no-store'});if(!response.ok)throw new Error('Service list unavailable');
+      const response=await fetch('/api/services',{credentials:'same-origin',cache:'no-store'});
+      if(!response.ok)throw new Error('Service list unavailable');
       services=(await response.json()).filter(service=>service.active!==false);
-      grid.innerHTML=services.map(service=>`<label class="cursor-pointer group relative bg-surface-container-low hover:bg-surface-container p-4 rounded-2xl flex flex-col justify-between transition-all duration-200"><input class="sr-only peer" name="service-option" type="checkbox" value="${escapeHtml(service.id)}"/><div class="flex items-start justify-between mb-3"><div class="w-10 h-10 rounded-xl bg-surface-container-lowest flex items-center justify-center text-primary group-hover:scale-105 transition-transform"><span class="material-symbols-outlined text-[22px]">${iconFor(service.category)}</span></div><div class="flex items-center gap-1.5"><span class="font-label-sm text-label-sm font-semibold bg-surface-container-highest px-2 py-0.5 rounded-full text-on-surface-variant">${formatPrice(service.priceNum)}</span><span class="service-selected-check hidden w-4 h-4 rounded-full bg-primary-container text-on-primary items-center justify-center"><span class="material-symbols-outlined text-[12px] font-bold">check</span></span></div></div><div class="space-y-1"><h4 class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors">${escapeHtml(service.name)}</h4><p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">${escapeHtml(service.description||service.duration||'Professional pet care service.')}</p></div><div class="absolute inset-0 rounded-2xl pointer-events-none peer-checked:ring-2 peer-checked:ring-primary-container peer-checked:bg-primary-fixed/20 transition-all"></div></label>`).join('');
+      grid.innerHTML=services.map(service=>`<label class="cursor-pointer group relative bg-surface-container-low hover:bg-surface-container p-4 rounded-2xl flex flex-col justify-between transition-all duration-200"><input class="sr-only peer" name="service-option" type="checkbox" value="${escapeHtml(service.id)}"/><div class="flex items-start justify-between mb-3"><div class="w-10 h-10 rounded-xl bg-surface-container-lowest flex items-center justify-center text-primary group-hover:scale-105 transition-transform"><span class="material-symbols-outlined text-[22px]">${iconFor(service.category)}</span></div><div class="flex items-center gap-1.5"><span class="font-label-sm text-label-sm font-semibold bg-surface-container-highest px-2 py-0.5 rounded-full text-on-surface-variant">${formatPrice(service.priceNum)}</span><span class="service-selected-check hidden w-5 h-5 rounded-full bg-primary text-on-primary items-center justify-center shadow-sm"><span class="material-symbols-outlined text-[13px] font-bold">check</span></span></div></div><div class="space-y-1"><h4 class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors">${escapeHtml(service.name)}</h4><p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">${escapeHtml(service.description||service.duration||'Professional pet care service.')}</p></div><div class="absolute inset-0 rounded-2xl pointer-events-none peer-checked:ring-2 peer-checked:ring-primary-container peer-checked:bg-primary-fixed/20 transition-all"></div></label>`).join('');
+      
       grid.querySelectorAll('input[name="service-option"]').forEach(input=>input.addEventListener('change',selectServices));
+
+      // Auto-select requested service from URL parameters or existing active booking
+      const urlParams=new URLSearchParams(window.location.search);
+      const queryService=(urlParams.get('service')||urlParams.get('serviceName')||urlParams.get('serviceId')||'').trim();
+      const active=window.PetPalsStore?PetPalsStore.getActiveBooking():null;
+      const storeService=(active?.service||active?.serviceName||active?.serviceId||'').trim();
+      const targetQuery=(queryService||storeService).toLowerCase();
+
+      let matched=null;
+      if(targetQuery){
+        matched=services.find(s=>
+          String(s.id).toLowerCase()===targetQuery||
+          s.name.toLowerCase()===targetQuery||
+          s.name.toLowerCase().includes(targetQuery)||
+          targetQuery.includes(s.name.toLowerCase())
+        );
+      }
+
+      if(matched){
+        const targetInput=grid.querySelector(`input[name="service-option"][value="${matched.id}"]`);
+        if(targetInput){
+          targetInput.checked=true;
+          selectServices();
+        }
+      }else{
+        updateContinueState();
+      }
+    }catch(error){
+      grid.innerHTML='<p class="font-body-sm text-body-sm text-error">Services could not be loaded. Please refresh and try again.</p>';
       setContinue(false);
-    }catch(error){grid.innerHTML='<p class="font-body-sm text-body-sm text-error">Services could not be loaded. Please refresh and try again.</p>';setContinue(false);}
+    }
   }
-  window.handleContinueToPet=function(){const active=PetPalsStore.getActiveBooking();if(!active?.serviceId||!active?.servicePriceNum||(!selectedPet&&selectedCompanion!=='new')){updateContinueState();return;}window.location.href='/book-service-pet';};
-  window.PetPalsStore?.resetActiveBooking();
-  if(nameEl)nameEl.textContent='Select a service';if(priceEl)priceEl.textContent='₹0';setContinue(false);
+
+  window.handleContinueToPet=function(){
+    const active=PetPalsStore.getActiveBooking();
+    if(!active?.serviceId||!active?.servicePriceNum||(!selectedPet&&selectedCompanion!=='new')){
+      updateContinueState();
+      return;
+    }
+    window.location.href='/book-service-pet';
+  };
+
+  // Only reset active booking if user navigated directly without query parameters or preset service
+  const initUrlParams=new URLSearchParams(window.location.search);
+  const hasQueryTarget=initUrlParams.has('service')||initUrlParams.has('serviceName')||initUrlParams.has('serviceId');
+  if(!hasQueryTarget&&!window.PetPalsStore?.getActiveBooking()?.service){
+    window.PetPalsStore?.resetActiveBooking();
+    if(nameEl)nameEl.textContent='Select a service';
+    if(priceEl)priceEl.textContent='₹0';
+    setContinue(false);
+  }
+
   document.querySelectorAll('.booking-addon').forEach(input=>input.checked=false);
-  document.querySelectorAll('[data-location-type]').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('[data-location-type]').forEach(item=>item.classList.remove('bg-primary-container','text-on-primary'));button.classList.add('bg-primary-container','text-on-primary');const type=button.dataset.locationType;PetPalsStore.saveActiveBooking({locationType:type,location:type==='mobile'?'In-Home Concierge Van':'PetPals Flagship Spa & Wellness Lounge • Suite 4'});}));
+  document.querySelectorAll('[data-location-type]').forEach(button=>button.addEventListener('click',()=>{
+    document.querySelectorAll('[data-location-type]').forEach(item=>item.classList.remove('bg-primary-container','text-on-primary'));
+    button.classList.add('bg-primary-container','text-on-primary');
+    const type=button.dataset.locationType;
+    PetPalsStore.saveActiveBooking({locationType:type,location:type==='mobile'?'In-Home Concierge Van':'PetPals Flagship Spa & Wellness Lounge • Suite 4'});
+  }));
   newPetBtn?.addEventListener('click',()=>selectCompanion('new'));
-  document.querySelectorAll('.booking-addon').forEach(input=>input.addEventListener('change',()=>{const addons=Array.from(document.querySelectorAll('.booking-addon:checked')).map(item=>({name:item.dataset.name,price:Number(item.dataset.price)||0}));PetPalsStore.saveActiveBooking({step1Addons:addons,selectedAddons:addons});}));
+  document.querySelectorAll('.booking-addon').forEach(input=>input.addEventListener('change',()=>{
+    const addons=Array.from(document.querySelectorAll('.booking-addon:checked')).map(item=>({name:item.dataset.name,price:Number(item.dataset.price)||0}));
+    PetPalsStore.saveActiveBooking({step1Addons:addons,selectedAddons:addons});
+  }));
   window.addEventListener('petpals:pets-updated',renderCompanions);
-  renderCompanions();loadServices();
+  renderCompanions();
+  loadServices();
 })();
 </script>
 </div></main><footer class="w-full bg-surface-container-low border-t border-outline-variant/60 pt-16 pb-12"><div class="max-w-[1200px] mx-auto px-gutter"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-10 mb-12"><div class="space-y-space-md"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[28px] text-primary" style="font-variation-settings: 'FILL' 1;">pets</span><span class="font-headline-sm text-headline-sm text-primary tracking-tight">PetPals</span></div><p class="font-headline-sm text-title-md text-secondary italic">Caring for Every Paw, Every Day</p><p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">Happy pets. Healthy lives. We're here for every paw, every day.</p><div class="flex items-center gap-space-xs pt-space-xs"><a aria-label="Facebook" class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-primary-container hover:text-on-primary transition-colors" href="#"><span class="material-symbols-outlined text-[18px]">public</span></a><a aria-label="Instagram" class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-primary-container hover:text-on-primary transition-colors" href="#"><span class="material-symbols-outlined text-[18px]">photo_camera</span></a><a aria-label="X Twitter" class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-primary-container hover:text-on-primary transition-colors" href="#"><span class="material-symbols-outlined text-[18px]">tag</span></a><a aria-label="YouTube" class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-primary-container hover:text-on-primary transition-colors" href="#"><span class="material-symbols-outlined text-[18px]">smart_display</span></a></div></div><div><h3 class="font-title-md text-title-md text-on-surface mb- space-md">Quick Links</h3><ul class="space-y-2.5 font-body-md text-body-md text-on-surface-variant"><li><a class="hover:text-primary transition-colors" data-path="home" href="#">Home</a></li><li><a class="hover:text-primary transition-colors" data-path="about-us" href="#">About Us</a></li><li><a class="hover:text-primary transition-colors" data-path="contact" href="#">Contact</a></li><li><a class="hover:text-primary transition-colors" data-path="faqs" href="#">FAQs</a></li><li><a class="hover:text-primary transition-colors" data-path="careers" href="#">Careers</a></li></ul></div><div><h3 class="font-title-md text-title-md text-on-surface mb-space-md">Pet Services</h3><ul class="space-y-2.5 font-body-md text-body-md text-on-surface-variant"><li><a class="hover:text-primary transition-colors" data-path="pet-medical" href="#">Veterinary Care</a></li><li><a class="hover:text-primary transition-colors" data-path="pet-care" href="#">Pet Boarding</a></li><li><a class="hover:text-primary transition-colors" data-path="pet-care" href="#">Dog Walking</a></li><li><a class="hover:text-primary transition-colors" data-path="pet-care" href="#">Grooming &amp; Spa</a></li><li><a class="hover:text-primary transition-colors" data-path="pet-care" href="#">Pet Training</a></li><li><a class="hover:text-primary transition-colors" data-path="pet-care" href="#">Pet Sitting</a></li></ul></div><div class="space-y-space-md"><h3 class="font-title-md text-title-md text-on-surface">Contact Us</h3><div class="space-y-3 font-body-md text-body-md text-on-surface-variant"><div class="flex items-start gap-space-xs"><span class="material-symbols-outlined text-primary text-[20px] mt-0.5">call</span><span>+1 (800) 555-PALS</span></div><div class="flex items-start gap-space-xs"><span class="material-symbols-outlined text-primary text-[20px] mt-0.5">mail</span><span>hello@petpals.com</span></div><div class="flex items-start gap-space-xs"><span class="material-symbols-outlined text-primary text-[20px] mt-0.5">location_on</span><span>124 Blossom Lane, Suite 200, San Francisco, CA</span></div></div></div></div><div class="pt-8 border-t border-outline-variant/40 flex flex-col md:flex-row items-center justify-between gap-4 font-body-sm text-body-sm text-on-surface-variant"><p>© 2025 PetPals Inc. All rights reserved. Caring for Every Paw, Every Day.</p><div class="flex items-center gap-space-md"><a class="hover:text-on-surface transition-colors" data-path="privacy-policy" href="#">Privacy Policy</a><span class="text-outline-variant">•</span><a class="hover:text-on-surface transition-colors" data-path="terms-of-service" href="#">Terms of Service</a></div></div></div></footer>

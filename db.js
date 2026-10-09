@@ -107,19 +107,20 @@ const DEFAULT_ADMIN = {
 };
 
 const DEFAULT_SERVICES = [
-  { id: 'srv-1', name: 'Grooming & Spa Experience', category: 'grooming', price: '₹6,300', price_num: 6300, duration: '75 min', specialist: 'Sarah Jenkins', active: true, description: 'Botanical hydrobath, blueberry facial, breed scissor trim, and paw massage.', badge: 'Most Popular', rating: 4.9, reviews_count: 142 },
-  { id: 'srv-2', name: 'Veterinary Comprehensive Exam', category: 'medical', price: '₹8,250', price_num: 8250, duration: '45 min', specialist: 'Dr. Emily Chen, DVM', active: true, description: 'Full physical examination, vitals, dental inspection, and vaccination check.', badge: 'Recommended', rating: 5.0, reviews_count: 98 },
-  { id: 'srv-3', name: 'Luxury Sanctuary Boarding', category: 'boarding', price: '₹7,300', price_num: 7300, duration: 'Per Night', specialist: 'Care Sanctuary Team', active: true, description: 'Private suite with orthopaedic bedding, webcam access, and 3 daily play sessions.', badge: 'Premium', rating: 4.8, reviews_count: 76 },
-  { id: 'srv-4', name: 'Canine Adventure Walking', category: 'training', price: '₹2,900', price_num: 2900, duration: '60 min', specialist: 'Alex Rivera', active: true, description: 'Solo or small pack enrichment walk through nature reserve trails with GPS tracking.', badge: '', rating: 4.9, reviews_count: 64 },
-  { id: 'srv-5', name: 'Gentle Dental Hygiene Polish', category: 'medical', price: '₹9,200', price_num: 9200, duration: '50 min', specialist: 'Dr. Emily Chen, DVM', active: true, description: 'Ultrasonic scaling, antiseptic irrigation, and breath freshening enzyme coat.', badge: '', rating: 4.7, reviews_count: 53 },
-  { id: 'srv-6', name: 'Puppy & Companion Socialization', category: 'training', price: '₹4,350', price_num: 4350, duration: '60 min', specialist: 'Marcus Vance', active: true, description: 'Certified trainer-led positive reinforcement and manners development.', badge: '', rating: 5.0, reviews_count: 39 }
+  { id: 'srv-1', name: 'Grooming & Holistic Spa', category: 'grooming', price: '₹6,300', price_num: 6300, duration: '60-90 Mins', specialist: 'Sarah Jenkins', active: true, description: 'Hypoallergenic botanical baths, gentle de-shedding, nail filing, ear care, and blueberry facial treatments in a serene environment.', badge: 'Most Popular', rating: 4.9, reviews_count: 142 },
+  { id: 'srv-2', name: 'Veterinary Care & Health Checkup', category: 'medical', price: '₹8,250', price_num: 8250, duration: '45 Mins', specialist: 'Dr. Emily Chen, DVM', active: true, description: 'Comprehensive annual physical exams, vaccinations, diagnostics, blood chemistry, and preventive advice from licensed practitioners.', badge: 'Recommended', rating: 5.0, reviews_count: 98 },
+  { id: 'srv-3', name: 'Dog Walking & Outdoor Adventure', category: 'training', price: '₹2,900', price_num: 2900, duration: '30 / 60 Mins', specialist: 'Alex Rivera', active: true, description: 'Energizing 30 or 60-minute neighborhood walks or nature trail pack adventures with GPS tracking and live photo check-ins.', badge: 'Popular', rating: 4.9, reviews_count: 64 },
+  { id: 'srv-4', name: 'Luxury Pet Boarding & Suites', category: 'boarding', price: '₹6,800', price_num: 6800, duration: 'Overnight', specialist: 'Care Sanctuary Team', active: true, description: 'Climate-controlled private suites, orthopedic bedding, web-cam access, tailored meal plans, and four daily play sessions.', badge: 'Premium', rating: 4.8, reviews_count: 76 },
+  { id: 'srv-5', name: 'Feline Care & Dental Hygiene', category: 'medical', price: '₹6,800', price_num: 6800, duration: '50 Mins', specialist: 'Dr. Emily Chen, DVM', active: true, description: 'Specialized low-stress feline dental plaque scaling, ultrasonic polish, breath freshening, and oral cavity wellness evaluation.', badge: 'Specialized', rating: 4.7, reviews_count: 53 },
+  { id: 'srv-6', name: 'Positive Puppy & Companion Training', category: 'training', price: '₹8,750', price_num: 8750, duration: '60 Mins', specialist: 'Marcus Vance', active: true, description: 'Science-backed positive reinforcement training for leash manners, recall, separation anxiety, and socialization skills.', badge: 'Certified', rating: 5.0, reviews_count: 39 },
+  { id: 'srv-7', name: 'Signature Grooming & Wellness Spa', category: 'grooming', price: '₹6,300', price_num: 6300, duration: '75 Mins', specialist: 'Sarah Jenkins', active: true, description: 'Deep-coat herbal bubble bath, blueberry facial massage, custom breed scissor trim, gentle ear cleansing, and soothing organic paw balm nourishment.', badge: 'Bestseller', rating: 4.9, reviews_count: 156 }
 ];
 
 const DEFAULT_REVIEWS = [
-  { id: 'rev-1', user_id: null, user_name: 'Prathiksha Shetty', user_avatar: DEFAULT_USER.avatar, pet: 'Bruno (Golden Retriever)', rating: 5, service_name: 'Grooming & Spa Experience', status: 'Approved', featured: true, comment: 'Sarah took incredible care of Bruno! He came home so clean, soft, and completely stress-free. The report card was wonderful.', created_at: new Date('2026-10-02T14:00:00Z').toISOString() },
-  { id: 'rev-2', user_id: null, user_name: 'Sneha R.', user_avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80', pet: 'Simba (Spitz)', rating: 5, service_name: 'Veterinary Comprehensive Exam', status: 'Approved', featured: false, comment: 'Dr. Emily Chen was so gentle and thorough. The online records access makes tracking vaccinations effortless.', created_at: new Date('2026-09-28T10:00:00Z').toISOString() },
-  { id: 'rev-3', user_id: null, user_name: 'Arjun T.', user_avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80', pet: 'Charlie (Beagle)', rating: 4, service_name: 'Canine Adventure Walking', status: 'Approved', featured: false, comment: 'Alex is great with high-energy dogs. Charlie had a blast and slept like a log afterwards!', created_at: new Date('2026-09-25T11:00:00Z').toISOString() },
-  { id: 'rev-4', user_id: null, user_name: 'Prathiksha Shetty', user_avatar: DEFAULT_USER.avatar, pet: 'Milo (Cat)', rating: 5, service_name: 'Luxury Sanctuary Boarding', status: 'Pending', featured: false, comment: 'Leaving Milo for 3 days was hard, but the daily video check-ins put our minds completely at ease.', created_at: new Date('2026-09-20T16:00:00Z').toISOString() }
+  { id: 'rev-1', user_id: null, user_name: 'Prathiksha Shetty', user_avatar: DEFAULT_USER.avatar, pet: 'Bruno (Golden Retriever)', rating: 5, service_name: 'Grooming & Holistic Spa', status: 'Approved', featured: true, comment: 'Sarah took incredible care of Bruno! He came home so clean, soft, and completely stress-free. The report card was wonderful.', created_at: new Date('2026-10-02T14:00:00Z').toISOString() },
+  { id: 'rev-2', user_id: null, user_name: 'Sneha R.', user_avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80', pet: 'Simba (Spitz)', rating: 5, service_name: 'Veterinary Care & Health Checkup', status: 'Approved', featured: false, comment: 'Dr. Emily Chen was so gentle and thorough. The online records access makes tracking vaccinations effortless.', created_at: new Date('2026-09-28T10:00:00Z').toISOString() },
+  { id: 'rev-3', user_id: null, user_name: 'Arjun T.', user_avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80', pet: 'Charlie (Beagle)', rating: 4, service_name: 'Dog Walking & Outdoor Adventure', status: 'Approved', featured: false, comment: 'Alex is great with high-energy dogs. Charlie had a blast and slept like a log afterwards!', created_at: new Date('2026-09-25T11:00:00Z').toISOString() },
+  { id: 'rev-4', user_id: null, user_name: 'Prathiksha Shetty', user_avatar: DEFAULT_USER.avatar, pet: 'Milo (Cat)', rating: 5, service_name: 'Luxury Pet Boarding & Suites', status: 'Pending', featured: false, comment: 'Leaving Milo for 3 days was hard, but the daily video check-ins put our minds completely at ease.', created_at: new Date('2026-09-20T16:00:00Z').toISOString() }
 ];
 
 const DEFAULT_MESSAGES = [
@@ -177,8 +178,32 @@ for (const booking of localStore.bookings || []) {
     cleanedLegacyPrices = true;
   }
 }
+
+// Synchronize services catalog with DEFAULT_SERVICES to keep names matching services.html
+let syncedServices = false;
+if (Array.isArray(localStore.services)) {
+  for (const def of DEFAULT_SERVICES) {
+    const existing = localStore.services.find(s => s.id === def.id);
+    if (existing) {
+      if (existing.name !== def.name || existing.price_num !== def.price_num || existing.duration !== def.duration) {
+        existing.name = def.name;
+        existing.category = def.category;
+        existing.price = def.price;
+        existing.price_num = def.price_num;
+        existing.duration = def.duration;
+        existing.description = def.description;
+        existing.badge = def.badge;
+        syncedServices = true;
+      }
+    } else {
+      localStore.services.push({ ...def });
+      syncedServices = true;
+    }
+  }
+}
+
 if (cleanedGeneratedAvatars) saveLocalStore(localStore);
-if (cleanedLegacyPrices) saveLocalStore(localStore);
+if (cleanedLegacyPrices || syncedServices) saveLocalStore(localStore);
 
 // Initialize Database (Tables, Constraints, Seed Data)
 async function initDatabase() {
@@ -452,17 +477,34 @@ async function initDatabase() {
       );
     }
 
-    // Seed default Services if empty
-    const srvCheck = await client.query('SELECT COUNT(*) FROM services');
-    if (parseInt(srvCheck.rows[0].count, 10) === 0) {
-      for (const s of DEFAULT_SERVICES) {
-        await client.query(
-          `INSERT INTO services (id, name, category, price, price_num, duration, specialist, description, badge, rating, reviews_count, active)
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
-          [s.id, s.name, s.category, s.price, s.price_num, s.duration, s.specialist, s.description, s.badge, s.rating, s.reviews_count, s.active]
-        );
-      }
+    // Seed or synchronize default Services with DEFAULT_SERVICES to maintain consistent names with services.html
+    for (const s of DEFAULT_SERVICES) {
+      await client.query(
+        `INSERT INTO services (id, name, category, price, price_num, duration, specialist, description, badge, rating, reviews_count, active)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+         ON CONFLICT (id) DO UPDATE SET
+           name = EXCLUDED.name,
+           category = EXCLUDED.category,
+           price = EXCLUDED.price,
+           price_num = EXCLUDED.price_num,
+           duration = EXCLUDED.duration,
+           specialist = EXCLUDED.specialist,
+           description = EXCLUDED.description,
+           badge = EXCLUDED.badge`,
+        [s.id, s.name, s.category, s.price, s.price_num, s.duration, s.specialist, s.description, s.badge, s.rating, s.reviews_count, s.active]
+      );
     }
+
+    // Update reviews and bookings service names if legacy names present
+    await client.query(`UPDATE reviews SET service_name = 'Grooming & Holistic Spa' WHERE service_name = 'Grooming & Spa Experience'`);
+    await client.query(`UPDATE reviews SET service_name = 'Veterinary Care & Health Checkup' WHERE service_name = 'Veterinary Comprehensive Exam'`);
+    await client.query(`UPDATE reviews SET service_name = 'Dog Walking & Outdoor Adventure' WHERE service_name = 'Canine Adventure Walking'`);
+    await client.query(`UPDATE reviews SET service_name = 'Luxury Pet Boarding & Suites' WHERE service_name = 'Luxury Sanctuary Boarding'`);
+
+    await client.query(`UPDATE bookings SET service_name = 'Grooming & Holistic Spa' WHERE service_name = 'Grooming & Spa Experience'`);
+    await client.query(`UPDATE bookings SET service_name = 'Veterinary Care & Health Checkup' WHERE service_name = 'Veterinary Comprehensive Exam'`);
+    await client.query(`UPDATE bookings SET service_name = 'Dog Walking & Outdoor Adventure' WHERE service_name = 'Canine Adventure Walking'`);
+    await client.query(`UPDATE bookings SET service_name = 'Luxury Pet Boarding & Suites' WHERE service_name = 'Luxury Sanctuary Boarding'`);
 
     // Seed default Reviews if empty
     const revCheck = await client.query('SELECT COUNT(*) FROM reviews');
