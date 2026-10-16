@@ -1161,38 +1161,60 @@
 
     async signIn(options = {}) {
       const cfg = await this.getConfig();
-      if (cfg.hasClientId && cfg.clientId && window.google?.accounts?.id) {
-        try {
-          window.google.accounts.id.prompt((notification) => {
-            if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-              this.showAccountPickerModal(options);
-            }
-          });
-          return;
-        } catch (e) {
-          console.warn('Google prompt fallback:', e);
-        }
+      if (cfg.hasClientId && cfg.clientId) {
+        this.loadGsiScript(() => {
+          this.triggerGooglePopup(cfg.clientId);
+        });
+        return;
       }
 
-      this.showAccountPickerModal(options);
+      this.showConnectGoogleModal(options);
     },
 
-    showAccountPickerModal(options = {}) {
+    triggerGooglePopup(clientId) {
+      if (!window.google?.accounts?.oauth2) {
+        showToast('Connecting to Google services...', 'info');
+        this.loadGsiScript(() => this.triggerGooglePopup(clientId));
+        return;
+      }
+
+      try {
+        const client = window.google.accounts.oauth2.initTokenClient({
+          client_id: clientId,
+          scope: 'email profile openid',
+          callback: async (tokenResponse) => {
+            if (tokenResponse.error) {
+              if (tokenResponse.error !== 'access_denied') {
+                showToast(`Google Sign-In: ${tokenResponse.error}`, 'error');
+              }
+              return;
+            }
+            if (tokenResponse.access_token) {
+              showToast('Verifying with Google...', 'info');
+              await this.handleBackendAuth({ accessToken: tokenResponse.access_token });
+            }
+          }
+        });
+
+        // Opens real accounts.google.com popup
+        client.requestAccessToken({ prompt: 'select_account' });
+      } catch (err) {
+        console.error('Google popup error:', err);
+        showToast('Failed to open Google Sign-In popup. Please check your Client ID.', 'error');
+      }
+    },
+
+    showConnectGoogleModal(options = {}) {
       const existing = document.getElementById('petpals-google-modal');
       if (existing) existing.remove();
 
       const modalEl = document.createElement('div');
       modalEl.id = 'petpals-google-modal';
-      modalEl.className = 'fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs transition-opacity duration-200';
+      modalEl.className = 'fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs transition-opacity duration-200';
       modalEl.style.fontFamily = "'Roboto', 'Segoe UI', system-ui, -apple-system, sans-serif";
 
-      const currentUser = PetPalsStore.getUser();
-      const defaultEmail = currentUser?.email || 'prathiksha@gmail.com';
-      const defaultName = currentUser?.name || 'Prathiksha Shetty';
-      const defaultAvatar = currentUser?.avatar || 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80';
-
       modalEl.innerHTML = `
-        <div class="bg-white rounded-[28px] shadow-2xl max-w-[440px] w-full overflow-hidden border border-[#dadce0] animate-in fade-in zoom-in-95 duration-200 relative text-[#1f1f1f]">
+        <div class="bg-white rounded-[28px] shadow-2xl max-w-[460px] w-full overflow-hidden border border-[#dadce0] animate-in fade-in zoom-in-95 duration-200 relative text-[#1f1f1f]">
           <!-- Close button -->
           <button id="gmodal-close-btn" class="absolute top-5 right-5 w-8 h-8 rounded-full flex items-center justify-center hover:bg-[#f1f3f4] text-[#5f6368] transition-colors" type="button" aria-label="Close">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -1203,76 +1225,42 @@
           <!-- Header -->
           <div class="pt-8 px-8 pb-4 text-center">
             <div class="inline-flex items-center justify-center mb-3">
-              <svg width="34" height="34" viewBox="0 0 24 24">
+              <svg width="38" height="38" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                 <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                 <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
                 <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
               </svg>
             </div>
-            <h2 class="text-[22px] font-semibold tracking-tight text-[#202124]">Sign in with Google</h2>
-            <p class="text-[14px] text-[#5f6368] mt-1">Choose an account to continue to <span class="font-medium text-[#202124]">PetPals Care Portal</span></p>
+            <h2 class="text-[22px] font-semibold tracking-tight text-[#202124]">Real-World Google Sign-In</h2>
+            <p class="text-[13px] text-[#5f6368] mt-1.5 leading-normal">
+              Enter your Google OAuth Client ID to connect directly to <strong class="text-[#202124]">accounts.google.com</strong>.
+            </p>
           </div>
 
-          <!-- Account list -->
-          <div class="px-6 py-2 flex flex-col gap-2 max-h-[360px] overflow-y-auto" id="gmodal-account-list">
-            <!-- Account 1 -->
-            <button class="g-account-item w-full flex items-center gap-3.5 p-3 rounded-[18px] border border-[#dadce0] hover:bg-[#f8fafd] hover:border-[#1a73e8] transition-all text-left group"
-              data-name="${escapeHtml(defaultName)}"
-              data-email="${escapeHtml(defaultEmail)}"
-              data-avatar="${escapeHtml(defaultAvatar)}">
-              <img src="${escapeHtml(defaultAvatar)}" class="w-10 h-10 rounded-full object-cover shrink-0 border border-[#e0e0e0]" alt="Avatar">
-              <div class="flex-1 min-w-0">
-                <div class="text-[14px] font-medium text-[#202124] group-hover:text-[#1a73e8] truncate">${escapeHtml(defaultName)}</div>
-                <div class="text-[12px] text-[#5f6368] truncate">${escapeHtml(defaultEmail)}</div>
-              </div>
-              <span class="text-[11px] font-medium px-2 py-0.5 rounded-full bg-[#e8f0fe] text-[#1a73e8]">Default</span>
-            </button>
-
-            <!-- Account 2 -->
-            <button class="g-account-item w-full flex items-center gap-3.5 p-3 rounded-[18px] border border-[#dadce0] hover:bg-[#f8fafd] hover:border-[#1a73e8] transition-all text-left group"
-              data-name="Sarah Jenkins"
-              data-email="sarah.jenkins@gmail.com"
-              data-avatar="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80">
-              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" class="w-10 h-10 rounded-full object-cover shrink-0 border border-[#e0e0e0]" alt="Avatar">
-              <div class="flex-1 min-w-0">
-                <div class="text-[14px] font-medium text-[#202124] group-hover:text-[#1a73e8] truncate">Sarah Jenkins</div>
-                <div class="text-[12px] text-[#5f6368] truncate">sarah.jenkins@gmail.com</div>
-              </div>
-              <span class="text-[11px] text-[#5f6368]">Google</span>
-            </button>
-
-            <!-- Custom account option -->
-            <button id="gmodal-custom-btn" class="w-full flex items-center gap-3.5 p-3 rounded-[18px] border border-dashed border-[#dadce0] hover:bg-[#f8fafd] hover:border-[#1a73e8] transition-all text-left text-[#1a73e8] font-medium text-[14px]">
-              <div class="w-10 h-10 rounded-full bg-[#e8f0fe] flex items-center justify-center shrink-0">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                </svg>
-              </div>
-              <span>Use another account</span>
-            </button>
-
-            <!-- Custom account form (hidden by default) -->
-            <div id="gmodal-custom-form" class="hidden p-3.5 rounded-[18px] bg-[#f8fafd] border border-[#dadce0] flex-col gap-2.5">
-              <div class="text-[12px] font-medium text-[#202124]">Enter Google Account Details</div>
-              <input id="gmodal-custom-name" type="text" placeholder="Full Name (e.g. Alex Rivera)" class="w-full px-3 py-2 text-[13px] bg-white border border-[#dadce0] rounded-lg focus:outline-none focus:border-[#1a73e8] focus:ring-1 focus:ring-[#1a73e8]" value="" />
-              <input id="gmodal-custom-email" type="email" placeholder="Google Email (e.g. alex@gmail.com)" class="w-full px-3 py-2 text-[13px] bg-white border border-[#dadce0] rounded-lg focus:outline-none focus:border-[#1a73e8] focus:ring-1 focus:ring-[#1a73e8]" value="" />
-              <button id="gmodal-custom-submit" type="button" class="w-full py-2 bg-[#1a73e8] text-white rounded-lg text-[13px] font-medium hover:bg-[#1557b0] transition-colors shadow-sm">
-                Continue with this Google Account
-              </button>
+          <!-- Body -->
+          <div class="px-7 py-3 space-y-4">
+            <div>
+              <label for="gmodal-client-id-input" class="block text-[11px] font-bold uppercase tracking-wider text-[#5f6368] mb-1.5">Google Client ID</label>
+              <input id="gmodal-client-id-input" type="text" placeholder="e.g. 123456789-abc.apps.googleusercontent.com"
+                class="w-full px-3.5 py-2.5 text-[13px] bg-[#f8fafd] border border-[#dadce0] rounded-xl focus:outline-none focus:border-[#1a73e8] focus:ring-2 focus:ring-[#1a73e8]/20 transition-all font-mono" />
+              <p class="text-[11px] text-[#5f6368] mt-1.5">
+                From Google Cloud Console &rarr; APIs &amp; Services &rarr; Credentials.
+              </p>
             </div>
+
+            <button id="gmodal-connect-btn" type="button"
+              class="w-full py-2.5 px-4 bg-[#1a73e8] hover:bg-[#1557b0] text-white font-medium text-[13px] rounded-xl transition-all shadow-md shadow-[#1a73e8]/25 flex items-center justify-center gap-2">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+              </svg>
+              <span>Save &amp; Open Google Popup</span>
+            </button>
           </div>
 
-          <!-- Loading state overlay inside modal -->
-          <div id="gmodal-loading" class="hidden absolute inset-0 bg-white/95 backdrop-blur-xs flex flex-col items-center justify-center p-6 gap-3 z-20">
-            <div class="w-8 h-8 border-3 border-[#1a73e8] border-t-transparent rounded-full animate-spin"></div>
-            <div class="text-[14px] font-medium text-[#202124]" id="gmodal-loading-text">Signing in with Google...</div>
-            <div class="text-[12px] text-[#5f6368]">Securing your PetPals session</div>
-          </div>
-
-          <!-- Footer disclaimer -->
-          <div class="p-6 pt-3 text-[12px] text-[#5f6368] leading-relaxed border-t border-[#f1f3f4] mt-2 bg-[#fafafa]">
-            To continue, Google will securely share your name, email address, and language preference with PetPals. See PetPals' <a href="#" class="text-[#1a73e8] hover:underline">Privacy Policy</a> and <a href="#" class="text-[#1a73e8] hover:underline">Terms of Service</a>.
+          <!-- Footer info -->
+          <div class="p-6 pt-3 text-[11px] text-[#5f6368] border-t border-[#f1f3f4] mt-3 bg-[#fafafa]">
+            Google OAuth requires a registered Client ID for origin <code class="bg-[#e8eaed] text-[#202124] px-1 py-0.5 rounded font-mono">http://localhost:3000</code>.
           </div>
         </div>
       `;
@@ -1285,58 +1273,37 @@
         if (e.target === modalEl) closeModal();
       });
 
-      const showLoading = (text) => {
-        const loader = modalEl.querySelector('#gmodal-loading');
-        const textEl = modalEl.querySelector('#gmodal-loading-text');
-        if (textEl && text) textEl.textContent = text;
-        if (loader) loader.classList.remove('hidden');
-      };
-
-      // Handle preset account clicks
-      modalEl.querySelectorAll('.g-account-item').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          const name = btn.getAttribute('data-name');
-          const email = btn.getAttribute('data-email');
-          const avatar = btn.getAttribute('data-avatar');
-          showLoading(`Signing in as ${name}...`);
-          try {
-            await this.handleBackendAuth({ name, email, avatar });
-            closeModal();
-          } catch (e) {
-            const loader = modalEl.querySelector('#gmodal-loading');
-            if (loader) loader.classList.add('hidden');
-          }
-        });
-      });
-
-      // Handle "Use another account" toggle
-      const customBtn = modalEl.querySelector('#gmodal-custom-btn');
-      const customForm = modalEl.querySelector('#gmodal-custom-form');
-      customBtn?.addEventListener('click', () => {
-        customBtn.classList.add('hidden');
-        customForm?.classList.remove('hidden');
-        customForm?.classList.add('flex');
-        customForm?.querySelector('#gmodal-custom-name')?.focus();
-      });
-
-      // Handle custom account submit
-      modalEl.querySelector('#gmodal-custom-submit')?.addEventListener('click', async () => {
-        const nameInput = modalEl.querySelector('#gmodal-custom-name');
-        const emailInput = modalEl.querySelector('#gmodal-custom-email');
-        const name = (nameInput?.value || '').trim();
-        const email = (emailInput?.value || '').trim();
-        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-          emailInput?.focus();
-          showToast('Please enter a valid Google email address.', 'error');
+      // Handle Save & Connect
+      modalEl.querySelector('#gmodal-connect-btn')?.addEventListener('click', async () => {
+        const input = modalEl.querySelector('#gmodal-client-id-input');
+        const clientId = (input?.value || '').trim();
+        if (!clientId) {
+          input?.focus();
+          showToast('Please enter your Google Client ID', 'error');
           return;
         }
-        showLoading(`Connecting Google account for ${name || email}...`);
+
+        const btn = modalEl.querySelector('#gmodal-connect-btn');
+        btn.disabled = true;
+        btn.textContent = 'Connecting...';
+
         try {
-          await this.handleBackendAuth({ name: name || email.split('@')[0], email });
+          const res = await fetch('/api/auth/google/client-id', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ clientId })
+          });
+          const data = await res.json();
+          if (!res.ok || !data.success) throw new Error(data.error || 'Failed to save Client ID');
+
+          this.configCache = { clientId, hasClientId: true };
           closeModal();
-        } catch (e) {
-          const loader = modalEl.querySelector('#gmodal-loading');
-          if (loader) loader.classList.add('hidden');
+          showToast('Google Client ID connected! Opening Google Sign-In...', 'success');
+          this.loadGsiScript(() => this.triggerGooglePopup(clientId));
+        } catch (err) {
+          btn.disabled = false;
+          btn.textContent = 'Save & Open Google Popup';
+          showToast(err.message || 'Could not save Client ID', 'error');
         }
       });
     }

@@ -262,17 +262,65 @@ app.get('/api/auth/google/config', (req, res) => {
   });
 });
 
+// Configure Google Client ID dynamically
+app.post('/api/auth/google/client-id', async (req, res) => {
+  try {
+    const { clientId } = req.body || {};
+    const trimmed = (clientId || '').trim();
+    if (!trimmed) {
+      return res.status(400).json({ error: 'Please provide a valid Google Client ID' });
+    }
+
+    process.env.GOOGLE_CLIENT_ID = trimmed;
+
+    // Update or append to .env
+    const envPath = path.resolve(__dirname, '.env');
+    let envContent = fs.existsSync(envPath) ? fs.readFileSync(envPath, 'utf8') : '';
+    if (envContent.includes('GOOGLE_CLIENT_ID=')) {
+      envContent = envContent.replace(/GOOGLE_CLIENT_ID=.*/g, `GOOGLE_CLIENT_ID=${trimmed}`);
+    } else {
+      envContent += `\nGOOGLE_CLIENT_ID=${trimmed}\n`;
+    }
+    fs.writeFileSync(envPath, envContent, 'utf8');
+
+    res.json({ success: true, clientId: trimmed });
+  } catch (err) {
+    console.error('Error saving Google Client ID:', err);
+    res.status(500).json({ error: 'Failed to update Google Client ID.' });
+  }
+});
+
 // Google Sign-In & Sign-Up endpoint
 app.post('/api/auth/google', async (req, res) => {
   try {
-    const { credential, email, name, avatar } = req.body || {};
+    const { credential, accessToken, email, name, avatar } = req.body || {};
     let userEmail = '';
     let userName = '';
     let userAvatar = '';
     let isVerifiedToken = false;
 
-    // 1. If a Google ID Token (credential) is supplied
-    if (credential && typeof credential === 'string') {
+    // 1. Verify Google OAuth2 Access Token if provided (Popup flow)
+    if (accessToken && typeof accessToken === 'string') {
+      try {
+        const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+          headers: { Authorization: `Bearer ${accessToken}` },
+          signal: AbortSignal.timeout(5000)
+        }).catch(() => null);
+
+        if (userInfoRes && userInfoRes.ok) {
+          const profile = await userInfoRes.json();
+          userEmail = profile.email;
+          userName = profile.name || profile.given_name || '';
+          userAvatar = profile.picture || '';
+          isVerifiedToken = true;
+        }
+      } catch (err) {
+        console.warn('Google accessToken verification error:', err.message);
+      }
+    }
+
+    // 2. If a Google ID Token (credential) is supplied (GIS credential flow)
+    if (!isVerifiedToken && credential && typeof credential === 'string') {
       try {
         const tokenInfoRes = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(credential)}`, {
           signal: AbortSignal.timeout(4000)
