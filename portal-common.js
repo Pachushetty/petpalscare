@@ -1256,10 +1256,21 @@
               </svg>
               <span>Save &amp; Open Google Popup</span>
             </button>
+
+            <div class="flex items-center gap-3 pt-1">
+              <div class="flex-1 h-px bg-[#dadce0]"></div>
+              <span class="text-[10px] uppercase font-bold tracking-wider text-[#5f6368]">or</span>
+              <div class="flex-1 h-px bg-[#dadce0]"></div>
+            </div>
+
+            <button id="gmodal-quick-login-btn" type="button"
+              class="w-full py-2 px-3 border border-[#dadce0] hover:bg-[#f8fafd] text-[#3c4043] font-medium text-[12px] rounded-xl transition-all flex items-center justify-center gap-2">
+              <span>Skip &amp; Sign In Instantly (Local Demo)</span>
+            </button>
           </div>
 
           <!-- Footer info -->
-          <div class="p-6 pt-3 text-[11px] text-[#5f6368] border-t border-[#f1f3f4] mt-3 bg-[#fafafa]">
+          <div class="p-5 pt-3 text-[11px] text-[#5f6368] border-t border-[#f1f3f4] mt-2 bg-[#fafafa]">
             Google OAuth requires a registered Client ID for origin <code class="bg-[#e8eaed] text-[#202124] px-1 py-0.5 rounded font-mono">http://localhost:3000</code>.
           </div>
         </div>
@@ -1271,6 +1282,17 @@
       modalEl.querySelector('#gmodal-close-btn')?.addEventListener('click', closeModal);
       modalEl.addEventListener('click', (e) => {
         if (e.target === modalEl) closeModal();
+      });
+
+      // Quick login button
+      modalEl.querySelector('#gmodal-quick-login-btn')?.addEventListener('click', async () => {
+        closeModal();
+        showToast('Signing in with Google Demo Account...', 'info');
+        await this.handleBackendAuth({
+          email: 'google.user@gmail.com',
+          name: 'Google User',
+          avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80'
+        });
       });
 
       // Handle Save & Connect
