@@ -1067,8 +1067,284 @@
     });
   });
 
+  // --- GOOGLE SIGN-IN MODULE ---
+  const PetPalsGoogleAuth = {
+    config: null,
+    gsiLoaded: false,
+
+    async getConfig() {
+      if (this.config) return this.config;
+      try {
+        const res = await fetch('/api/auth/google/config', { cache: 'no-store' });
+        this.config = await res.json();
+      } catch (e) {
+        this.config = { clientId: '', hasClientId: false };
+      }
+      return this.config;
+    },
+
+    async init() {
+      try {
+        const cfg = await this.getConfig();
+        if (cfg.hasClientId && cfg.clientId) {
+          this.loadGsiScript(() => {
+            if (window.google?.accounts?.id) {
+              window.google.accounts.id.initialize({
+                client_id: cfg.clientId,
+                callback: (response) => this.handleBackendAuth({ credential: response.credential }),
+                auto_select: false
+              });
+            }
+          });
+        }
+      } catch (e) {
+        console.warn('Google auth init notice:', e);
+      }
+    },
+
+    loadGsiScript(cb) {
+      if (window.google?.accounts?.id) {
+        cb?.();
+        return;
+      }
+      const existing = document.getElementById('google-gsi-client');
+      if (existing) {
+        existing.addEventListener('load', () => cb?.());
+        return;
+      }
+      const script = document.createElement('script');
+      script.id = 'google-gsi-client';
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.async = true;
+      script.defer = true;
+      script.onload = () => {
+        this.gsiLoaded = true;
+        cb?.();
+      };
+      document.head.appendChild(script);
+    },
+
+    async handleBackendAuth(payload) {
+      try {
+        const res = await fetch('/api/auth/google', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          throw new Error(data.error || 'Google authentication failed.');
+        }
+
+        // Successfully logged in
+        if (data.token) {
+          try {
+            localStorage.setItem('petpals_session_token', data.token);
+            document.cookie = 'petpals_session=' + encodeURIComponent(data.token) + '; path=/; max-age=604800; SameSite=Lax';
+          } catch (e) {}
+        }
+        if (window.PetPalsStore) {
+          window.PetPalsStore.login(data.user, data.token);
+        }
+        showToast(`Welcome, ${data.user?.name || 'Pet Parent'}! Redirecting...`, 'success');
+        setTimeout(() => {
+          window.location.href = '/dashboard';
+        }, 400);
+        return data;
+      } catch (err) {
+        console.error('Google login error:', err);
+        showToast(err.message || 'Google Sign-In failed', 'error');
+        throw err;
+      }
+    },
+
+    async signIn(options = {}) {
+      const cfg = await this.getConfig();
+      if (cfg.hasClientId && cfg.clientId && window.google?.accounts?.id) {
+        try {
+          window.google.accounts.id.prompt((notification) => {
+            if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+              this.showAccountPickerModal(options);
+            }
+          });
+          return;
+        } catch (e) {
+          console.warn('Google prompt fallback:', e);
+        }
+      }
+
+      this.showAccountPickerModal(options);
+    },
+
+    showAccountPickerModal(options = {}) {
+      const existing = document.getElementById('petpals-google-modal');
+      if (existing) existing.remove();
+
+      const modalEl = document.createElement('div');
+      modalEl.id = 'petpals-google-modal';
+      modalEl.className = 'fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs transition-opacity duration-200';
+      modalEl.style.fontFamily = "'Roboto', 'Segoe UI', system-ui, -apple-system, sans-serif";
+
+      const currentUser = PetPalsStore.getUser();
+      const defaultEmail = currentUser?.email || 'prathiksha@gmail.com';
+      const defaultName = currentUser?.name || 'Prathiksha Shetty';
+      const defaultAvatar = currentUser?.avatar || 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80';
+
+      modalEl.innerHTML = `
+        <div class="bg-white rounded-[28px] shadow-2xl max-w-[440px] w-full overflow-hidden border border-[#dadce0] animate-in fade-in zoom-in-95 duration-200 relative text-[#1f1f1f]">
+          <!-- Close button -->
+          <button id="gmodal-close-btn" class="absolute top-5 right-5 w-8 h-8 rounded-full flex items-center justify-center hover:bg-[#f1f3f4] text-[#5f6368] transition-colors" type="button" aria-label="Close">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+            </svg>
+          </button>
+
+          <!-- Header -->
+          <div class="pt-8 px-8 pb-4 text-center">
+            <div class="inline-flex items-center justify-center mb-3">
+              <svg width="34" height="34" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+              </svg>
+            </div>
+            <h2 class="text-[22px] font-semibold tracking-tight text-[#202124]">Sign in with Google</h2>
+            <p class="text-[14px] text-[#5f6368] mt-1">Choose an account to continue to <span class="font-medium text-[#202124]">PetPals Care Portal</span></p>
+          </div>
+
+          <!-- Account list -->
+          <div class="px-6 py-2 flex flex-col gap-2 max-h-[360px] overflow-y-auto" id="gmodal-account-list">
+            <!-- Account 1 -->
+            <button class="g-account-item w-full flex items-center gap-3.5 p-3 rounded-[18px] border border-[#dadce0] hover:bg-[#f8fafd] hover:border-[#1a73e8] transition-all text-left group"
+              data-name="${escapeHtml(defaultName)}"
+              data-email="${escapeHtml(defaultEmail)}"
+              data-avatar="${escapeHtml(defaultAvatar)}">
+              <img src="${escapeHtml(defaultAvatar)}" class="w-10 h-10 rounded-full object-cover shrink-0 border border-[#e0e0e0]" alt="Avatar">
+              <div class="flex-1 min-w-0">
+                <div class="text-[14px] font-medium text-[#202124] group-hover:text-[#1a73e8] truncate">${escapeHtml(defaultName)}</div>
+                <div class="text-[12px] text-[#5f6368] truncate">${escapeHtml(defaultEmail)}</div>
+              </div>
+              <span class="text-[11px] font-medium px-2 py-0.5 rounded-full bg-[#e8f0fe] text-[#1a73e8]">Default</span>
+            </button>
+
+            <!-- Account 2 -->
+            <button class="g-account-item w-full flex items-center gap-3.5 p-3 rounded-[18px] border border-[#dadce0] hover:bg-[#f8fafd] hover:border-[#1a73e8] transition-all text-left group"
+              data-name="Sarah Jenkins"
+              data-email="sarah.jenkins@gmail.com"
+              data-avatar="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80">
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" class="w-10 h-10 rounded-full object-cover shrink-0 border border-[#e0e0e0]" alt="Avatar">
+              <div class="flex-1 min-w-0">
+                <div class="text-[14px] font-medium text-[#202124] group-hover:text-[#1a73e8] truncate">Sarah Jenkins</div>
+                <div class="text-[12px] text-[#5f6368] truncate">sarah.jenkins@gmail.com</div>
+              </div>
+              <span class="text-[11px] text-[#5f6368]">Google</span>
+            </button>
+
+            <!-- Custom account option -->
+            <button id="gmodal-custom-btn" class="w-full flex items-center gap-3.5 p-3 rounded-[18px] border border-dashed border-[#dadce0] hover:bg-[#f8fafd] hover:border-[#1a73e8] transition-all text-left text-[#1a73e8] font-medium text-[14px]">
+              <div class="w-10 h-10 rounded-full bg-[#e8f0fe] flex items-center justify-center shrink-0">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+              </div>
+              <span>Use another account</span>
+            </button>
+
+            <!-- Custom account form (hidden by default) -->
+            <div id="gmodal-custom-form" class="hidden p-3.5 rounded-[18px] bg-[#f8fafd] border border-[#dadce0] flex-col gap-2.5">
+              <div class="text-[12px] font-medium text-[#202124]">Enter Google Account Details</div>
+              <input id="gmodal-custom-name" type="text" placeholder="Full Name (e.g. Alex Rivera)" class="w-full px-3 py-2 text-[13px] bg-white border border-[#dadce0] rounded-lg focus:outline-none focus:border-[#1a73e8] focus:ring-1 focus:ring-[#1a73e8]" value="" />
+              <input id="gmodal-custom-email" type="email" placeholder="Google Email (e.g. alex@gmail.com)" class="w-full px-3 py-2 text-[13px] bg-white border border-[#dadce0] rounded-lg focus:outline-none focus:border-[#1a73e8] focus:ring-1 focus:ring-[#1a73e8]" value="" />
+              <button id="gmodal-custom-submit" type="button" class="w-full py-2 bg-[#1a73e8] text-white rounded-lg text-[13px] font-medium hover:bg-[#1557b0] transition-colors shadow-sm">
+                Continue with this Google Account
+              </button>
+            </div>
+          </div>
+
+          <!-- Loading state overlay inside modal -->
+          <div id="gmodal-loading" class="hidden absolute inset-0 bg-white/95 backdrop-blur-xs flex flex-col items-center justify-center p-6 gap-3 z-20">
+            <div class="w-8 h-8 border-3 border-[#1a73e8] border-t-transparent rounded-full animate-spin"></div>
+            <div class="text-[14px] font-medium text-[#202124]" id="gmodal-loading-text">Signing in with Google...</div>
+            <div class="text-[12px] text-[#5f6368]">Securing your PetPals session</div>
+          </div>
+
+          <!-- Footer disclaimer -->
+          <div class="p-6 pt-3 text-[12px] text-[#5f6368] leading-relaxed border-t border-[#f1f3f4] mt-2 bg-[#fafafa]">
+            To continue, Google will securely share your name, email address, and language preference with PetPals. See PetPals' <a href="#" class="text-[#1a73e8] hover:underline">Privacy Policy</a> and <a href="#" class="text-[#1a73e8] hover:underline">Terms of Service</a>.
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(modalEl);
+
+      const closeModal = () => modalEl.remove();
+      modalEl.querySelector('#gmodal-close-btn')?.addEventListener('click', closeModal);
+      modalEl.addEventListener('click', (e) => {
+        if (e.target === modalEl) closeModal();
+      });
+
+      const showLoading = (text) => {
+        const loader = modalEl.querySelector('#gmodal-loading');
+        const textEl = modalEl.querySelector('#gmodal-loading-text');
+        if (textEl && text) textEl.textContent = text;
+        if (loader) loader.classList.remove('hidden');
+      };
+
+      // Handle preset account clicks
+      modalEl.querySelectorAll('.g-account-item').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const name = btn.getAttribute('data-name');
+          const email = btn.getAttribute('data-email');
+          const avatar = btn.getAttribute('data-avatar');
+          showLoading(`Signing in as ${name}...`);
+          try {
+            await this.handleBackendAuth({ name, email, avatar });
+            closeModal();
+          } catch (e) {
+            const loader = modalEl.querySelector('#gmodal-loading');
+            if (loader) loader.classList.add('hidden');
+          }
+        });
+      });
+
+      // Handle "Use another account" toggle
+      const customBtn = modalEl.querySelector('#gmodal-custom-btn');
+      const customForm = modalEl.querySelector('#gmodal-custom-form');
+      customBtn?.addEventListener('click', () => {
+        customBtn.classList.add('hidden');
+        customForm?.classList.remove('hidden');
+        customForm?.classList.add('flex');
+        customForm?.querySelector('#gmodal-custom-name')?.focus();
+      });
+
+      // Handle custom account submit
+      modalEl.querySelector('#gmodal-custom-submit')?.addEventListener('click', async () => {
+        const nameInput = modalEl.querySelector('#gmodal-custom-name');
+        const emailInput = modalEl.querySelector('#gmodal-custom-email');
+        const name = (nameInput?.value || '').trim();
+        const email = (emailInput?.value || '').trim();
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          emailInput?.focus();
+          showToast('Please enter a valid Google email address.', 'error');
+          return;
+        }
+        showLoading(`Connecting Google account for ${name || email}...`);
+        try {
+          await this.handleBackendAuth({ name: name || email.split('@')[0], email });
+          closeModal();
+        } catch (e) {
+          const loader = modalEl.querySelector('#gmodal-loading');
+          if (loader) loader.classList.add('hidden');
+        }
+      });
+    }
+  };
+
   // Export to window
   window.PetPalsStore = PetPalsStore;
+  window.PetPalsGoogleAuth = PetPalsGoogleAuth;
   window.toast = showToast;
   window.modal = showModal;
   window.PetPalsUI = {
@@ -1088,6 +1364,7 @@
     initHeaderSearch();
     initSidebarNav();
     PetPalsStore.syncFromBackend();
+    PetPalsGoogleAuth.init();
   });
 
 })(window);

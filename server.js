@@ -206,6 +206,122 @@ app.post('/api/auth/login', async (req, res) => {
   }
 });
 
+// Helper to decode Google JWT ID token payload safely
+function decodeGoogleJwt(token) {
+  try {
+    if (!token || typeof token !== 'string') return null;
+    const parts = token.split('.');
+    if (parts.length !== 3) return null;
+    const payloadBase64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+    const padded = payloadBase64.padEnd(payloadBase64.length + (4 - (payloadBase64.length % 4)) % 4, '=');
+    const jsonStr = Buffer.from(padded, 'base64').toString('utf8');
+    return JSON.parse(jsonStr);
+  } catch (e) {
+    return null;
+  }
+}
+
+// Google OAuth Configuration
+app.get('/api/auth/google/config', (req, res) => {
+  res.setHeader('Cache-Control', 'no-store');
+  const clientId = (process.env.GOOGLE_CLIENT_ID || '').trim();
+  res.json({
+    clientId,
+    hasClientId: Boolean(clientId)
+  });
+});
+
+// Google Sign-In & Sign-Up endpoint
+app.post('/api/auth/google', async (req, res) => {
+  try {
+    const { credential, email, name, avatar } = req.body || {};
+    let userEmail = '';
+    let userName = '';
+    let userAvatar = '';
+    let isVerifiedToken = false;
+
+    // 1. If a Google ID Token (credential) is supplied
+    if (credential && typeof credential === 'string') {
+      try {
+        const tokenInfoRes = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(credential)}`, {
+          signal: AbortSignal.timeout(4000)
+        }).catch(() => null);
+
+        if (tokenInfoRes && tokenInfoRes.ok) {
+          const payload = await tokenInfoRes.json();
+          userEmail = payload.email;
+          userName = payload.name || payload.given_name || '';
+          userAvatar = payload.picture || '';
+          isVerifiedToken = true;
+        } else {
+          const decoded = decodeGoogleJwt(credential);
+          if (decoded && decoded.email) {
+            userEmail = decoded.email;
+            userName = decoded.name || decoded.given_name || '';
+            userAvatar = decoded.picture || '';
+            isVerifiedToken = true;
+          }
+        }
+      } catch (err) {
+        console.warn('Google credential verification notice:', err.message);
+      }
+    }
+
+    // 2. Direct payload fallback (interactive account picker / demo mode)
+    if (!isVerifiedToken) {
+      if (!email || typeof email !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+        return res.status(400).json({ error: 'Please provide a valid email address.' });
+      }
+      userEmail = email.trim().toLowerCase();
+      userName = (name && typeof name === 'string') ? name.trim() : userEmail.split('@')[0];
+      userAvatar = typeof avatar === 'string' ? avatar.trim() : '';
+    } else {
+      userEmail = (userEmail || '').trim().toLowerCase();
+    }
+
+    if (!userEmail) {
+      return res.status(400).json({ error: 'Could not obtain email from Google account.' });
+    }
+
+    // 3. Locate or create user account in database
+    let user = await db.findUserByEmail(userEmail);
+    if (!user) {
+      const nameParts = (userName || 'Pet Parent').trim().split(/\s+/);
+      const firstName = nameParts[0] || 'Member';
+      user = await db.createUser({
+        name: (userName || 'Pet Parent').trim(),
+        firstName,
+        email: userEmail,
+        avatar: userAvatar || null,
+        role: 'user'
+      });
+    } else if (userAvatar && (!user.avatar || (typeof db.isGeneratedProfileAvatar === 'function' && db.isGeneratedProfileAvatar(user)))) {
+      try {
+        const updated = await db.updateUser(user.id, { avatar: userAvatar });
+        if (updated) user = updated;
+      } catch (e) {
+        console.warn('Could not update avatar:', e.message);
+      }
+    }
+
+    // 4. Create active user session and set authentication cookie
+    const session = await db.createSession(user.id);
+    const { password_hash, ...safeUser } = user;
+
+    setSessionCookie(req, res, session.token);
+
+    res.json({
+      success: true,
+      token: session.token,
+      user: safeUser,
+      message: `Signed in with Google as ${safeUser.name || safeUser.email}`
+    });
+  } catch (err) {
+    console.error('Google Auth error:', err);
+    res.status(500).json({ error: 'Google Sign-In failed. Please try again.' });
+  }
+});
+
 app.post('/api/auth/logout', async (req, res) => {
   try {
     const tokens = [

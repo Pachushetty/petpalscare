@@ -312,7 +312,11 @@
       if (googleBtn) {
         googleBtn.addEventListener('click', function(e) {
           e.preventDefault();
-          showError('Please create your account using the registration form.');
+          if (window.PetPalsGoogleAuth) {
+            PetPalsGoogleAuth.signIn();
+          } else {
+            showError('Google Sign-Up is loading, please try again in a moment.');
+          }
         });
       }
     })();

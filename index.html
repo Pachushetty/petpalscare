@@ -261,7 +261,11 @@
       if (googleBtn) {
         googleBtn.addEventListener('click', function(e) {
           e.preventDefault();
-          showError('Please sign in with your email and password.');
+          if (window.PetPalsGoogleAuth) {
+            PetPalsGoogleAuth.signIn();
+          } else {
+            showError('Google Sign-In is loading, please try again in a moment.');
+          }
         });
       }
     })();
