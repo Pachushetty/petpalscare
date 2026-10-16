@@ -170,6 +170,37 @@ app.post('/api/auth/login', async (req, res) => {
     const trimmedEmail = email.trim().toLowerCase();
     const user = await db.findUserByEmail(trimmedEmail);
     if (!user) {
+      // Check if this is an administrator signing in from the user login portal
+      const admin = await db.findAdminByEmail(trimmedEmail);
+      if (admin) {
+        let isAdminValid = false;
+        if (admin.password_hash) {
+          if (typeof admin.password_hash === 'string' && /^\$2[aby]?\$\d{2}\$[./A-Za-z0-9]{53}$/.test(admin.password_hash)) {
+            try {
+              isAdminValid = bcrypt.compareSync(password, admin.password_hash);
+            } catch (e) {
+              isAdminValid = false;
+            }
+          } else {
+            isAdminValid = admin.password_hash === password;
+          }
+        }
+
+        if (isAdminValid) {
+          const adminSession = await db.createAdminSession(admin.id);
+          setAdminSessionCookie(req, res, adminSession.token);
+          const { password_hash, ...safeAdmin } = admin;
+          safeAdmin.name = safeAdmin.name || 'Admin';
+          return res.json({
+            success: true,
+            isAdmin: true,
+            redirect: '/admin/dashboard',
+            token: adminSession.token,
+            admin: safeAdmin
+          });
+        }
+      }
+
       return res.status(401).json({ error: 'Invalid email or password. Please check your credentials.' });
     }
 
