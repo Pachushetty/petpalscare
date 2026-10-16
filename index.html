@@ -232,9 +232,9 @@
               return;
             }
 
-            // Clean old cache before logging into this account
+            // Clean old user session cache without wiping admin portal data
             try {
-              localStorage.clear();
+              ['petpals_session_token', 'petpals_user', 'petpals_auth', 'petpals_current_user_id'].forEach(k => localStorage.removeItem(k));
               sessionStorage.clear();
             } catch (e) {}
 

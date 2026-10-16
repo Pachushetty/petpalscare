@@ -156,9 +156,6 @@
           <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">person</span>
           <span>Profile</span>
         </a>
-        <a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-full text-on-surface-variant font-label-lg text-label-lg hover:bg-surface-container-high hover:text-on-surface transition-all duration-200" href="#my-reviews">
-          <span class="material-symbols-outlined text-[20px]">rate_review</span><span>My Reviews</span>
-        </a>
       </nav>
     </div>
 
@@ -202,9 +199,10 @@
           <!-- User Profile Chip with Dropdown -->
           <div class="flex items-center gap-space-sm pl-space-sm">
             <div id="user-header-pill" class="flex items-center gap-space-sm p-1.5 pr-space-md rounded-full bg-surface-container-lowest hover:bg-surface-container-high transition-colors cursor-pointer border border-outline-variant/30">
-              <img id="header-user-avatar" alt="Profile" class="w-8 h-8 rounded-full object-cover shadow-xs bg-surface-container" src="https://lh3.googleusercontent.com/aida/AEtjO1W2uQrDJs4Vq5TYFXxKRstMqlWwR7xI1Vd89lXd1ZvB7avK7gnREQ5WOfaUosw8l-wR8L7-eAfCJuvY7Cdxkt317Wkh_wn-EKHXll2I84VoOFaioaG2l8yZtkkQGVoXM8G4qG0iUi8m9vS2hjJib1qyvdhI6AzazhdyK9EGdq-j_RpdlDJb8JyxcEVyEU7peCGUk_svquzx-8jfE0aefqTpVg7JuQ55FJTJZ-LnWWoZI1waQwUpguaERD58ZXbKt52BFZtBOSmgo_4"/>
-              <span id="header-user-firstname" class="font-label-lg text-label-lg text-on-surface">Prathiksha</span>
+              <img id="header-user-avatar" alt="Profile" class="w-8 h-8 rounded-full object-cover shadow-xs bg-surface-container" src="data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2232%22%20fill%3D%22%238c6246%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2223%22%20r%3D%2211%22%20fill%3D%22%23fcf9f4%22%2F%3E%3Cpath%20d%3D%22M10%2060c1-15%2010-23%2022-23s21%208%2022%2023%22%20fill%3D%22%23fcf9f4%22%2F%3E%3C%2Fsvg%3E"/>
+              <span id="header-user-firstname" class="font-label-lg text-label-lg text-on-surface"></span>
               <span class="material-symbols-outlined text-[18px] text-outline">expand_more</span>
+              <script>(function(){try{var uid=localStorage.getItem('petpals_current_user_id');var raw=(uid&&localStorage.getItem('petpals_user_'+uid))||localStorage.getItem('petpals_user');if(raw){var u=JSON.parse(raw);var n=u.firstName||u.name||'';var s=document.getElementById('header-user-firstname');if(s&&n)s.textContent=n;var im=document.getElementById('header-user-avatar');if(im&&u.avatar&&!u.avatar.includes('AEtjO1W2uQrDJs4Vq5TYFXxKRstMqlWw')&&!u.avatar.includes('photo-1535713875002-d1d0cf377fde')){im.src=u.avatar;}}}catch(e){}})();</script>
             </div>
           </div>
         </div>
@@ -258,7 +256,7 @@
                 <!-- Meta and Contact Info -->
                 <div class="flex flex-col">
                   <div class="flex items-center gap-3">
-                    <h2 id="profile-display-name" class="font-headline-sm text-headline-sm text-on-surface">Prathiksha Shetty</h2>
+                    <h2 id="profile-display-name" class="font-headline-sm text-headline-sm text-on-surface"></h2>
                     <button id="quick-edit-profile-btn" class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm hover:bg-surface-container-high transition-colors" type="button">
                       Edit
                     </button>
@@ -266,8 +264,9 @@
                   <div class="flex flex-col gap-2 mt-4 text-on-surface-variant font-body-sm text-body-sm">
                     <div class="flex items-center gap-2.5">
                       <span class="material-symbols-outlined text-[18px] text-outline">mail</span>
-                      <span id="profile-display-email">prathiksha@gmail.com</span>
+                      <span id="profile-display-email"></span>
                     </div>
+                    <script>(function(){try{var uid=localStorage.getItem('petpals_current_user_id');var raw=(uid&&localStorage.getItem('petpals_user_'+uid))||localStorage.getItem('petpals_user');if(raw){var u=JSON.parse(raw);var dn=document.getElementById('profile-display-name');if(dn)dn.textContent=u.name||u.firstName||'';var de=document.getElementById('profile-display-email');if(de)de.textContent=u.email||'';}}catch(e){}})();</script>
                     <div class="flex items-center gap-2.5">
                       <span class="material-symbols-outlined text-[18px] text-outline">call</span>
                       <span id="profile-display-phone"></span>

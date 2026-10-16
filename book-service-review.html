@@ -16,11 +16,11 @@
 <div class="h-96 bg-surface-container-high rounded-3xl w-full"></div>
 </div>
 <!-- Warm Frosted Backdrop Overlay -->
-<div class="fixed inset-0 z-50 bg-on-background/45 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto" id="booking-modal-overlay">
+<div class="fixed inset-0 z-50 bg-on-background/45 backdrop-blur-md flex items-center justify-center p-2.5 sm:p-4 overflow-y-auto" id="booking-modal-overlay">
 <!-- Modal Card Container -->
-<div class="relative w-full max-w-[960px] my-auto bg-surface-container-lowest rounded-3xl shadow-[0_24px_60px_-12px_rgba(44,36,32,0.18)] overflow-hidden flex flex-col transition-all duration-300">
+<div class="relative w-full max-w-[720px] my-auto bg-surface-container-lowest rounded-2xl shadow-[0_20px_50px_-12px_rgba(44,36,32,0.18)] overflow-hidden flex flex-col transition-all duration-300">
 <!-- Subtle Ambient Decorative Paw Motifs (Top Right & Left) -->
-<div class="absolute -top-10 -right-10 w-44 h-44 pointer-events-none text-primary/5 select-none">
+<div class="absolute -top-10 -right-10 w-28 h-28 pointer-events-none text-primary/5 select-none">
 <svg class="w-full h-full transform rotate-12" fill="currentColor" viewbox="0 0 100 100">
 <ellipse cx="50" cy="65" rx="22" ry="18"></ellipse>
 <circle cx="27" cy="38" r="9"></circle>
@@ -30,64 +30,65 @@
 </svg>
 </div>
 <!-- Modal Header -->
-<div class="px-6 sm:px-10 pt-8 pb-6 bg-surface-container-low/70 border-b border-outline-variant/30 relative shrink-0">
-<div class="flex items-start justify-between gap-4">
-<div class="space-y-1">
-<div class="flex items-center gap-2 mb-1.5">
-<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-secondary-container text-on-secondary-container">
-<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">pets</span>
+<div class="px-4 sm:px-6 pt-3.5 pb-2.5 bg-surface-container-low/70 border-b border-outline-variant/30 relative shrink-0">
+<div class="flex items-start justify-between gap-3">
+<div class="space-y-0.5">
+<div class="flex items-center gap-1.5 mb-0.5">
+<span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-secondary-container text-on-secondary-container">
+<span class="material-symbols-outlined text-[11px]" style="font-variation-settings: 'FILL' 1;">pets</span>
 </span>
-<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary font-semibold">PetPals Concierge</span>
+<span class="font-label-sm text-[10px] uppercase tracking-wider text-secondary font-semibold">PetPals Concierge</span>
 </div>
-<h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Book a Service</h2>
-<p class="font-body-md text-body-md text-on-surface-variant max-w-xl">
+<h2 class="font-headline-md text-xl sm:text-2xl text-on-surface tracking-tight font-bold">Book a Service</h2>
+<p class="font-body-sm text-xs text-on-surface-variant max-w-xl">
               Tailored comfort and attentive medical-grade care for your furry family member.
             </p>
 </div>
 <!-- Close Modal Action -->
-<button onclick="window.location.href='/my-pets'" aria-label="Close booking modal" class="w-10 h-10 rounded-full bg-surface-container-lowest text-on-surface-variant hover:text-on-surface hover:bg-surface-container flex items-center justify-center transition-all shadow-sm shrink-0" type="button">
-<span class="material-symbols-outlined text-[20px]">close</span>
+<button onclick="window.location.href='/my-pets'" aria-label="Close booking modal" class="w-7 h-7 rounded-full bg-surface-container-lowest text-on-surface-variant hover:text-on-surface hover:bg-surface-container flex items-center justify-center transition-all shadow-sm shrink-0" type="button">
+<span class="material-symbols-outlined text-[16px]">close</span>
 </button>
 </div>
 <!-- 4-Step Interactive Navigation Stepper -->
-<div class="mt-8 pt-5 relative">
-<div class="absolute top-4 left-6 right-6 h-0.5 bg-surface-container-highest -translate-y-1/2 z-0"></div>
-<div class="absolute top-4 left-6 h-0.5 bg-primary-container -translate-y-1/2 z-0 transition-all duration-300" style="width: 100%;"></div>
-
-<div class="relative z-10 grid grid-cols-4 gap-2">
-<!-- Step 1: Completed -->
-<a href="/book-service" class="flex flex-col items-center sm:items-start text-center sm:text-left gap-1.5 group cursor-pointer">
-<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-label-md text-label-md shadow-sm">
-<span class="material-symbols-outlined text-[18px]">check</span>
+<div class="mt-2.5 pt-1.5 relative">
+<div class="absolute top-3 h-0.5 bg-surface-container-highest -translate-y-1/2 z-0" style="left: 12.5%; right: 12.5%;">
+<div class="h-full bg-primary-container transition-all duration-300" style="width: 100%;"></div>
 </div>
-<span class="font-label-md text-label-md text-primary font-semibold">1. Service</span>
+
+<div class="relative z-10 grid grid-cols-4 gap-1">
+<!-- Step 1: Completed -->
+<a href="/book-service" class="flex flex-col items-center text-center gap-0.5 group cursor-pointer">
+<div class="w-6 h-6 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-label-sm text-[11px] shadow-sm">
+<span class="material-symbols-outlined text-[14px]">check</span>
+</div>
+<span class="font-label-sm text-[11px] text-primary font-semibold">1. Service</span>
 </a>
 <!-- Step 2: Completed -->
-<a href="/book-service-pet" class="flex flex-col items-center sm:items-start text-center sm:text-left gap-1.5 group cursor-pointer">
-<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-label-md text-label-md shadow-sm">
-<span class="material-symbols-outlined text-[18px]">check</span>
+<a href="/book-service-pet" class="flex flex-col items-center text-center gap-0.5 group cursor-pointer">
+<div class="w-6 h-6 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-label-sm text-[11px] shadow-sm">
+<span class="material-symbols-outlined text-[14px]">check</span>
 </div>
-<span class="font-label-md text-label-md text-primary font-semibold">2. Pet Details</span>
+<span class="font-label-sm text-[11px] text-primary font-semibold">2. Pet Details</span>
 </a>
 <!-- Step 3: Completed -->
-<a href="/book-service-schedule" class="flex flex-col items-center sm:items-start text-center sm:text-left gap-1.5 group cursor-pointer">
-<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-label-md text-label-md shadow-sm">
-<span class="material-symbols-outlined text-[18px]">check</span>
+<a href="/book-service-schedule" class="flex flex-col items-center text-center gap-0.5 group cursor-pointer">
+<div class="w-6 h-6 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-label-sm text-[11px] shadow-sm">
+<span class="material-symbols-outlined text-[14px]">check</span>
 </div>
-<span class="font-label-md text-label-md text-primary font-semibold">3. Schedule</span>
+<span class="font-label-sm text-[11px] text-primary font-semibold">3. Schedule</span>
 </a>
 <!-- Step 4: Active -->
-<div class="flex flex-col items-center sm:items-start text-center sm:text-left gap-1.5">
-<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-md text-label-md shadow-md ring-4 ring-primary/15 font-bold">
+<div class="flex flex-col items-center text-center gap-0.5">
+<div class="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-sm text-[11px] shadow-sm ring-2 ring-primary/20 font-bold">
   4
 </div>
-<span class="font-label-md text-label-md text-primary font-bold">4. Review &amp; Confirm</span>
+<span class="font-label-sm text-[11px] text-primary font-bold">4. Review</span>
 </div>
 </div>
 </div>
 </div>
 <!-- Modal Body (Scrollable Content Section) -->
-<div class="px-6 sm:px-10 py-6 sm:py-8 space-y-6 overflow-y-auto max-h-[calc(88vh-260px)] min-h-[380px] bg-surface-container-lowest">
+<div class="px-4 sm:px-6 py-3.5 space-y-4 overflow-y-auto max-h-[50vh] min-h-0 bg-surface-container-lowest">
 <!-- Step 4 Section Header Bar -->
 <div class="flex flex-wrap items-center justify-between gap-3 pb-2">
 <div class="flex items-center gap-3">
@@ -103,58 +104,58 @@
 </div>
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 <!-- LEFT COLUMN: Booking Details & Summary (7 cols) -->
-<div class="lg:col-span-7 space-y-5">
+<div class="lg:col-span-7 space-y-4">
 <!-- Snapshot Container -->
-<div class="bg-surface-container-lowest rounded-DEFAULT p-5 sm:p-6 shadow-sm space-y-5">
+<div class="bg-surface-container-lowest rounded-[8px] border border-outline-variant/35 p-4 sm:p-5 shadow-xs space-y-4">
 <div class="flex items-center justify-between">
 <div class="flex items-center gap-2.5">
-<div id="reviewServiceIcon" class="w-10 h-10 rounded-full bg-secondary-container/40 flex items-center justify-center text-primary shrink-0">
-<span class="material-symbols-outlined text-[22px]">shower</span>
+<div id="reviewServiceIcon" class="w-9 h-9 rounded-[6px] bg-secondary-container/40 flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[20px]">shower</span>
 </div>
 <div>
 <div class="flex flex-wrap items-center gap-2">
-<h2 id="reviewServiceName" class="font-headline-sm text-headline-sm text-on-surface">Selected service</h2>
-<span id="reviewServiceDuration" class="px-2 py-0.5 bg-surface-container font-label-sm text-label-sm text-on-surface-variant rounded-full">75 min</span>
-<span id="reviewServiceHeaderPrice" class="px-2.5 py-0.5 bg-primary-fixed text-on-primary-fixed-variant font-label-sm text-label-sm font-semibold rounded-full">₹45.00 INR</span>
+<h2 id="reviewServiceName" class="font-headline-sm text-base text-on-surface font-bold">Selected service</h2>
+<span id="reviewServiceDuration" class="px-2 py-0.5 bg-surface-container font-label-sm text-xs text-on-surface-variant rounded-[4px]">75 min</span>
+<span id="reviewServiceHeaderPrice" class="px-2 py-0.5 bg-primary-fixed text-on-primary-fixed-variant font-label-sm text-xs font-semibold rounded-[4px]">₹45.00 INR</span>
 </div>
-<p id="reviewServiceDesc" class="font-body-sm text-body-sm text-on-surface-variant">Signature full bath, breed-standard trim &amp; ear hygiene</p>
+<p id="reviewServiceDesc" class="font-body-sm text-xs text-on-surface-variant">Signature full bath, breed-standard trim &amp; ear hygiene</p>
 </div>
 </div>
-<button id="editServiceBtn" onclick="window.location.href='/book-service'" class="text-primary hover:text-on-primary-fixed-variant font-label-md text-label-md flex items-center gap-0.5 cursor-pointer shrink-0" type="button">
-                  Edit <span class="material-symbols-outlined text-[16px]">edit</span>
+<button id="editServiceBtn" onclick="window.location.href='/book-service'" class="text-primary hover:text-on-primary-fixed-variant font-label-md text-xs flex items-center gap-0.5 cursor-pointer shrink-0" type="button">
+                  Edit <span class="material-symbols-outlined text-[15px]">edit</span>
 </button>
 </div>
 <!-- Pet Profile Highlight -->
-<div class="p-3.5 bg-surface-container-low rounded-DEFAULT flex items-center justify-between">
+<div class="p-3 bg-surface-container-low rounded-[8px] border border-outline-variant/35 flex items-center justify-between">
 <div class="flex items-center gap-3">
-<div class="w-12 h-12 rounded-full overflow-hidden shrink-0 bg-surface-container">
+<div class="w-11 h-11 rounded-[6px] overflow-hidden shrink-0 bg-surface-container">
 <img id="reviewPetPhoto" class="w-full h-full object-cover hidden" data-alt="Selected companion" src=""/>
 </div>
 <div>
 <div class="flex items-center gap-2">
-<span id="reviewPetName" class="font-title-md text-title-md text-on-surface font-semibold">No companion</span>
-<span id="reviewPetDisposition" class="px-2 py-0.5 bg-surface-container-lowest text-secondary font-label-sm text-label-sm rounded-full">Friendly &amp; Calm</span>
+<span id="reviewPetName" class="font-title-md text-sm text-on-surface font-semibold">No companion</span>
+<span id="reviewPetDisposition" class="px-2 py-0.5 bg-surface-container-lowest text-secondary font-label-sm text-[11px] rounded-[4px]">Friendly &amp; Calm</span>
 </div>
-<p id="reviewPetSpecs" class="font-body-sm text-body-sm text-on-surface-variant">No pet selected</p>
+<p id="reviewPetSpecs" class="font-body-sm text-xs text-on-surface-variant">No pet selected</p>
 </div>
 </div>
-<button id="changePetBtn" onclick="window.location.href='/book-service-pet'" class="text-primary hover:text-on-primary-fixed-variant font-label-md text-label-md cursor-pointer shrink-0" type="button">Change Pet</button>
+<button id="changePetBtn" onclick="window.location.href='/book-service-pet'" class="text-primary hover:text-on-primary-fixed-variant font-label-md text-xs cursor-pointer shrink-0" type="button">Change Pet</button>
 </div>
 <!-- Details Grid (Time, Specialist, Location) -->
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1">
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
 <!-- Specialist -->
-<div class="p-3.5 bg-surface-container-low rounded-DEFAULT">
-<div class="flex items-center justify-between mb-1.5">
-<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Specialist</span>
-<span class="material-symbols-outlined text-primary text-[18px]">verified</span>
+<div class="p-3 bg-surface-container-low rounded-[8px] border border-outline-variant/35">
+<div class="flex items-center justify-between mb-1">
+<span class="font-label-sm text-[11px] uppercase tracking-wider text-on-surface-variant">Specialist</span>
+<span class="material-symbols-outlined text-primary text-[16px]">verified</span>
 </div>
-<div class="flex items-center gap-2.5">
-<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container shrink-0">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 rounded-[4px] overflow-hidden bg-surface-container shrink-0">
 <img id="reviewSpecialistPhoto" class="w-full h-full object-cover" data-alt="Portrait of Specialist" src=""/>
 </div>
 <div class="min-w-0">
-<p id="reviewSpecialistName" class="font-label-lg text-label-lg text-on-surface font-semibold truncate">Any Master Groomer</p>
-<p id="reviewSpecialistRole" class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<p id="reviewSpecialistName" class="font-label-lg text-xs sm:text-sm text-on-surface font-semibold truncate">Any Master Groomer</p>
+<p id="reviewSpecialistRole" class="font-body-sm text-[11px] text-on-surface-variant flex items-center gap-1">
                         Coat &amp; Spa Specialist
                         <span class="text-secondary font-semibold">★ 4.9</span>
 </p>
@@ -162,41 +163,41 @@
 </div>
 </div>
 <!-- Date & Schedule -->
-<div class="p-3.5 bg-surface-container-low rounded-DEFAULT">
-<div class="flex items-center justify-between mb-1.5">
-<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Appointment Time</span>
-<button id="rescheduleBtn" onclick="window.location.href='/book-service-schedule'" class="text-primary font-label-sm text-label-sm hover:underline cursor-pointer" type="button">Reschedule</button>
+<div class="p-3 bg-surface-container-low rounded-[8px] border border-outline-variant/35">
+<div class="flex items-center justify-between mb-1">
+<span class="font-label-sm text-[11px] uppercase tracking-wider text-on-surface-variant">Appointment Time</span>
+<button id="rescheduleBtn" onclick="window.location.href='/book-service-schedule'" class="text-primary font-label-sm text-[11px] hover:underline cursor-pointer" type="button">Reschedule</button>
 </div>
 <div class="flex items-start gap-2">
-<span class="material-symbols-outlined text-secondary text-[20px] mt-0.5 shrink-0">calendar_month</span>
+<span class="material-symbols-outlined text-secondary text-[18px] mt-0.5 shrink-0">calendar_month</span>
 <div>
-<p id="reviewAppointmentDate" class="font-label-lg text-label-lg text-on-surface font-semibold">Select a date</p>
-<p id="reviewAppointmentTime" class="font-body-sm text-body-sm text-on-surface-variant">Select a time</p>
+<p id="reviewAppointmentDate" class="font-label-lg text-xs sm:text-sm text-on-surface font-semibold">Select a date</p>
+<p id="reviewAppointmentTime" class="font-body-sm text-[11px] text-on-surface-variant">Select a time</p>
 </div>
 </div>
 </div>
 <!-- Location -->
-<div class="p-3.5 bg-surface-container-low rounded-DEFAULT sm:col-span-2">
-<div class="flex items-center justify-between mb-1.5">
-<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Location</span>
-<span class="font-label-sm text-label-sm text-secondary font-semibold">Flagship Center</span>
+<div class="p-3 bg-surface-container-low rounded-[8px] border border-outline-variant/35 sm:col-span-2">
+<div class="flex items-center justify-between mb-1">
+<span class="font-label-sm text-[11px] uppercase tracking-wider text-on-surface-variant">Location</span>
+<span class="font-label-sm text-[11px] text-secondary font-semibold">Flagship Center</span>
 </div>
-<div class="flex items-start gap-2.5">
-<div class="w-7 h-7 rounded-full bg-surface-container flex items-center justify-center shrink-0 mt-0.5 text-primary">
-<span class="material-symbols-outlined text-[17px]">location_on</span>
+<div class="flex items-start gap-2">
+<div class="w-6 h-6 rounded-[4px] bg-surface-container flex items-center justify-center shrink-0 mt-0.5 text-primary">
+<span class="material-symbols-outlined text-[15px]">location_on</span>
 </div>
 <div>
-<p id="reviewLocationName" class="font-label-lg text-label-lg text-on-surface font-semibold">PetPals Flagship Spa &amp; Wellness Lounge</p>
-<p id="reviewLocationAddress" class="font-body-sm text-body-sm text-on-surface-variant">124 Blossom Lane, Suite 200, San Francisco, CA • Dedicated pet drop-off parking available</p>
+<p id="reviewLocationName" class="font-label-lg text-xs sm:text-sm text-on-surface font-semibold">PetPals Flagship Spa &amp; Wellness Lounge</p>
+<p id="reviewLocationAddress" class="font-body-sm text-[11px] text-on-surface-variant">124 Blossom Lane, Suite 200, San Francisco, CA • Dedicated pet drop-off parking available</p>
 </div>
 </div>
 </div>
 <!-- Special Notes / Instructions -->
-<div class="p-3.5 bg-secondary-container/20 rounded-DEFAULT sm:col-span-2 flex items-start gap-2.5">
-<span class="material-symbols-outlined text-secondary text-[20px] mt-0.5 shrink-0">sticky_note_2</span>
+<div class="p-3 bg-secondary-container/20 rounded-[8px] border border-secondary-container/40 sm:col-span-2 flex items-start gap-2">
+<span class="material-symbols-outlined text-secondary text-[18px] mt-0.5 shrink-0">sticky_note_2</span>
 <div class="flex-1">
-<span class="font-label-md text-label-md text-on-surface font-semibold">Special Instructions for Caretaker:</span>
-<p id="reviewNotes" class="font-body-sm text-body-sm text-on-surface-variant italic mt-0.5">
+<span class="font-label-md text-xs text-on-surface font-semibold">Special Instructions for Caretaker:</span>
+<p id="reviewNotes" class="font-body-sm text-xs text-on-surface-variant italic mt-0.5">
                       "Friendly &amp; Calm. Extra gentle handling around ears."
                     </p>
 </div>
@@ -204,87 +205,87 @@
 </div>
 </div>
 <!-- Price Breakdown Card -->
-<div class="bg-surface-container-lowest rounded-DEFAULT p-5 sm:p-6 shadow-sm space-y-4">
+<div class="bg-surface-container-lowest rounded-[8px] border border-outline-variant/35 p-4 sm:p-5 shadow-xs space-y-3.5">
 <div class="flex items-center justify-between">
-<h3 class="font-title-md text-title-md text-on-surface font-bold">Cost Breakdown</h3>
-<span class="font-body-sm text-body-sm text-secondary font-medium flex items-center gap-1">
-<span class="material-symbols-outlined text-[16px]">lock</span> Price Locked
+<h3 class="font-title-md text-sm sm:text-base text-on-surface font-bold">Cost Breakdown</h3>
+<span class="font-body-sm text-xs text-secondary font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">lock</span> Price Locked
                 </span>
 </div>
-<div class="space-y-2.5 font-body-md text-body-md text-on-surface-variant">
+<div class="space-y-2 font-body-sm text-xs text-on-surface-variant">
 <div class="flex justify-between items-center">
 <span id="reviewCostBaseLabel" class="text-on-surface">Base Service</span>
 <span id="reviewCostBasePrice" class="font-semibold text-on-surface">₹45.00 INR</span>
 </div>
-<div id="reviewAddonRows" class="space-y-2.5"></div>
-<div class="flex justify-between items-center text-body-sm">
+<div id="reviewAddonRows" class="space-y-2"></div>
+<div class="flex justify-between items-center text-xs">
 <span class="flex items-center gap-1">
                     Care Concierge, Sanitization &amp; Towel Service
-                    <span class="material-symbols-outlined text-[14px] text-outline" title="Includes sterile equipment prep, aromatherapy, and dedicated comfort assistant">info</span>
+                    <span class="material-symbols-outlined text-[13px] text-outline" title="Includes sterile equipment prep, aromatherapy, and dedicated comfort assistant">info</span>
 </span>
 <span id="reviewCostFee" class="font-medium text-on-surface">₹4.50 INR</span>
 </div>
-<div class="flex justify-between items-center text-body-sm">
+<div class="flex justify-between items-center text-xs">
 <span>Estimated Taxes (City &amp; State GST)</span>
 <span id="reviewCostTax" class="font-medium text-on-surface">₹4.85 INR</span>
 </div>
 </div>
 <!-- Subtotal / Total -->
-<div class="pt-3 bg-surface-container-low -mx-5 -mb-5 sm:-mx-6 sm:-mb-6 p-4 px-6 rounded-b-DEFAULT flex items-center justify-between">
+<div class="pt-2.5 bg-surface-container-low -mx-4 -mb-4 sm:-mx-5 sm:-mb-5 p-3.5 px-5 rounded-b-[8px] flex items-center justify-between">
 <div>
-<span id="reviewCostTotalLabel" class="font-title-md text-title-md text-on-surface font-bold">Total Amount</span>
-<p id="reviewCostNote" class="font-body-sm text-body-sm text-on-surface-variant">Includes taxes and selected products.</p>
+<span id="reviewCostTotalLabel" class="font-title-md text-xs sm:text-sm text-on-surface font-bold">Total Amount</span>
+<p id="reviewCostNote" class="font-body-sm text-[11px] text-on-surface-variant">Includes taxes and selected products.</p>
 </div>
 <div class="text-right">
-<span id="reviewCostTotal" class="font-headline-sm text-headline-sm text-primary font-bold">₹74.35 INR</span>
-<p id="reviewCostPaymentNote" class="font-body-sm text-body-sm text-secondary">Pay on arrival</p>
+<span id="reviewCostTotal" class="font-headline-sm text-base sm:text-lg text-primary font-bold">₹74.35 INR</span>
+<p id="reviewCostPaymentNote" class="font-body-sm text-[11px] text-secondary">Pay on arrival</p>
 </div>
 </div>
 </div>
 </div>
 <!-- RIGHT COLUMN: Payment & Contact Confirmation (5 cols) -->
-<div class="lg:col-span-5 space-y-5">
+<div class="lg:col-span-5 space-y-4">
 <!-- Contact & Real-time Update Consent -->
-<div class="bg-surface-container-lowest rounded-DEFAULT p-5 sm:p-6 shadow-sm space-y-4">
+<div class="bg-surface-container-lowest rounded-[8px] border border-outline-variant/35 p-4 sm:p-5 shadow-xs space-y-3.5">
 <div class="flex items-center justify-between">
-<h3 class="font-title-md text-title-md text-on-surface font-bold">Client &amp; Updates</h3>
-<button id="changeClientBtn" onclick="window.location.href='/profile'" class="font-label-sm text-label-sm text-primary hover:underline cursor-pointer" type="button">Change</button>
+<h3 class="font-title-md text-sm sm:text-base text-on-surface font-bold">Client &amp; Updates</h3>
+<button id="changeClientBtn" onclick="window.location.href='/profile'" class="font-label-sm text-xs text-primary hover:underline cursor-pointer" type="button">Change</button>
 </div>
-<div class="p-3.5 bg-surface-container-low rounded-DEFAULT space-y-2 text-body-sm">
+<div class="p-3 bg-surface-container-low rounded-[8px] border border-outline-variant/35 space-y-1.5 text-xs">
 <div class="flex items-center gap-2 text-on-surface">
-<span class="material-symbols-outlined text-[18px] text-secondary">person</span>
+<span class="material-symbols-outlined text-[16px] text-secondary">person</span>
 <span id="reviewClientName" class="font-medium">Sarah Jenkins (Guardian: Priya S.)</span>
 </div>
 <div class="flex items-center gap-2 text-on-surface-variant">
-<span class="material-symbols-outlined text-[18px] text-secondary">mail</span>
+<span class="material-symbols-outlined text-[16px] text-secondary">mail</span>
 <span id="reviewClientEmail">sarah.j@example.com</span>
 </div>
 <div class="flex items-center gap-2 text-on-surface-variant">
-<span class="material-symbols-outlined text-[18px] text-secondary">call</span>
+<span class="material-symbols-outlined text-[16px] text-secondary">call</span>
 <span id="reviewClientPhone">+1 (555) 234-5678</span>
 </div>
 </div>
-<label class="flex items-start gap-3 p-3 bg-surface-container rounded-DEFAULT cursor-pointer select-none">
-<input checked="" class="mt-1 h-4 w-4 rounded text-primary-container focus:ring-primary-container/20 accent-primary" type="checkbox"/>
-<div class="text-body-sm leading-snug">
+<label class="flex items-start gap-2.5 p-2.5 bg-surface-container rounded-[8px] border border-outline-variant/35 cursor-pointer select-none">
+<input checked="" class="mt-0.5 h-3.5 w-3.5 rounded-[3px] text-primary-container focus:ring-primary-container/20 accent-primary" type="checkbox"/>
+<div class="text-xs leading-snug">
 <span class="font-medium text-on-surface">Send real-time SMS &amp; photo milestones</span>
-<p class="text-on-surface-variant text-[11px] mt-0.5">Receive cute photos when your pet is in the bath, resting, and ready for pickup!</p>
+<p class="text-on-surface-variant text-[10px] mt-0.5">Receive cute photos when your pet is in the bath, resting, and ready for pickup!</p>
 </div>
 </label>
 </div>
 <!-- Payment Method Selection -->
-<div class="bg-surface-container-lowest rounded-DEFAULT p-5 sm:p-6 shadow-sm space-y-3">
-<h3 class="font-title-md text-title-md text-on-surface font-bold">Payment</h3>
-<div class="flex items-center gap-3 rounded-xl bg-surface-container-low p-4">
-<span class="material-symbols-outlined flex h-10 w-10 items-center justify-center rounded-full bg-secondary-container/50 text-primary">payments</span>
+<div class="bg-surface-container-lowest rounded-[8px] border border-outline-variant/35 p-4 sm:p-5 shadow-xs space-y-3">
+<h3 class="font-title-md text-sm sm:text-base text-on-surface font-bold">Payment</h3>
+<div class="flex items-center gap-3 rounded-[8px] border border-outline-variant/35 bg-surface-container-low p-3">
+<span class="material-symbols-outlined flex h-9 w-9 items-center justify-center rounded-[6px] bg-secondary-container/50 text-primary">payments</span>
 <div>
-<p class="font-label-lg text-label-lg font-semibold text-on-surface">Cash on arrival</p>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Pay your groomer when you arrive.</p>
+<p class="font-label-lg text-xs sm:text-sm font-semibold text-on-surface">Cash on arrival</p>
+<p class="font-body-sm text-[11px] text-on-surface-variant">Pay your groomer when you arrive.</p>
 </div>
 </div>
 </div>
 <!-- PetPals Guarantee & Gentle Care Policy -->
-<div class="p-4 bg-surface-container rounded-DEFAULT space-y-2">
+<div class="p-3.5 bg-surface-container rounded-[8px] border border-outline-variant/35 space-y-1.5">
 <div class="flex items-center gap-2 text-primary font-title-md text-title-md">
 <span class="material-symbols-outlined text-[22px]">workspace_premium</span>
 <span class="font-semibold text-body-md">100% Gentle Care Guarantee</span>
@@ -301,46 +302,46 @@
 </div>
 </div>
 <!-- Modal Footer & Pricing Breakdown -->
-<div class="px-6 sm:px-10 py-4 sm:py-5 bg-surface-container-low/80 border-t border-outline-variant/30 flex flex-col-reverse sm:flex-row items-center justify-between gap-4 shrink-0">
+<div class="px-4 sm:px-6 py-2.5 bg-surface-container-low/80 border-t border-outline-variant/30 flex flex-col-reverse sm:flex-row items-center justify-between gap-2.5 shrink-0">
 <!-- Live Cart / Selection Preview -->
-<div class="flex items-center gap-3.5 w-full sm:w-auto">
-<div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0">
-<span class="material-symbols-outlined text-[20px]">receipt_long</span>
+<div class="flex items-center gap-2.5 w-full sm:w-auto">
+<div class="w-7 h-7 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[16px]">receipt_long</span>
 </div>
 <div>
-<div class="flex items-center gap-2">
-<span id="reviewFooterTotalLabel" class="font-title-md text-title-md text-on-surface font-bold">Total Amount</span>
-<span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-medium">All taxes &amp; fees included</span>
+<div class="flex items-center gap-1.5">
+<span id="reviewFooterTotalLabel" class="font-title-md text-xs sm:text-sm text-on-surface font-bold">Total Amount</span>
+<span class="font-label-sm text-[9px] px-1.5 py-0.2 rounded-full bg-secondary-container text-on-secondary-container font-medium">All taxes &amp; fees included</span>
 </div>
-<p class="font-body-sm text-body-sm text-on-surface-variant">
-Due Today • <span class="font-headline-sm text-headline-sm text-primary font-bold ml-1" id="reviewFooterTotal">₹74.35 INR</span>
+<p class="font-body-sm text-[11px] text-on-surface-variant">
+Due Today • <span class="font-headline-sm text-sm text-primary font-bold ml-1" id="reviewFooterTotal">₹74.35 INR</span>
 </p>
 </div>
 </div>
 <!-- Action Buttons -->
-<div class="flex items-center gap-3 w-full sm:w-auto justify-end">
-<button id="backToScheduleBtn" onclick="window.location.href='/book-service-schedule'" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors w-full sm:w-auto cursor-pointer" type="button">
-<span class="material-symbols-outlined text-[18px]">arrow_back</span>
+<div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+<button id="backToScheduleBtn" onclick="window.location.href='/book-service-schedule'" class="inline-flex items-center justify-center gap-1 px-3 py-1.5 rounded-full font-label-md text-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors w-full sm:w-auto cursor-pointer" type="button">
+<span class="material-symbols-outlined text-[15px]">arrow_back</span>
 <span>Back to Schedule</span>
 </button>
-<button id="confirmBookingBtn" class="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full font-label-lg text-label-lg bg-primary-container hover:bg-primary text-on-primary shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 w-full sm:w-auto cursor-pointer" type="button">
-<span>Confirm &amp; Book Appointment</span>
-<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+<button id="confirmBookingBtn" class="inline-flex items-center justify-center gap-1 px-4 py-2 rounded-full font-label-md text-xs bg-primary-container hover:bg-primary text-on-primary shadow-sm hover:shadow transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 w-full sm:w-auto cursor-pointer" type="button">
+<span>Confirm &amp; Book</span>
+<span class="material-symbols-outlined text-[15px]">arrow_forward</span>
 </button>
 </div>
 </div>
 <!-- Trust & Reassurance Badges Banner -->
-<div class="px-6 sm:px-10 py-2.5 bg-surface-container-high/60 flex flex-wrap items-center justify-center gap-x-6 gap-y-1.5 text-on-surface-variant font-label-sm text-label-sm text-[12px] shrink-0">
-<div class="flex items-center gap-1.5">
-<span class="material-symbols-outlined text-primary text-[15px]">verified_user</span>
+<div class="px-4 sm:px-6 py-1.5 bg-surface-container-high/60 flex flex-wrap items-center justify-center gap-x-4 gap-y-0.5 text-on-surface-variant font-label-sm text-[10px] shrink-0">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-[13px]">verified_user</span>
 <span>100% Insured &amp; Certified Care</span>
 </div>
-<div class="flex items-center gap-1.5">
-<span class="material-symbols-outlined text-primary text-[15px]">event_repeat</span>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-[13px]">event_repeat</span>
 <span>Free Cancellation (24h prior)</span>
 </div>
-<div class="flex items-center gap-1.5">
-<span class="material-symbols-outlined text-primary text-[15px]">support_agent</span>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-[13px]">support_agent</span>
 <span>24/7 On-Call Concierge Hotline</span>
 </div>
 </div>

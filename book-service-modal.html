@@ -13,11 +13,11 @@
 <div class="h-96 bg-surface-container-high rounded-3xl w-full"></div>
 </div>
 <!-- Warm Frosted Backdrop Overlay -->
-<div class="fixed inset-0 z-50 bg-on-background/45 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto" id="booking-modal-overlay">
+<div class="fixed inset-0 z-50 bg-on-background/45 backdrop-blur-md flex items-center justify-center p-2.5 sm:p-4 overflow-y-auto" id="booking-modal-overlay">
 <!-- Modal Card Container -->
-<div class="relative w-full max-w-[960px] my-auto bg-surface-container-lowest rounded-3xl shadow-[0_24px_60px_-12px_rgba(44,36,32,0.18)] overflow-hidden flex flex-col transition-all duration-300">
+<div class="relative w-full max-w-[560px] my-auto bg-surface-container-lowest rounded-2xl shadow-[0_20px_50px_-12px_rgba(44,36,32,0.18)] overflow-hidden flex flex-col transition-all duration-300">
 <!-- Subtle Ambient Decorative Paw Motifs (Top Right & Left) -->
-<div class="absolute -top-10 -right-10 w-44 h-44 pointer-events-none text-primary/5 select-none">
+<div class="absolute -top-10 -right-10 w-28 h-28 pointer-events-none text-primary/5 select-none">
 <svg class="w-full h-full transform rotate-12" fill="currentColor" viewbox="0 0 100 100">
 <ellipse cx="50" cy="65" rx="22" ry="18"></ellipse>
 <circle cx="27" cy="38" r="9"></circle>
@@ -27,75 +27,76 @@
 </svg>
 </div>
 <!-- Modal Header -->
-<div class="px-6 sm:px-10 pt-8 pb-6 bg-surface-container-low/70 border-b border-outline-variant/30 relative shrink-0">
-<div class="flex items-start justify-between gap-4">
-<div class="space-y-1">
-<div class="flex items-center gap-2 mb-1.5">
-<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-secondary-container text-on-secondary-container">
-<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">pets</span>
+<div class="px-4 sm:px-6 pt-3.5 pb-2.5 bg-surface-container-low/70 border-b border-outline-variant/30 relative shrink-0">
+<div class="flex items-start justify-between gap-3">
+<div class="space-y-0.5">
+<div class="flex items-center gap-1.5 mb-0.5">
+<span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-secondary-container text-on-secondary-container">
+<span class="material-symbols-outlined text-[11px]" style="font-variation-settings: 'FILL' 1;">pets</span>
 </span>
-<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary font-semibold">PetPals Concierge</span>
+<span class="font-label-sm text-[10px] uppercase tracking-wider text-secondary font-semibold">PetPals Concierge</span>
 </div>
-<h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Book a Service</h2>
-<p class="font-body-md text-body-md text-on-surface-variant max-w-xl">
+<h2 class="font-headline-md text-xl sm:text-2xl text-on-surface tracking-tight font-bold">Book a Service</h2>
+<p class="font-body-sm text-xs text-on-surface-variant">
               Tailored comfort and attentive medical-grade care for your furry family member.
             </p>
 </div>
 <!-- Close Modal Action -->
-<button onclick="window.location.href='/my-pets'" aria-label="Close booking modal" class="w-10 h-10 rounded-full bg-surface-container-lowest text-on-surface-variant hover:text-on-surface hover:bg-surface-container flex items-center justify-center transition-all shadow-sm shrink-0" type="button">
-<span class="material-symbols-outlined text-[20px]">close</span>
+<button onclick="window.location.href='/my-pets'" aria-label="Close booking modal" class="w-7 h-7 rounded-full bg-surface-container-lowest text-on-surface-variant hover:text-on-surface hover:bg-surface-container flex items-center justify-center transition-all shadow-sm shrink-0" type="button">
+<span class="material-symbols-outlined text-[16px]">close</span>
 </button>
 </div>
 <!-- 4-Step Interactive Navigation Stepper -->
-<div class="mt-8 pt-5 relative">
-<div class="absolute top-4 left-6 right-6 h-0.5 bg-surface-container-highest -translate-y-1/2 z-0"></div>
-<div class="absolute top-4 left-6 h-0.5 bg-primary-container -translate-y-1/2 z-0 transition-all duration-300" style="width: 0%;"></div>
+<div class="mt-2.5 pt-1.5 relative">
+<div class="absolute top-3 h-0.5 bg-surface-container-highest -translate-y-1/2 z-0" style="left: 12.5%; right: 12.5%;">
+<div class="h-full bg-primary-container transition-all duration-300" style="width: 0%;"></div>
+</div>
 
-<div class="relative z-10 grid grid-cols-4 gap-2">
+<div class="relative z-10 grid grid-cols-4 gap-1">
 <!-- Step 1 (Active) -->
-<div class="flex flex-col items-center sm:items-start text-center sm:text-left gap-1.5">
-<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-md text-label-md shadow-md ring-4 ring-primary/15 font-bold">
+<div class="flex flex-col items-center text-center gap-0.5">
+<div class="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-sm text-[11px] shadow-sm ring-2 ring-primary/20 font-bold">
   1
 </div>
-<span class="font-label-md text-label-md text-primary font-bold">1. Service</span>
+<span class="font-label-sm text-[11px] text-primary font-bold">1. Service</span>
 </div>
 <!-- Step 2 -->
-<a href="/book-service-pet" class="flex flex-col items-center sm:items-start text-center sm:text-left gap-1.5 opacity-60 hover:opacity-100 transition-opacity">
-<div class="w-8 h-8 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-label-md text-label-md font-medium">
+<a href="/book-service-pet" class="flex flex-col items-center text-center gap-0.5 opacity-60 hover:opacity-100 transition-opacity">
+<div class="w-6 h-6 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-label-sm text-[11px] font-medium">
   2
 </div>
-<span class="font-label-md text-label-md text-on-surface-variant">2. Pet Details</span>
+<span class="font-label-sm text-[11px] text-on-surface-variant">2. Pet Details</span>
 </a>
 <!-- Step 3 -->
-<a href="/book-service-schedule" class="flex flex-col items-center sm:items-start text-center sm:text-left gap-1.5 opacity-60 hover:opacity-100 transition-opacity">
-<div class="w-8 h-8 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-label-md text-label-md font-medium">
+<a href="/book-service-schedule" class="flex flex-col items-center text-center gap-0.5 opacity-60 hover:opacity-100 transition-opacity">
+<div class="w-6 h-6 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-label-sm text-[11px] font-medium">
   3
 </div>
-<span class="font-label-md text-label-md text-on-surface-variant">3. Schedule</span>
+<span class="font-label-sm text-[11px] text-on-surface-variant">3. Schedule</span>
 </a>
 <!-- Step 4 -->
-<a href="/book-service-review" class="flex flex-col items-center sm:items-start text-center sm:text-left gap-1.5 opacity-60 hover:opacity-100 transition-opacity">
-<div class="w-8 h-8 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-label-md text-label-md font-medium">
+<a href="/book-service-review" class="flex flex-col items-center text-center gap-0.5 opacity-60 hover:opacity-100 transition-opacity">
+<div class="w-6 h-6 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-label-sm text-[11px] font-medium">
   4
 </div>
-<span class="font-label-md text-label-md text-on-surface-variant">4. Review &amp; Confirm</span>
+<span class="font-label-sm text-[11px] text-on-surface-variant">4. Review</span>
 </a>
 </div>
 </div>
 </div>
 <!-- Modal Body (Scrollable Content Section) -->
-<div class="px-6 sm:px-10 py-6 sm:py-8 space-y-6 overflow-y-auto max-h-[calc(88vh-260px)] min-h-[380px] bg-surface-container-lowest">
+<div class="px-4 sm:px-6 py-3.5 space-y-3.5 overflow-y-auto max-h-[50vh] bg-surface-container-lowest">
 <!-- Step Section: Choose Primary Service -->
 <div>
-<div class="flex items-center justify-between mb-4">
-<h3 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-2">
+<div class="flex items-center justify-between mb-3">
+<h3 class="font-headline-sm text-lg text-on-surface flex items-center gap-2 font-bold">
               Select Desired Service
-              <span class="font-body-sm text-body-sm text-secondary bg-secondary-container/40 px-2.5 py-0.5 rounded-full font-medium">Step 1 of 4</span>
+              <span class="font-body-sm text-[11px] text-secondary bg-secondary-container/40 px-2 py-0.5 rounded-full font-medium">Step 1 of 4</span>
 </h3>
-<span class="font-body-sm text-body-sm text-on-surface-variant">Instant availability check</span>
+<span class="font-body-sm text-[12px] text-on-surface-variant">Instant availability check</span>
 </div>
 <!-- Service Selection Cards Grid -->
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5" id="service-grid"></div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="service-grid"></div>
 </div>
 <!-- Section: Select Pet Profile & Add-Ons -->
 <div class="grid grid-cols-1 md:grid-cols-12 gap-6 pt-2">
@@ -108,7 +109,7 @@
 <div class="flex flex-wrap sm:flex-nowrap gap-3">
 <div id="companion-options" class="contents"></div>
 <!-- New Pet choice -->
-<button id="choose-new-pet" class="px-4 py-3 rounded-2xl bg-surface-container-lowest hover:bg-surface-container-low text-on-surface-variant flex flex-col items-center justify-center gap-1 text-center shrink-0 shadow-sm transition-colors" type="button">
+<button id="choose-new-pet" class="px-4 py-3 rounded-[8px] border border-outline-variant/35 bg-surface-container-lowest hover:bg-surface-container-low text-on-surface-variant flex flex-col items-center justify-center gap-1 text-center shrink-0 shadow-sm transition-colors" type="button">
 <span class="material-symbols-outlined text-primary text-[20px]">add_circle</span>
 <span class="font-label-sm text-label-sm whitespace-nowrap">New Pet</span>
 </button>
@@ -121,14 +122,14 @@
               Spa Add-ons
             </h4>
 <div class="space-y-2">
-<label class="flex items-center justify-between p-2.5 rounded-xl bg-surface-container-low hover:bg-surface-container cursor-pointer transition-colors">
+<label class="flex items-center justify-between p-2.5 rounded-[8px] border border-outline-variant/35 bg-surface-container-low hover:bg-surface-container cursor-pointer transition-colors">
 <div class="flex items-center gap-2.5">
 <input class="booking-addon w-4 h-4 rounded text-primary-container accent-primary-container focus:ring-primary-container/20 cursor-pointer" data-name="Paw Balm & Nail Trim" data-price="1450" type="checkbox"/>
 <span class="font-body-md text-body-md text-on-surface">Paw Balm &amp; Nail Trim</span>
 </div>
 <span class="font-label-sm text-label-sm font-semibold text-secondary">+₹1,450</span>
 </label>
-<label class="flex items-center justify-between p-2.5 rounded-xl bg-surface-container-low hover:bg-surface-container cursor-pointer transition-colors">
+<label class="flex items-center justify-between p-2.5 rounded-[8px] border border-outline-variant/35 bg-surface-container-low hover:bg-surface-container cursor-pointer transition-colors">
 <div class="flex items-center gap-2.5">
 <input class="booking-addon w-4 h-4 rounded text-primary-container accent-primary-container focus:ring-primary-container/20 cursor-pointer" data-name="Organic Teeth Brushing" data-price="950" type="checkbox"/>
 <span class="font-body-md text-body-md text-on-surface">Organic Teeth Brushing</span>
@@ -190,46 +191,46 @@
 </div>
 </div>
 <!-- Modal Footer & Pricing Breakdown -->
-<div class="px-6 sm:px-10 py-4 sm:py-5 bg-surface-container-low/80 border-t border-outline-variant/30 flex flex-col-reverse sm:flex-row items-center justify-between gap-4 shrink-0">
+<div class="px-4 sm:px-6 py-2.5 bg-surface-container-low/80 border-t border-outline-variant/30 flex flex-col-reverse sm:flex-row items-center justify-between gap-2.5 shrink-0">
 <!-- Live Cart / Selection Preview -->
-<div class="flex items-center gap-3.5 w-full sm:w-auto">
-<div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0">
-<span class="material-symbols-outlined text-[20px]">receipt_long</span>
+<div class="flex items-center gap-2.5 w-full sm:w-auto">
+<div class="w-7 h-7 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[16px]">receipt_long</span>
 </div>
 <div>
-<div class="flex items-center gap-2">
-<span id="selected-service-preview" class="font-title-md text-title-md text-on-surface font-bold">Select a service</span>
-<span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-surface-container-highest text-secondary font-medium">Service</span>
+<div class="flex items-center gap-1.5">
+<span id="selected-service-preview" class="font-title-md text-xs sm:text-sm text-on-surface font-bold">Select a service</span>
+<span class="font-label-sm text-[9px] px-1.5 py-0.2 rounded-full bg-surface-container-highest text-secondary font-medium">Service</span>
 </div>
-<p class="font-body-sm text-body-sm text-on-surface-variant">
+<p class="font-body-sm text-[11px] text-on-surface-variant">
               Select multiple services • <span id="selected-service-price" class="font-semibold text-primary">₹0</span>
 </p>
 </div>
 </div>
 <!-- Action Buttons -->
-<div class="flex items-center gap-3 w-full sm:w-auto justify-end">
-<button onclick="window.location.href='/my-pets'" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors w-full sm:w-auto" type="button">
+<div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+<button onclick="window.location.href='/my-pets'" class="inline-flex items-center justify-center gap-1 px-3 py-1.5 rounded-full font-label-md text-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors w-full sm:w-auto" type="button">
   Cancel
 </button>
-<button id="continueToPetBtn" onclick="handleContinueToPet()" disabled class="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full font-label-lg text-label-lg bg-primary-container hover:bg-primary text-on-primary shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 w-full sm:w-auto opacity-50 cursor-not-allowed" type="button">
+<button id="continueToPetBtn" onclick="handleContinueToPet()" disabled class="inline-flex items-center justify-center gap-1 px-4 py-2 rounded-full font-label-md text-xs bg-primary-container hover:bg-primary text-on-primary shadow-sm hover:shadow transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 w-full sm:w-auto opacity-50 cursor-not-allowed" type="button">
 <span>Continue to Pet Details</span>
-<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+<span class="material-symbols-outlined text-[15px]">arrow_forward</span>
 </button>
 </div>
 </div>
 <!-- Trust & Reassurance Badges Banner -->
-<div class="px-6 sm:px-10 py-2.5 bg-surface-container-high/60 flex flex-wrap items-center justify-center gap-x-6 gap-y-1.5 text-on-surface-variant font-label-sm text-label-sm text-[12px] shrink-0">
-<div class="flex items-center gap-1.5">
-<span class="material-symbols-outlined text-primary text-[15px]">verified_user</span>
-<span>100% Insured &amp; Certified Care</span>
+<div class="px-4 sm:px-6 py-1.5 bg-surface-container-high/60 flex flex-wrap items-center justify-center gap-x-4 gap-y-0.5 text-on-surface-variant font-label-sm text-[10px] shrink-0">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-[13px]">verified_user</span>
+<span>100% Insured Care</span>
 </div>
-<div class="flex items-center gap-1.5">
-<span class="material-symbols-outlined text-primary text-[15px]">event_repeat</span>
-<span>Free Cancellation (24h prior)</span>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-[13px]">event_repeat</span>
+<span>Free Cancellation (24h)</span>
 </div>
-<div class="flex items-center gap-1.5">
-<span class="material-symbols-outlined text-primary text-[15px]">support_agent</span>
-<span>24/7 On-Call Concierge Hotline</span>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-[13px]">support_agent</span>
+<span>24/7 Hotline</span>
 </div>
 </div>
 </div>
@@ -296,7 +297,7 @@
       });
     }
 
-    companionContainer.innerHTML=pets.map(pet=>`<button data-pet-id="${escapeHtml(pet.id)}" type="button" class="flex-1 p-3 rounded-2xl ${selectedPet?.id===pet.id?'bg-secondary-container/30 ring-2 ring-primary-container':'bg-surface-container-low hover:bg-surface-container'} flex items-center gap-3 text-left transition-all">${(pet.photo||pet.avatar)?`<img alt="${escapeHtml(pet.name)}" class="w-12 h-12 rounded-xl object-cover shrink-0" src="${escapeHtml(pet.photo||pet.avatar)}"/>`:'<span class="w-12 h-12 rounded-xl bg-surface-container-highest text-secondary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-[24px]">pets</span></span>'}<span class="min-w-0"><span class="font-label-lg text-label-lg text-on-surface block truncate">${escapeHtml(pet.name)}</span><span class="font-body-sm text-on-surface-variant block truncate">${escapeHtml(pet.breed||pet.species||'Companion')}</span></span></button>`).join('');
+    companionContainer.innerHTML=pets.map(pet=>`<button data-pet-id="${escapeHtml(pet.id)}" type="button" class="flex-1 p-3 rounded-[8px] border border-outline-variant/35 ${selectedPet?.id===pet.id?'bg-secondary-container/30 ring-2 ring-primary-container':'bg-surface-container-low hover:bg-surface-container'} flex items-center gap-3 text-left transition-all">${(pet.photo||pet.avatar)?`<img alt="${escapeHtml(pet.name)}" class="w-12 h-12 rounded-[6px] object-cover shrink-0" src="${escapeHtml(pet.photo||pet.avatar)}"/>`:'<span class="w-12 h-12 rounded-[6px] bg-surface-container-highest text-secondary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-[24px]">pets</span></span>'}<span class="min-w-0"><span class="font-label-lg text-label-lg text-on-surface block truncate">${escapeHtml(pet.name)}</span><span class="font-body-sm text-on-surface-variant block truncate">${escapeHtml(pet.breed||pet.species||'Companion')}</span></span></button>`).join('');
     companionContainer.querySelectorAll('[data-pet-id]').forEach(button=>button.addEventListener('click',()=>{const pet=pets.find(p=>String(p.id)===String(button.dataset.petId));if(pet)selectCompanion('pet',pet);}));
     updateContinueState();
   }
@@ -365,7 +366,7 @@
       const response=await fetch('/api/services',{credentials:'same-origin',cache:'no-store'});
       if(!response.ok)throw new Error('Service list unavailable');
       services=(await response.json()).filter(service=>service.active!==false);
-      grid.innerHTML=services.map(service=>`<label class="cursor-pointer group relative bg-surface-container-low hover:bg-surface-container p-4 rounded-2xl flex flex-col justify-between transition-all duration-200"><input class="sr-only peer" name="service-option" type="checkbox" value="${escapeHtml(service.id)}"/><div class="flex items-start justify-between mb-3"><div class="w-10 h-10 rounded-xl bg-surface-container-lowest flex items-center justify-center text-primary group-hover:scale-105 transition-transform"><span class="material-symbols-outlined text-[22px]">${iconFor(service.category)}</span></div><div class="flex items-center gap-1.5"><span class="font-label-sm text-label-sm font-semibold bg-surface-container-highest px-2 py-0.5 rounded-full text-on-surface-variant">${formatPrice(service.priceNum)}</span><span class="service-selected-check hidden w-5 h-5 rounded-full bg-primary text-on-primary items-center justify-center shadow-sm"><span class="material-symbols-outlined text-[13px] font-bold">check</span></span></div></div><div class="space-y-1"><h4 class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors">${escapeHtml(service.name)}</h4><p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">${escapeHtml(service.description||service.duration||'Professional pet care service.')}</p></div><div class="absolute inset-0 rounded-2xl pointer-events-none peer-checked:ring-2 peer-checked:ring-primary-container peer-checked:bg-primary-fixed/20 transition-all"></div></label>`).join('');
+      grid.innerHTML=services.map(service=>`<label class="cursor-pointer group relative bg-surface-container-low hover:bg-surface-container p-3 rounded-[8px] border border-outline-variant/35 flex flex-col justify-between transition-all duration-200 shadow-[0_1px_3px_rgba(0,0,0,0.03)]"><input class="sr-only peer" name="service-option" type="checkbox" value="${escapeHtml(service.id)}"/><div class="flex items-start justify-between mb-2"><div class="w-8 h-8 rounded-[6px] bg-surface-container-lowest flex items-center justify-center text-primary group-hover:scale-105 transition-transform"><span class="material-symbols-outlined text-[18px]">${iconFor(service.category)}</span></div><div class="flex items-center gap-1.5"><span class="font-label-sm text-[11px] font-semibold bg-surface-container-highest px-2 py-0.5 rounded-[4px] text-on-surface-variant">${formatPrice(service.priceNum)}</span><span class="service-selected-check hidden w-4 h-4 rounded-[4px] bg-primary text-on-primary items-center justify-center shadow-sm"><span class="material-symbols-outlined text-[11px] font-bold">check</span></span></div></div><div class="space-y-0.5"><h4 class="font-title-md text-sm font-semibold text-on-surface group-hover:text-primary transition-colors">${escapeHtml(service.name)}</h4><p class="font-body-sm text-[11px] text-on-surface-variant line-clamp-1">${escapeHtml(service.description||service.duration||'Professional pet care service.')}</p></div><div class="absolute inset-0 rounded-[8px] pointer-events-none peer-checked:ring-2 peer-checked:ring-primary-container peer-checked:bg-primary-fixed/20 transition-all"></div></label>`).join('');
       
       grid.querySelectorAll('input[name="service-option"]').forEach(input=>input.addEventListener('change',selectServices));
 

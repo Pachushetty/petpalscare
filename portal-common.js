@@ -11,11 +11,11 @@
   };
 
   const DEFAULT_USER = {
-    name: 'Prathiksha Shetty',
-    firstName: 'Prathiksha',
-    email: 'prathiksha@gmail.com',
-    phone: '+91 98765 43210',
-    location: 'Mangalore, Karnataka',
+    name: 'Pet Parent',
+    firstName: 'Pet Parent',
+    email: '',
+    phone: '',
+    location: '',
     avatar: null
   };
 
@@ -1062,7 +1062,7 @@
     const avatarSrc = PetPalsStore.getDisplayAvatar(u);
     document.querySelectorAll('#dropdown-user-avatar').forEach(img => img.src = avatarSrc);
     document.querySelectorAll('header img').forEach(img => { if (img.alt === 'Profile') img.src = avatarSrc; });
-    document.querySelectorAll('header .font-label-lg.text-on-surface').forEach(span => {
+    document.querySelectorAll('header .header-user-name, header .header-user-pill .font-label-lg').forEach(span => {
       if (span.textContent !== 'Book New Service') span.textContent = u.firstName || u.name;
     });
   });

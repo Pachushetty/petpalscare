@@ -164,6 +164,12 @@ for (const user of localStore.users || []) {
     cleanedGeneratedAvatars = true;
   }
 }
+for (const admin of localStore.admin_users || []) {
+  if (isGeneratedProfileAvatar(admin)) {
+    admin.avatar = null;
+    cleanedGeneratedAvatars = true;
+  }
+}
 let cleanedLegacyPrices = false;
 for (const service of localStore.services || []) {
   if (typeof service.price === 'string' && service.price.trim().startsWith('$')) {
@@ -179,26 +185,17 @@ for (const booking of localStore.bookings || []) {
   }
 }
 
-// Synchronize services catalog with DEFAULT_SERVICES to keep names matching services.html
+// Ensure services catalog in localStore has all default services if missing
+localStore.services = Array.isArray(localStore.services) ? localStore.services : [...DEFAULT_SERVICES];
 let syncedServices = false;
-if (Array.isArray(localStore.services)) {
-  for (const def of DEFAULT_SERVICES) {
-    const existing = localStore.services.find(s => s.id === def.id);
-    if (existing) {
-      if (existing.name !== def.name || existing.price_num !== def.price_num || existing.duration !== def.duration) {
-        existing.name = def.name;
-        existing.category = def.category;
-        existing.price = def.price;
-        existing.price_num = def.price_num;
-        existing.duration = def.duration;
-        existing.description = def.description;
-        existing.badge = def.badge;
-        syncedServices = true;
-      }
-    } else {
-      localStore.services.push({ ...def });
-      syncedServices = true;
-    }
+for (const def of DEFAULT_SERVICES) {
+  const existing = localStore.services.find(s => s.id === def.id);
+  if (!existing) {
+    localStore.services.push({ ...def });
+    syncedServices = true;
+  } else if (!existing.price_num && existing.price) {
+    existing.price_num = convertLegacyPriceToINR(existing.price);
+    syncedServices = true;
   }
 }
 
@@ -223,6 +220,18 @@ async function initDatabase() {
     // Existing accounts may contain the old shared generated profile image.
     await client.query(
       `UPDATE users SET avatar = NULL, updated_at = CURRENT_TIMESTAMP
+       WHERE avatar LIKE $1 OR avatar LIKE $2 OR avatar LIKE $3 OR avatar LIKE $4 OR avatar LIKE $5`,
+      [
+        '%AEtjO1W2uQrDJs4Vq5TYFXxKRstMqlWw%',
+        '%photo-1535713875002-d1d0cf377fde%',
+        '%photo-1544005313-94ddf0286df2%',
+        '%photo-1507003211169-0a1dd7228f2d%',
+        '%photo-1534528741775-53994a69daeb%'
+      ]
+    );
+
+    await client.query(
+      `UPDATE admin_users SET avatar = NULL
        WHERE avatar LIKE $1 OR avatar LIKE $2 OR avatar LIKE $3 OR avatar LIKE $4 OR avatar LIKE $5`,
       [
         '%AEtjO1W2uQrDJs4Vq5TYFXxKRstMqlWw%',
@@ -477,20 +486,12 @@ async function initDatabase() {
       );
     }
 
-    // Seed or synchronize default Services with DEFAULT_SERVICES to maintain consistent names with services.html
+    // Seed default Services if not already present
     for (const s of DEFAULT_SERVICES) {
       await client.query(
         `INSERT INTO services (id, name, category, price, price_num, duration, specialist, description, badge, rating, reviews_count, active)
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
-         ON CONFLICT (id) DO UPDATE SET
-           name = EXCLUDED.name,
-           category = EXCLUDED.category,
-           price = EXCLUDED.price,
-           price_num = EXCLUDED.price_num,
-           duration = EXCLUDED.duration,
-           specialist = EXCLUDED.specialist,
-           description = EXCLUDED.description,
-           badge = EXCLUDED.badge`,
+         ON CONFLICT (id) DO NOTHING`,
         [s.id, s.name, s.category, s.price, s.price_num, s.duration, s.specialist, s.description, s.badge, s.rating, s.reviews_count, s.active]
       );
     }
@@ -898,9 +899,13 @@ async function findAdminByEmail(email) {
   const normalized = email.toLowerCase().trim();
   if (isPostgres && pool) {
     const res = await pool.query('SELECT * FROM admin_users WHERE LOWER(email) = $1 LIMIT 1', [normalized]);
-    return res.rows[0] || null;
+    const admin = res.rows[0] || null;
+    if (admin && isGeneratedProfileAvatar(admin)) admin.avatar = null;
+    return admin;
   }
-  return localStore.admin_users.find(a => a.email.toLowerCase() === normalized) || null;
+  const admin = localStore.admin_users.find(a => a.email.toLowerCase() === normalized) || null;
+  if (admin && isGeneratedProfileAvatar(admin)) admin.avatar = null;
+  return admin;
 }
 
 // --- PET OPERATIONS ---
@@ -1162,7 +1167,12 @@ async function updateService(id, data) {
 
     const name = data.name !== undefined ? data.name : existing.name;
     const category = data.category !== undefined ? data.category : existing.category;
-    const priceNum = data.price !== undefined ? (convertLegacyPriceToINR(data.price) || existing.price_num) : existing.price_num;
+    let priceNum = existing.price_num;
+    if (data.price !== undefined) {
+      priceNum = convertLegacyPriceToINR(data.price);
+    } else if (data.price_num !== undefined || data.priceNum !== undefined) {
+      priceNum = convertLegacyPriceToINR(data.price_num ?? data.priceNum);
+    }
     const priceStr = formatINR(priceNum);
     const duration = data.duration !== undefined ? data.duration : existing.duration;
     const specialist = data.specialist !== undefined ? data.specialist : existing.specialist;
@@ -1182,7 +1192,12 @@ async function updateService(id, data) {
   const idx = localStore.services.findIndex(s => s.id === id);
   if (idx !== -1) {
     const s = localStore.services[idx];
-    const priceNum = data.price !== undefined ? (convertLegacyPriceToINR(data.price) || s.price_num) : s.price_num;
+    let priceNum = s.price_num || convertLegacyPriceToINR(s.price);
+    if (data.price !== undefined) {
+      priceNum = convertLegacyPriceToINR(data.price);
+    } else if (data.price_num !== undefined || data.priceNum !== undefined) {
+      priceNum = convertLegacyPriceToINR(data.price_num ?? data.priceNum);
+    }
     localStore.services[idx] = {
       ...s,
       name: data.name !== undefined ? data.name : s.name,
@@ -1235,13 +1250,16 @@ async function getAdminSession(token) {
        FROM admin_sessions s JOIN admin_users a ON a.id = s.admin_id
        WHERE s.token = $1 AND s.expires_at > CURRENT_TIMESTAMP LIMIT 1`, [cleanToken]
     );
-    return res.rows[0] || null;
+    const admin = res.rows[0] || null;
+    if (admin && isGeneratedProfileAvatar(admin)) admin.avatar = null;
+    return admin;
   }
   const session = (localStore.admin_sessions || []).find(s => s.token === cleanToken && new Date(s.expires_at) > new Date());
   if (!session) return null;
   const admin = (localStore.admin_users || []).find(a => a.id === session.admin_id);
   if (!admin) return null;
   const { password_hash, ...safeAdmin } = admin;
+  if (safeAdmin && isGeneratedProfileAvatar(safeAdmin)) safeAdmin.avatar = null;
   return { ...safeAdmin, expires_at: session.expires_at };
 }
 

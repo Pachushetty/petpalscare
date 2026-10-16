@@ -9,7 +9,8 @@
     SETTINGS: 'petpals_admin_settings',
     USERS: 'petpals_admin_users',
     SPECIALISTS: 'petpals_admin_specialists',
-    BOOKINGS: 'petpals_admin_bookings'
+    BOOKINGS: 'petpals_admin_bookings',
+    PETS: 'petpals_admin_pets'
   };
 
   const DEFAULT_PROFILE_AVATAR = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(
@@ -53,6 +54,19 @@
     adminEmail: 'admin@petpalscare.com'
   };
 
+  function getServicePriceNum(s) {
+    if (!s) return 0;
+    if (typeof s.priceNum === 'number' && !isNaN(s.priceNum)) return s.priceNum;
+    if (typeof s.price === 'number' && !isNaN(s.price)) return s.price;
+    const num = parseFloat(String(s.price_num || s.price || '').replace(/[^0-9.]/g, ''));
+    return isNaN(num) ? 0 : num;
+  }
+
+  function formatServicePrice(s) {
+    const num = getServicePriceNum(s);
+    return '₹' + Math.round(num).toLocaleString('en-IN');
+  }
+
   const AdminDataStore = {
     getServices() {
       try {
@@ -61,8 +75,13 @@
           const services = JSON.parse(val);
           let migrated = false;
           services.forEach(service => {
-            if (Number(service.price) > 0 && Number(service.price) < 1000) {
-              service.price = Math.round(Number(service.price) * 97 / 50) * 50;
+            const num = getServicePriceNum(service);
+            if (!service.priceNum && num) service.priceNum = num;
+            if (num > 0 && num < 1000) {
+              const inr = Math.round(num * 97 / 50) * 50;
+              service.price = `₹${inr.toLocaleString('en-IN')}`;
+              service.priceNum = inr;
+              service.price_num = inr;
               migrated = true;
             }
           });
@@ -75,15 +94,21 @@
     },
     saveServices(srvs) {
       localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(srvs));
+      try {
+        localStorage.setItem('petpals_services_updated', Date.now().toString());
+      } catch (e) {}
       window.dispatchEvent(new CustomEvent('petpals:admin-services-updated'));
     },
     addService(service) {
       const srvs = this.getServices();
+      const numPrice = getServicePriceNum(service);
       const newService = {
         id: service.id || ('srv-' + Date.now()),
         name: service.name || 'New Care Service',
         category: service.category || 'grooming',
-        price: parseFloat(service.price) || 6300,
+        price: `₹${Math.round(numPrice).toLocaleString('en-IN')}`,
+        priceNum: Math.round(numPrice),
+        price_num: Math.round(numPrice),
         duration: service.duration || '60 min',
         specialist: service.specialist || 'Pet Care Specialist',
         active: service.active !== false,
@@ -92,11 +117,12 @@
       srvs.push(newService);
       this.saveServices(srvs);
 
-      // Sync to PostgreSQL backend
+      // Sync to backend
       fetch('/api/services', {
         method: 'POST',
+        credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newService)
+        body: JSON.stringify({ ...newService, price: numPrice, price_num: numPrice })
       }).catch(err => console.warn('Failed to save service to backend:', err));
 
       return newService;
@@ -105,14 +131,22 @@
       const srvs = this.getServices();
       const idx = srvs.findIndex(s => s.id === id);
       if (idx !== -1) {
-        srvs[idx] = { ...srvs[idx], ...updated };
+        const numPrice = updated.price !== undefined ? getServicePriceNum(updated) : getServicePriceNum(srvs[idx]);
+        srvs[idx] = {
+          ...srvs[idx],
+          ...updated,
+          price: `₹${Math.round(numPrice).toLocaleString('en-IN')}`,
+          priceNum: Math.round(numPrice),
+          price_num: Math.round(numPrice)
+        };
         this.saveServices(srvs);
 
-        // Sync to PostgreSQL backend
+        // Sync to backend
         fetch('/api/services/' + encodeURIComponent(id), {
           method: 'PUT',
+          credentials: 'same-origin',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(updated)
+          body: JSON.stringify({ ...updated, price: numPrice, price_num: numPrice })
         }).catch(err => console.warn('Failed to update service in backend:', err));
 
         return srvs[idx];
@@ -123,9 +157,10 @@
       const srvs = this.getServices().filter(s => s.id !== id);
       this.saveServices(srvs);
 
-      // Sync to PostgreSQL backend
+      // Sync to backend
       fetch('/api/services/' + encodeURIComponent(id), {
-        method: 'DELETE'
+        method: 'DELETE',
+        credentials: 'same-origin'
       }).catch(err => console.warn('Failed to delete service from backend:', err));
 
       return srvs;
@@ -238,15 +273,17 @@
 
     async syncFromBackend() {
       try {
-        const [services, reviews, messages, users, settings, stats, specialists, bookings] = await Promise.all([
-          fetch('/api/services?all=true').then(r => r.ok ? r.json() : null),
-          fetch('/api/reviews?admin=true').then(r => r.ok ? r.json() : null),
-          fetch('/api/messages').then(r => r.ok ? r.json() : null),
-          fetch('/api/admin/users').then(r => r.ok ? r.json() : null),
-          fetch('/api/admin/settings').then(r => r.ok ? r.json() : null),
-          fetch('/api/admin/stats').then(r => r.ok ? r.json() : null),
-          fetch('/api/specialists?all=true').then(r => r.ok ? r.json() : null),
-          fetch('/api/bookings?admin=true').then(r => r.ok ? r.json() : null)
+        const fetchOpts = { credentials: 'same-origin', cache: 'no-store' };
+        const [services, reviews, messages, users, settings, stats, specialists, bookings, pets] = await Promise.all([
+          fetch('/api/services?all=true', fetchOpts).then(r => r.ok ? r.json() : null),
+          fetch('/api/reviews?admin=true', fetchOpts).then(r => r.ok ? r.json() : null),
+          fetch('/api/messages', fetchOpts).then(r => r.ok ? r.json() : null),
+          fetch('/api/admin/users', fetchOpts).then(r => r.ok ? r.json() : null),
+          fetch('/api/admin/settings', fetchOpts).then(r => r.ok ? r.json() : null),
+          fetch('/api/admin/stats', fetchOpts).then(r => r.ok ? r.json() : null),
+          fetch('/api/specialists?all=true', fetchOpts).then(r => r.ok ? r.json() : null),
+          fetch('/api/bookings?admin=true', fetchOpts).then(r => r.ok ? r.json() : null),
+          fetch('/api/pets?admin=true', fetchOpts).then(r => r.ok ? r.json() : null)
         ]);
 
         if (Array.isArray(services)) {
@@ -260,6 +297,9 @@
         }
         if (Array.isArray(users)) {
           localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
+        }
+        if (Array.isArray(pets)) {
+          this.savePets(pets);
         }
         if (Array.isArray(specialists)) localStorage.setItem(STORAGE_KEYS.SPECIALISTS, JSON.stringify(specialists));
         if (Array.isArray(bookings)) this.saveBookings(bookings);
@@ -298,6 +338,42 @@
       const users = this.getUsers().filter(u => u.id !== id);
       this.saveUsers(users);
       return users;
+    },
+    getPets() {
+      try {
+        const val = localStorage.getItem(STORAGE_KEYS.PETS);
+        if (val) {
+          const parsed = JSON.parse(val);
+          if (Array.isArray(parsed)) return parsed;
+        }
+      } catch(e) {}
+      // Fallback: collect pets from localStorage across user-specific keys if any
+      const allLocalPets = [];
+      try {
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (k && (k.startsWith('petpals_pets_') || k === 'petpals_pets')) {
+            const raw = localStorage.getItem(k);
+            if (raw) {
+              const list = JSON.parse(raw);
+              if (Array.isArray(list)) {
+                list.forEach(p => {
+                  if (p && p.id && !allLocalPets.some(existing => existing.id === p.id)) {
+                    allLocalPets.push(p);
+                  }
+                });
+              }
+            }
+          }
+        }
+      } catch(e) {}
+      if (allLocalPets.length > 0) return allLocalPets;
+
+      return (window.PetPalsStore && window.PetPalsStore.getPets()) || [];
+    },
+    savePets(pets) {
+      localStorage.setItem(STORAGE_KEYS.PETS, JSON.stringify(Array.isArray(pets) ? pets : []));
+      window.dispatchEvent(new CustomEvent('petpals:admin-pets-updated'));
     },
     getSpecialists() {
       try {
@@ -487,6 +563,12 @@
           this.renderCurrentSection();
         }
       });
+      window.addEventListener('petpals:admin-pets-updated', () => {
+        this.updateBadges();
+        if (this.currentSection === 'pets' || this.currentSection === 'dashboard') {
+          this.renderCurrentSection();
+        }
+      });
     },
 
     initAdminIdentityMenu() {
@@ -495,19 +577,25 @@
       const name = document.getElementById('admin-header-name');
       const email = document.getElementById('admin-header-email');
       const avatar = document.getElementById('admin-header-avatar');
-      const fallbackAvatar = DEFAULT_PROFILE_AVATAR;
       fetch('/api/admin/me', { credentials: 'same-origin', cache: 'no-store' })
         .then(response => response.ok ? response.json() : null)
         .then(admin => {
           if (!admin) return;
           if (name) name.textContent = 'Admin';
           if (email) email.textContent = admin.email || 'admin@petpalscare.com';
-          if (avatar && admin.avatar) {
+          const isPlaceholder = typeof admin.avatar === 'string' && (
+            admin.avatar.includes('photo-1534528741775') ||
+            admin.avatar.includes('photo-1535713875002') ||
+            admin.avatar.includes('photo-1544005313') ||
+            admin.avatar.includes('photo-1507003211') ||
+            admin.avatar.includes('AEtjO1W2uQrDJs4Vq5TYFXxKRstMqlWw')
+          );
+          if (avatar && admin.avatar && !isPlaceholder) {
             avatar.src = admin.avatar;
             avatar.classList.remove('hidden');
             avatar.nextElementSibling?.classList.add('hidden');
           } else if (avatar) {
-            avatar.src = fallbackAvatar;
+            avatar.removeAttribute('src');
             avatar.classList.add('hidden');
             avatar.nextElementSibling?.classList.remove('hidden');
           }
@@ -595,7 +683,7 @@
       }
 
       // Update sidebar nav highlights
-      document.querySelectorAll('[data-admin-route]').forEach(link => {
+      document.querySelectorAll('#admin-sidebar nav [data-admin-route]').forEach(link => {
         const target = link.getAttribute('data-admin-route');
         const isActive = target === sectionId;
         const iconSvg = link.querySelector('svg');
@@ -661,7 +749,7 @@
 
     updateBadges() {
       const bookings = AdminDataStore.getBookings();
-      const pets = (window.PetPalsStore && window.PetPalsStore.getPets()) || [];
+      const pets = AdminDataStore.getPets();
       const users = AdminDataStore.getUsers();
       const messages = AdminDataStore.getMessages();
       const unreadCount = messages.filter(m => m.status === 'Unread').length;
@@ -710,7 +798,7 @@
     // 1. DASHBOARD
     renderDashboard() {
       const bookings = AdminDataStore.getBookings();
-      const pets = (window.PetPalsStore && window.PetPalsStore.getPets()) || [];
+      const pets = AdminDataStore.getPets();
       const users = AdminDataStore.getUsers();
       const messages = AdminDataStore.getMessages();
       const pendingBookings = bookings.filter(b => b.status === 'Pending').length;
@@ -1116,7 +1204,8 @@
     openUserDetailsModal(userId) {
       const users = AdminDataStore.getUsers();
       const u = users.find(x => x.id === userId) || users[0];
-      const pets = (window.PetPalsStore && window.PetPalsStore.getPets()) || [];
+      const allPets = AdminDataStore.getPets();
+      const pets = allPets.filter(p => (p.userId === userId || p.user_id === userId));
       const bookings = AdminDataStore.getBookings();
 
       const modalEl = document.getElementById('admin-modal-container');
@@ -1185,7 +1274,7 @@
       const container = document.getElementById('pets-grid-container');
       if (!container) return;
 
-      const pets = (window.PetPalsStore && window.PetPalsStore.getPets()) || [];
+      const pets = AdminDataStore.getPets();
       const filterSpecies = window._currentPetsFilter || 'all';
       const query = (document.getElementById('pets-search-input')?.value || '').trim().toLowerCase();
 
@@ -1252,21 +1341,120 @@
               </div>
             </div>
 
-            <div class="p-5 pt-0 border-t border-brand-border/60 flex items-center justify-between">
-              <span class="text-[10px] font-mono text-brand-muted truncate max-w-[140px]">ID: ${escapeHtml(p.microchip || p.id)}</span>
-              <button onclick="AdminPortal.openPetDossierModal('${p.id}')" class="px-3.5 py-1.5 rounded-xl bg-brand-brown hover:bg-brand-brownHover text-white font-medium text-xs transition-colors">
-                View Dossier
-              </button>
+            <div class="p-5 pt-0 border-t border-brand-border/60 flex items-center justify-between gap-2">
+              <span class="text-[10px] font-mono text-brand-muted truncate max-w-[120px]">ID: ${escapeHtml(p.microchip || p.id)}</span>
+              <div class="flex items-center gap-1.5 shrink-0">
+                <button onclick="AdminPortal.confirmDeletePet('${p.id}', '${escapeHtml(p.name)}')" class="px-2.5 py-1.5 rounded-xl border border-rose-200/80 hover:border-rose-300 bg-rose-50/80 hover:bg-rose-100 text-rose-600 font-medium text-xs transition-colors flex items-center gap-1" title="Delete Pet">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <span>Delete</span>
+                </button>
+                <button onclick="AdminPortal.openPetDossierModal('${p.id}')" class="px-3 py-1.5 rounded-xl bg-brand-brown hover:bg-brand-brownHover text-white font-medium text-xs transition-colors">
+                  View Dossier
+                </button>
+              </div>
             </div>
           </div>
         `;
       }).join('');
     },
 
+    confirmDeletePet(petId, petName) {
+      const modalEl = document.getElementById('admin-modal-container');
+      if (!modalEl) return;
+      modalEl.innerHTML = `
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-150">
+          <div class="bg-brand-surface rounded-2xl max-w-sm w-full border border-brand-border shadow-2xl p-6 relative animate-in fade-in zoom-in duration-150">
+            <button onclick="document.getElementById('admin-modal-container').innerHTML=''" class="absolute top-4 right-4 text-brand-muted hover:text-brand-dark p-1">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto mb-4">
+              <svg class="w-6 h-6 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
+                <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+              </svg>
+            </div>
+            <h3 class="font-serif font-bold text-lg text-brand-dark text-center mb-1">Delete Pet Record</h3>
+            <p class="text-xs text-brand-muted text-center leading-relaxed mb-6">
+              Are you sure you want to permanently remove <span class="font-semibold text-brand-dark">${escapeHtml(petName || 'this pet')}</span> from the platform?
+            </p>
+            <div class="flex items-center gap-2.5">
+              <button type="button" onclick="document.getElementById('admin-modal-container').innerHTML=''" class="flex-1 px-4 py-2.5 rounded-xl border border-brand-border bg-brand-cream/50 hover:bg-brand-cream text-brand-dark font-medium text-xs transition-colors">
+                Cancel
+              </button>
+              <button type="button" id="btn-confirm-delete-pet" onclick="AdminPortal.executeDeletePet('${petId}')" class="flex-1 px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-medium text-xs transition-colors shadow-sm">
+                Yes, Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    },
+
+    async executeDeletePet(petId) {
+      const btn = document.getElementById('btn-confirm-delete-pet');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Deleting...';
+      }
+
+      try {
+        await fetch('/api/pets/' + encodeURIComponent(petId) + '?admin=true', {
+          method: 'DELETE',
+          credentials: 'same-origin'
+        });
+      } catch(e) {
+        console.warn('API delete pet error, continuing locally:', e);
+      }
+
+      // Update AdminDataStore
+      const currentPets = AdminDataStore.getPets();
+      const updatedPets = currentPets.filter(p => p.id !== petId);
+      AdminDataStore.savePets(updatedPets);
+
+      // Clean local storage user-specific keys if any
+      try {
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (k && (k.startsWith('petpals_pets_') || k === 'petpals_pets')) {
+            const raw = localStorage.getItem(k);
+            if (raw) {
+              const list = JSON.parse(raw);
+              if (Array.isArray(list)) {
+                const filteredList = list.filter(p => p.id !== petId);
+                localStorage.setItem(k, JSON.stringify(filteredList));
+              }
+            }
+          }
+        }
+      } catch(e) {}
+
+      // If PetPalsStore exists
+      if (window.PetPalsStore && typeof window.PetPalsStore.deletePet === 'function') {
+        try {
+          window.PetPalsStore.deletePet(petId);
+        } catch(e) {}
+      }
+
+      // Close modal
+      const modalEl = document.getElementById('admin-modal-container');
+      if (modalEl) modalEl.innerHTML = '';
+
+      // Refresh UI
+      this.updateBadges();
+      this.renderPets();
+      if (this.currentSection === 'dashboard') {
+        this.renderDashboard();
+      }
+    },
+
     openPetDossierModal(petId) {
-      const pets = (window.PetPalsStore && window.PetPalsStore.getPets()) || [];
+      const pets = AdminDataStore.getPets();
       const p = pets.find(x => x.id === petId);
       if (!p) return;
+
+      const users = AdminDataStore.getUsers();
+      const owner = users.find(u => u.id === (p.userId || p.user_id));
+      const ownerName = p.owner || owner?.name || 'Pet Parent';
+      const ownerPhone = p.ownerPhone || owner?.phone || 'Not provided';
 
       const modalEl = document.getElementById('admin-modal-container');
       if (!modalEl) return;
@@ -1300,7 +1488,7 @@
               </div>
               <div class="flex justify-between py-1 border-b border-brand-border/60">
                 <span class="text-brand-muted">Registered Pet Parent:</span>
-                <span class="font-semibold text-brand-dark">Prathiksha Shetty (+91 98765 43210)</span>
+                <span class="font-semibold text-brand-dark">${escapeHtml(ownerName)} (${escapeHtml(ownerPhone)})</span>
               </div>
               <div class="flex justify-between py-1">
                 <span class="text-brand-muted">Vaccination Records:</span>
@@ -1315,7 +1503,11 @@
               </div>
             </div>
 
-            <div class="flex justify-end gap-2 pt-2">
+            <div class="flex items-center justify-between gap-2 pt-2 border-t border-brand-border/40">
+              <button onclick="AdminPortal.confirmDeletePet('${p.id}', '${escapeHtml(p.name)}')" class="px-3.5 py-2 rounded-xl border border-rose-200 hover:border-rose-300 bg-rose-50 hover:bg-rose-100 text-rose-600 font-medium text-xs transition-colors flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>Delete Pet</span>
+              </button>
               <button onclick="document.getElementById('admin-modal-container').innerHTML=''" class="px-5 py-2 rounded-xl bg-brand-brown hover:bg-brand-brownHover text-white font-medium text-xs transition-colors">
                 Close Dossier
               </button>
@@ -1460,7 +1652,7 @@
               <span class="text-brand-muted font-medium">${escapeHtml(s.duration)}</span>
             </div>
             <div class="flex items-center justify-between pt-1">
-              <span class="text-xl font-bold font-serif text-brand-brown">₹${Number(s.price).toLocaleString('en-IN')}</span>
+              <span class="text-xl font-bold font-serif text-brand-brown">${formatServicePrice(s)}</span>
               <div class="flex items-center gap-1.5">
                 <button onclick="AdminPortal.openEditServiceModal('${s.id}')" class="px-3 py-1 rounded-lg bg-brand-tan/70 hover:bg-brand-tan text-brand-dark font-medium text-xs transition-colors">Edit</button>
                 <button onclick="AdminPortal.deleteService('${s.id}')" class="p-1 rounded-lg text-brand-muted hover:text-status-red transition-colors" title="Delete Service">
@@ -1551,7 +1743,7 @@
     submitAddService() {
       const name = document.getElementById('srv-input-name')?.value.trim();
       const category = document.getElementById('srv-input-category')?.value;
-      const price = parseFloat(document.getElementById('srv-input-price')?.value) || 6300;
+      const price = parseFloat(document.getElementById('srv-input-price')?.value) || 0;
       const duration = document.getElementById('srv-input-duration')?.value.trim() || '60 min';
       const specialist = document.getElementById('srv-input-specialist')?.value.trim() || 'Care Specialist';
       const description = document.getElementById('srv-input-desc')?.value.trim() || '';
@@ -1598,7 +1790,7 @@
                 </div>
                 <div>
                   <label class="block font-semibold text-brand-dark mb-1">Fee (₹ INR)</label>
-                  <input id="edit-srv-price" type="number" step="50" value="${s.price}" required class="w-full px-3 py-2 rounded-xl bg-brand-cream border border-brand-border focus:ring-1 focus:ring-brand-brown outline-none">
+                  <input id="edit-srv-price" type="number" step="50" value="${getServicePriceNum(s)}" required class="w-full px-3 py-2 rounded-xl bg-brand-cream border border-brand-border focus:ring-1 focus:ring-brand-brown outline-none">
                 </div>
               </div>
               <div class="grid grid-cols-2 gap-3">
@@ -1633,7 +1825,7 @@
     submitEditService(id) {
       const name = document.getElementById('edit-srv-name')?.value.trim();
       const category = document.getElementById('edit-srv-category')?.value;
-      const price = parseFloat(document.getElementById('edit-srv-price')?.value) || 6300;
+      const price = parseFloat(document.getElementById('edit-srv-price')?.value) || 0;
       const duration = document.getElementById('edit-srv-duration')?.value.trim();
       const specialist = document.getElementById('edit-srv-specialist')?.value.trim();
       const description = document.getElementById('edit-srv-desc')?.value.trim();
@@ -1856,7 +2048,7 @@
     // 8. REPORTS & ANALYTICS
     renderReports() {
       const bookings = AdminDataStore.getBookings();
-      const pets = (window.PetPalsStore && window.PetPalsStore.getPets()) || [];
+      const pets = AdminDataStore.getPets();
       const users = AdminDataStore.getUsers();
 
       // Calculate total revenue from all bookings

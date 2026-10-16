@@ -55,7 +55,10 @@ function clearAdminSessionCookie(req, res) {
 }
 
 async function getAuthAdmin(req) {
-  return db.getAdminSession(req.cookies?.petpals_admin_session);
+  const token = req.cookies?.petpals_admin_session ||
+    req.headers['x-admin-token'] ||
+    (req.headers.authorization && req.headers.authorization.startsWith('Bearer ') ? req.headers.authorization.slice(7) : null);
+  return db.getAdminSession(token);
 }
 
 // Helper to extract authenticated user from session token (Cookie, Bearer header, X-Session-Token, or query)
@@ -332,7 +335,8 @@ app.get('/api/admin/me', async (req, res) => {
     if (!admin) return res.status(401).json({ error: 'Admin authentication required.' });
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     const settings = await db.getAdminSettings();
-    res.json({ id: admin.id, name: 'Admin', email: settings.adminEmail || admin.email, role: admin.role, avatar: admin.avatar || null });
+    const avatar = db.isGeneratedProfileAvatar(admin) ? null : (admin.avatar || null);
+    res.json({ id: admin.id, name: 'Admin', email: settings.adminEmail || admin.email, role: admin.role, avatar });
   } catch (err) {
     console.error('Get admin identity error:', err);
     res.status(500).json({ error: 'Failed to load Admin identity' });
@@ -443,6 +447,7 @@ app.get('/api/services', async (req, res) => {
     if (includeInactive && !await getAuthAdmin(req)) return res.status(401).json({ error: 'Admin authentication required.' });
     const onlyActive = !includeInactive;
     const services = await db.getAllServices(onlyActive);
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     res.json(services);
   } catch (err) {
     console.error('Get services error:', err);
