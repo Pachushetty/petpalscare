@@ -238,7 +238,9 @@
                   localStorage.setItem('petpals_admin_token', data.token);
                 } catch (e) {}
               }
-              window.location.href = data.redirect || '/admin/dashboard';
+              // Include token in URL so server can re-set the cookie if needed
+              const adminUrl = (data.redirect || '/admin/dashboard') + (data.token ? '?admin_token=' + encodeURIComponent(data.token) : '');
+              window.location.href = adminUrl;
               return;
             }
 

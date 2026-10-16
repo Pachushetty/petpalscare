@@ -93,7 +93,7 @@
     <button id="mobile-menu-toggle" aria-label="Toggle Mobile Menu" class="md:hidden p-2 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-sidebar transition-colors" type="button">
       <svg class="w-6 h-6 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
     </button>
-    <a href="/admin/dashboard" data-admin-route="dashboard" class="flex items-center gap-3.5 group">
+    <a href="javascript:void(0)" data-admin-route="dashboard" class="flex items-center gap-3.5 group" role="button">
       <!-- PetPals Logo Paw Mark -->
       <svg class="w-7 h-7 fill-current text-brand-brown group-hover:scale-105 transition-transform" viewBox="0 0 24 24"><circle cx="8" cy="6" r="2.2"></circle><circle cx="16" cy="6" r="2.2"></circle><circle cx="4" cy="11.5" r="2"></circle><circle cx="20" cy="11.5" r="2"></circle><ellipse cx="12" cy="17" rx="5" ry="4"></ellipse></svg>
       <div>
@@ -109,7 +109,7 @@
   <!-- Right Header Controls -->
   <div class="flex items-center gap-4">
     <!-- Messages Notification Button -->
-    <a href="/admin/messages" data-admin-route="messages" aria-label="Messages" class="relative p-2.5 rounded-full hover:bg-brand-sidebar text-brand-muted hover:text-brand-dark transition-colors inline-block" title="Client Messages">
+    <a href="javascript:void(0)" data-admin-route="messages" aria-label="Messages" class="relative p-2.5 rounded-full hover:bg-brand-sidebar text-brand-muted hover:text-brand-dark transition-colors inline-block" title="Client Messages" role="button">
       <svg class="w-5 h-5 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
       </svg>
@@ -137,7 +137,7 @@
           <div class="font-semibold text-sm text-brand-dark">Admin</div>
           <div id="admin-header-email" class="text-xs text-brand-muted mt-1 truncate">admin@petpalscare.com</div>
         </div>
-        <a href="/admin/settings" data-admin-route="settings" class="block px-4 py-3 text-sm text-brand-dark hover:bg-brand-sidebar">Settings</a>
+        <a href="javascript:void(0)" data-admin-route="settings" class="block px-4 py-3 text-sm text-brand-dark hover:bg-brand-sidebar" role="button">Settings</a>
         <button id="admin-sign-out" type="button" class="w-full text-left px-4 py-3 text-sm text-brand-brown hover:bg-brand-sidebar border-t border-brand-border">Sign Out</button>
       </div>
     </div>
@@ -164,7 +164,7 @@
       <!-- Navigation Links -->
       <nav class="space-y-1.5" data-purpose="sidebar-nav">
         <!-- 1. Dashboard -->
-        <a data-admin-route="dashboard" class="flex items-center justify-between px-4 py-3 rounded-xl bg-brand-tan/80 text-brand-dark font-medium shadow-sm border border-brand-border transition-colors" href="/admin/dashboard">
+        <a data-admin-route="dashboard" class="flex items-center justify-between px-4 py-3 rounded-xl bg-brand-tan/80 text-brand-dark font-medium shadow-sm border border-brand-border transition-colors" href="javascript:void(0)" role="button">
           <div class="flex items-center gap-3.5">
             <svg class="w-5 h-5 text-brand-brown fill-none stroke-current stroke-[2]" viewBox="0 0 24 24">
               <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
@@ -175,7 +175,7 @@
         </a>
 
         <!-- 2. Bookings -->
-        <a data-admin-route="bookings" class="flex items-center justify-between px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="/admin/bookings">
+        <a data-admin-route="bookings" class="flex items-center justify-between px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="javascript:void(0)" role="button">
           <div class="flex items-center gap-3.5">
             <svg class="w-5 h-5 fill-none stroke-current stroke-[2]" viewBox="0 0 24 24">
               <rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect>
@@ -189,7 +189,7 @@
         </a>
 
         <!-- 3. Users -->
-        <a data-admin-route="users" class="flex items-center justify-between px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="/admin/users">
+        <a data-admin-route="users" class="flex items-center justify-between px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="javascript:void(0)" role="button">
           <div class="flex items-center gap-3.5">
             <svg class="w-5 h-5 fill-none stroke-current stroke-[2]" viewBox="0 0 24 24">
               <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
@@ -203,7 +203,7 @@
         </a>
 
         <!-- 4. Pets -->
-        <a data-admin-route="pets" class="flex items-center justify-between px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="/admin/pets">
+        <a data-admin-route="pets" class="flex items-center justify-between px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="javascript:void(0)" role="button">
           <div class="flex items-center gap-3.5">
             <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
               <circle cx="8" cy="6" r="2.2"></circle>
@@ -218,7 +218,7 @@
         </a>
 
         <!-- 5. Services -->
-        <a data-admin-route="services" class="flex items-center justify-between px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="/admin/services">
+        <a data-admin-route="services" class="flex items-center justify-between px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="javascript:void(0)" role="button">
           <div class="flex items-center gap-3.5">
             <svg class="w-5 h-5 fill-none stroke-current stroke-[2]" viewBox="0 0 24 24">
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
@@ -227,7 +227,7 @@
           </div>
         </a>
 
-        <a data-admin-route="specialists" class="flex items-center justify-between px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="/admin/specialists">
+        <a data-admin-route="specialists" class="flex items-center justify-between px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="javascript:void(0)" role="button">
           <div class="flex items-center gap-3.5">
             <svg class="w-5 h-5 fill-none stroke-current stroke-[2]" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"></circle><path d="M5 21v-2a7 7 0 0 1 14 0v2"></path><path d="m19 8 1.5 1.5L23 7"></path></svg>
             <span class="text-sm">Specialists / Groomers</span>
@@ -235,7 +235,7 @@
         </a>
 
         <!-- 6. Reviews -->
-        <a data-admin-route="reviews" class="flex items-center justify-between px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="/admin/reviews">
+        <a data-admin-route="reviews" class="flex items-center justify-between px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="javascript:void(0)" role="button">
           <div class="flex items-center gap-3.5">
             <svg class="w-5 h-5 fill-none stroke-current stroke-[2]" viewBox="0 0 24 24">
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
@@ -245,7 +245,7 @@
         </a>
 
         <!-- 7. Messages -->
-        <a data-admin-route="messages" class="flex items-center justify-between px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="/admin/messages">
+        <a data-admin-route="messages" class="flex items-center justify-between px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="javascript:void(0)" role="button">
           <div class="flex items-center gap-3.5">
             <svg class="w-5 h-5 fill-none stroke-current stroke-[2]" viewBox="0 0 24 24">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
@@ -256,7 +256,7 @@
         </a>
 
         <!-- 8. Reports -->
-        <a data-admin-route="reports" class="flex items-center justify-between px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="/admin/reports">
+        <a data-admin-route="reports" class="flex items-center justify-between px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="javascript:void(0)" role="button">
           <div class="flex items-center gap-3.5">
             <svg class="w-5 h-5 fill-none stroke-current stroke-[2]" viewBox="0 0 24 24">
               <line x1="18" x2="18" y1="20" y2="10"></line>
@@ -268,7 +268,7 @@
         </a>
 
         <!-- 9. Settings -->
-        <a data-admin-route="settings" class="flex items-center justify-between px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="/admin/settings">
+        <a data-admin-route="settings" class="flex items-center justify-between px-4 py-2.5 rounded-xl text-brand-muted hover:text-brand-dark hover:bg-brand-tan/40 transition-colors" href="javascript:void(0)" role="button">
           <div class="flex items-center gap-3.5">
             <svg class="w-5 h-5 fill-none stroke-current stroke-[2]" viewBox="0 0 24 24">
               <circle cx="12" cy="12" r="3"></circle>

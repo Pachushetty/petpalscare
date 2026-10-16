@@ -57,9 +57,17 @@ function clearAdminSessionCookie(req, res) {
 async function getAuthAdmin(req) {
   const token = req.cookies?.petpals_admin_session ||
     req.headers['x-admin-token'] ||
-    (req.headers.authorization && req.headers.authorization.startsWith('Bearer ') ? req.headers.authorization.slice(7) : null);
-  return db.getAdminSession(token);
+    (req.headers.authorization && req.headers.authorization.startsWith('Bearer ') ? req.headers.authorization.slice(7) : null) ||
+    req.query?.admin_token;
+  if (!token) return null;
+  const admin = await db.getAdminSession(token);
+  // Re-set the cookie if it came from a non-cookie source so it persists
+  if (admin && !req.cookies?.petpals_admin_session && req.res) {
+    setAdminSessionCookie(req, req.res, token);
+  }
+  return admin;
 }
+
 
 // Helper to extract authenticated user from session token (Cookie, Bearer header, X-Session-Token, or query)
 async function getAuthUser(req) {

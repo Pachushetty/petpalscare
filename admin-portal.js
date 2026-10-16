@@ -273,7 +273,12 @@
 
     async syncFromBackend() {
       try {
-        const fetchOpts = { credentials: 'same-origin', cache: 'no-store' };
+        const adminToken = (() => { try { return localStorage.getItem('petpals_admin_token') || ''; } catch(e) { return ''; } })();
+        const fetchOpts = {
+          credentials: 'same-origin',
+          cache: 'no-store',
+          headers: adminToken ? { 'X-Admin-Token': adminToken } : {}
+        };
         const [services, reviews, messages, users, settings, stats, specialists, bookings, pets] = await Promise.all([
           fetch('/api/services?all=true', fetchOpts).then(r => r.ok ? r.json() : null),
           fetch('/api/reviews?admin=true', fetchOpts).then(r => r.ok ? r.json() : null),
@@ -679,7 +684,9 @@
       this.currentSection = sectionId;
 
       if (pushHistory) {
-        history.pushState(null, '', '/admin/' + sectionId);
+        const adminToken = (() => { try { return localStorage.getItem('petpals_admin_token') || ''; } catch(e) { return ''; } })();
+        const tokenParam = adminToken ? '?admin_token=' + encodeURIComponent(adminToken) : '';
+        history.pushState(null, '', '/admin/' + sectionId + tokenParam);
       }
 
       // Update sidebar nav highlights

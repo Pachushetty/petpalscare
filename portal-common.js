@@ -1146,7 +1146,8 @@
           }
           showToast(`Welcome Administrator! Redirecting...`, 'success');
           setTimeout(() => {
-            window.location.href = data.redirect || '/admin/dashboard';
+            const adminUrl = (data.redirect || '/admin/dashboard') + (data.token ? '?admin_token=' + encodeURIComponent(data.token) : '');
+            window.location.href = adminUrl;
           }, 350);
           return data;
         }
