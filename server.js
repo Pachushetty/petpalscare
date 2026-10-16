@@ -362,6 +362,23 @@ app.post('/api/auth/google', async (req, res) => {
       return res.status(400).json({ error: 'Could not obtain email from Google account.' });
     }
 
+    // Check if this Google account is an administrator
+    const adminUser = await db.findAdminByEmail(userEmail);
+    if (adminUser) {
+      const adminSession = await db.createAdminSession(adminUser.id);
+      setAdminSessionCookie(req, res, adminSession.token);
+      const { password_hash, ...safeAdmin } = adminUser;
+      safeAdmin.name = safeAdmin.name || 'Admin';
+      return res.json({
+        success: true,
+        isAdmin: true,
+        redirect: '/admin/dashboard',
+        token: adminSession.token,
+        admin: safeAdmin,
+        message: `Signed in as Administrator (${safeAdmin.email})`
+      });
+    }
+
     // 3. Locate or create user account in database
     let user = await db.findUserByEmail(userEmail);
     if (!user) {
@@ -983,7 +1000,6 @@ const PAGE_ROUTES = {
   '/my-bookings': 'my-bookings.html',
   '/bookings-pet-dashboard': 'bookings-pet-dashboard.html',
   '/profile': 'profile.html',
-  '/admin/login': 'admin-login.html',
   '/admin': 'admin.html',
   '/admin/dashboard': 'admin.html',
   '/admin/bookings': 'admin.html',
@@ -1035,15 +1051,13 @@ Object.keys(PAGE_ROUTES).forEach(route => {
     }
 
     if (route === '/admin/login') {
-      if (await getAuthAdmin(req)) return res.redirect('/admin/dashboard');
-      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
-      return res.sendFile(path.join(PUBLIC_DIR, PAGE_ROUTES[route]));
+      return res.redirect(await getAuthAdmin(req) ? '/admin/dashboard' : '/login');
     }
     if (route === '/admin') {
-      return res.redirect(await getAuthAdmin(req) ? '/admin/dashboard' : '/admin/login');
+      return res.redirect(await getAuthAdmin(req) ? '/admin/dashboard' : '/login');
     }
     if (route.startsWith('/admin/')) {
-      if (!await getAuthAdmin(req)) return res.redirect('/admin/login');
+      if (!await getAuthAdmin(req)) return res.redirect('/login');
       res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     }
 
@@ -1063,12 +1077,21 @@ Object.keys(PAGE_ROUTES).forEach(route => {
   });
 });
 
+// Explicit redirect for /admin/login
+app.get('/admin/login', async (req, res) => {
+  if (await getAuthAdmin(req)) return res.redirect('/admin/dashboard');
+  return res.redirect('/login');
+});
+
 // Guard direct HTML access for protected pages before static middleware
 app.use(async (req, res, next) => {
   const cleanPath = req.path.replace(/^\/+/, '');
+  if (cleanPath === 'admin-login.html' || cleanPath === 'admin-login') {
+    return res.redirect('/login');
+  }
   if (PROTECTED_HTML_FILES.has(cleanPath)) {
     if (cleanPath === 'admin.html') {
-      if (!await getAuthAdmin(req)) return res.redirect('/admin/login');
+      if (!await getAuthAdmin(req)) return res.redirect('/login');
       res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
       return next();
     }
@@ -1093,11 +1116,14 @@ app.use(express.static(PUBLIC_DIR, {
 // Fallback for clean HTML routes or 404
 app.use(async (req, res) => {
   const cleanPath = req.path.replace(/^\/+/, '');
+  if (cleanPath === 'admin-login' || cleanPath === 'admin-login.html') {
+    return res.redirect('/login');
+  }
   const candidate = path.join(PUBLIC_DIR, cleanPath + '.html');
   if (fs.existsSync(candidate)) {
     if (PROTECTED_HTML_FILES.has(cleanPath + '.html')) {
       if (cleanPath + '.html' === 'admin.html') {
-        if (!await getAuthAdmin(req)) return res.redirect('/admin/login');
+        if (!await getAuthAdmin(req)) return res.redirect('/login');
         res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
         return res.sendFile(candidate);
       }

@@ -1137,7 +1137,21 @@
           throw new Error(data.error || 'Google authentication failed.');
         }
 
-        // Successfully logged in
+        // Handle admin redirect
+        if (data.isAdmin) {
+          if (data.token) {
+            try {
+              localStorage.setItem('petpals_admin_token', data.token);
+            } catch (e) {}
+          }
+          showToast(`Welcome Administrator! Redirecting...`, 'success');
+          setTimeout(() => {
+            window.location.href = data.redirect || '/admin/dashboard';
+          }, 350);
+          return data;
+        }
+
+        // Successfully logged in as user
         if (data.token) {
           try {
             localStorage.setItem('petpals_session_token', data.token);
