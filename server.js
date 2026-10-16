@@ -1117,6 +1117,9 @@ app.use(async (req, res) => {
 // Boot Database & Launch Server
 async function startServer() {
   await db.initDatabase();
+  if (process.env.VERCEL) {
+    return;
+  }
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`PetPals Care Portal running at http://localhost:${PORT}`);
     console.log(`Database engine: ${db.isPostgresConnected() ? 'PostgreSQL (Cloud / Remote)' : 'Local persistence (awaiting DATABASE_URL)'}`);
@@ -1140,5 +1143,9 @@ async function startServer() {
 
 startServer().catch(err => {
   console.error('Fatal startup error:', err);
-  process.exit(1);
+  if (!process.env.VERCEL) {
+    process.exit(1);
+  }
 });
+
+module.exports = app;
